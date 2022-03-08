@@ -1,4 +1,4 @@
-package ch.proximeety.proximeety.ui.theme
+package ch.proximeety.proximeety.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
