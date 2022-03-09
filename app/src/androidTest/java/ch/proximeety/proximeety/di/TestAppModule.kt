@@ -5,6 +5,7 @@ import ch.proximeety.proximeety.core.interactions.GetAuthenticatedUser
 import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.core.repositories.UserRepository
 import ch.proximeety.proximeety.data.repositories.UserRepositoryMockImplementation
+import ch.proximeety.proximeety.presentation.navigation.NavigationManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,6 +18,12 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class TestAppModule {
+
+    @Provides
+    @Singleton
+    fun provideNavigationManager(): NavigationManager {
+        return NavigationManager()
+    }
 
     @Provides
     @Singleton

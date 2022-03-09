@@ -9,7 +9,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import ch.proximeety.proximeety.util.extensions.getActivity
 
 /**
@@ -17,14 +16,13 @@ import ch.proximeety.proximeety.util.extensions.getActivity
  */
 @Composable
 fun HomeView(
-    navController: NavController,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
 
     val context = LocalContext.current
 
     BackHandler {
-       context.getActivity()?.finish()
+        context.getActivity()?.finish()
     }
 
     Box(

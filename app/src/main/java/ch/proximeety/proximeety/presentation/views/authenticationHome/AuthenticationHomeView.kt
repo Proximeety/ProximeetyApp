@@ -1,6 +1,5 @@
 package ch.proximeety.proximeety.presentation.views.authenticationHome
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Button
@@ -11,8 +10,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import ch.proximeety.proximeety.presentation.navigation.graphs.MainView
 import ch.proximeety.proximeety.util.extensions.getActivity
 import kotlinx.coroutines.flow.collectLatest
 
@@ -21,7 +18,6 @@ import kotlinx.coroutines.flow.collectLatest
  */
 @Composable
 fun AuthenticationHomeView(
-    navController: NavController,
     viewModel: AuthenticationHomeViewModel = hiltViewModel()
 ) {
 
@@ -30,9 +26,6 @@ fun AuthenticationHomeView(
     LaunchedEffect(true) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
-                AuthenticationHomeUIEvent.NavigateToMainNavigation -> {
-                    navController.navigate(MainView.HomeView.route)
-                }
             }
         }
     }

@@ -10,7 +10,7 @@ import ch.proximeety.proximeety.core.repositories.UserRepository
 class GetAuthenticatedUser(
     private val repository: UserRepository
 ) {
-    operator fun invoke() : User? {
-       return repository.getAuthenticatedUser()
+    operator fun invoke(): User? {
+        return repository.getAuthenticatedUser()
     }
 }
