@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "572224007748",
+    "project_id": "proximeety-963d6",
+    "storage_bucket": "proximeety-963d6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:572224007748:android:df80a6a1f1eed25ba45611",
+        "android_client_info": {
+          "package_name": "ch.proximeety.proximeety"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "572224007748-duk0597l1eg9h77orohsiqeluffrmrqo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ch.proximeety.proximeety",
+            "certificate_hash": "5b18ef3ea67a4def5bdb35f5485945bb705b7856"
+          }
+        },
+        {
+          "client_id": "572224007748-hhov2at18nfjotadre0rlur6ck16i963.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXBKOWs43aHGum5x1I81NAjBnyJJayS18"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "572224007748-hhov2at18nfjotadre0rlur6ck16i963.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
