@@ -5,9 +5,13 @@ package ch.proximeety.proximeety.core.entities
  */
 data class User(
     /**
+     * The unique id representing the user.
+     */
+    val id: String,
+    /**
      *  The display name of the user.
      */
-    val displayName: String? = null,
+    val displayName: String,
     /**
      * The given name or first name of the user.
      */
@@ -19,9 +23,5 @@ data class User(
     /**
      * The email address of the user.
      */
-    val email: String? = null,
-    /**
-     * The unique id representing the user.
-     */
-    val id: String? = null
+    val email: String? = null
 )

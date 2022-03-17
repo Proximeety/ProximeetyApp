@@ -1,16 +1,17 @@
 package ch.proximeety.proximeety.core.interactions
 
+import androidx.lifecycle.LiveData
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.core.repositories.UserRepository
 
 /**
- * A user interactions used to authenticate a user with Google.
+ * A user interaction used to get the nearby users
  * @param repository the user repository.
  */
-class AuthenticateWithGoogle(
+class GetNearbyUsers(
     private val repository: UserRepository
 ) {
-    suspend operator fun invoke(): User? {
-        return repository.authenticateWithGoogle()
+    operator fun invoke(): LiveData<List<User>> {
+        return repository.getNearbyUsers()
     }
 }
