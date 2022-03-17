@@ -1,4 +1,4 @@
-package ch.proximeety.proximeety.presentation.views.messages
+package ch.proximeety.proximeety.presentation.views.conversationList
 
 /**
  * The Model for Messages View
