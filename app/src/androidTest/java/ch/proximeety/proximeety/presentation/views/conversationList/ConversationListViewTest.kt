@@ -2,6 +2,7 @@ package ch.proximeety.proximeety.presentation.views.conversationList
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.di.AppModule
@@ -42,6 +43,6 @@ class ConversationListViewTest {
 
     @Test
     fun shouldDisplayConversations() {
-        composeTestRule.onNodeWithText("Test sender").assertExists()
+        composeTestRule.onAllNodesWithText("Test sender", substring = true)
     }
 }
