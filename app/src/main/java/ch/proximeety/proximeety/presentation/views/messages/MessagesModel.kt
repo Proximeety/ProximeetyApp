@@ -1,6 +1,4 @@
-package ch.proximeety.proximeety.presentation.messages
-
-import ch.proximeety.proximeety.core.entities.User
+package ch.proximeety.proximeety.presentation.views.messages
 
 /**
  * The Model for Messages View

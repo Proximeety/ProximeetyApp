@@ -1,6 +1,5 @@
-package ch.proximeety.proximeety.presentation.messages
+package ch.proximeety.proximeety.presentation.views.messages
 
-import ch.proximeety.proximeety.presentation.views.authenticationHome.AuthenticationHomeEvent
 import ch.proximeety.proximeety.util.SyncActivity
 
 /**
