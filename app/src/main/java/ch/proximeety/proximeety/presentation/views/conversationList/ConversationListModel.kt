@@ -9,3 +9,11 @@ data class MessagesModel(
     val sender: String,
     val senderImage: String? = null
 )
+
+var msg1 = MessagesModel("333", "test1", "sender1")
+
+val msg2 = MessagesModel(
+    sender = "Test sender",
+    time = "10:00 AM",
+    message = "Hello there, how are you?"
+)

@@ -1,6 +1,8 @@
 package ch.proximeety.proximeety.presentation.views.messages
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -8,6 +10,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,26 +25,43 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 
-// https://betterprogramming.pub/jetpack-compose-how-to-build-a-messaging-app-e2cdc828c00f
 
 @Composable
 fun MessagesListScreenView(
-    viewModel: MessagesViewModel = hiltViewModel() //TODO how to use this efficiently here?
+    viewModel: MessagesViewModel = hiltViewModel()
 ) {
+
+    val messages = viewModel.messages.observeAsState(listOf())
 
     Scaffold(
         topBar = { messagesListTopBar() }
     ) {
-        messagesList(list = list, itemClick = itemClick) // TODO list of message + message onClick
-    }git
+//        messagesList(list = list, itemClick = itemClick) // TODO list of message + message onClick
+
+        LazyColumn {
+           items(messages.value) {
+               Row {
+                   Box {
+
+                   }
+                   Column {
+                        Text(it.sender)
+                        Text(it.message)
+                   }
+               }
+           }
+        }
+
+    }
+
 }
 
-@Composable
-fun messagesList(list: Any, itemClick: Any) {
-    AdapterList(data = list) {
-        MessageView(message = it,itemClick = itemClick)
-    }
-}
+//@Composable
+//fun messagesList(list: Any, itemClick: Any) {
+//    AdapterList(data = list) {
+//        MessageView(message = it,itemClick = itemClick)
+//    }
+//}
 
 @Composable
 fun messagesListTopBar() {
@@ -144,7 +164,7 @@ fun Sender(sender: String, modifier: Modifier = Modifier) {
 @Composable
 fun SenderIcon() {
     Box(
-        backgroundColor = Color.DarkGray,
+//        backgroundColor = Color.DarkGray,
         modifier = Modifier.clip(CircleShape)
 //            .preferredSize(30.dp)
     ) {
