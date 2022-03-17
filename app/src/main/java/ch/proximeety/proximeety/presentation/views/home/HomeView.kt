@@ -17,6 +17,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import ch.proximeety.proximeety.presentation.views.home.components.homeBottomBar
 import ch.proximeety.proximeety.presentation.views.home.components.homeTopBar
 import ch.proximeety.proximeety.util.extensions.getActivity
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+
 
 /**
  * The Home View.
@@ -31,8 +34,26 @@ fun HomeView(
     BackHandler {
         context.getActivity()?.finish()
     }
-
-//<<<<<<< HEAD
+    Scaffold(
+        topBar = {
+            homeTopBar()
+        },
+        bottomBar = {
+            homeBottomBar()
+        }) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
+        ) {
+            Text(
+                text = "Displaying ${viewModel.state.value.user?.displayName}'s feed",
+                modifier = Modifier.padding(all = 5.dp),
+                style = MaterialTheme.typography.h3,
+                textAlign = TextAlign.Center
+            )
     Scaffold(
         topBar = {
             homeTopBar()
@@ -72,6 +93,28 @@ fun HomeView(
 //>>>>>>> 0ccb5a2 (Add bluetooth nearby friends)
     }
 }
-
-
-
+//
+//
+//
+//=======
+//        }
+//        Divider(color = Color.Black)
+//    }
+//
+//
+//// bluetooth connection view, could be useful later on
+////<<<<<<< HEAD
+////    Column(
+////        modifier = Modifier.fillMaxSize(),
+////        verticalArrangement = Arrangement.Center,
+////        horizontalAlignment = Alignment.CenterHorizontally
+////    ) {
+////        Text("Welcome ${viewModel.state.value.user?.displayName}")
+////        Button(onClick = { viewModel.onEvent(HomeEvent.NavigateToNearbyUsersViewModel) }) {
+////            Text("Go to nearby users")
+////        }
+////        Button(onClick = { viewModel.onEvent(HomeEvent.SignOut) }) {
+////            Text("Sign out")
+////=======
+//}
+//>>>>>>> 602fff8 (implement a basic structure of the home view)
