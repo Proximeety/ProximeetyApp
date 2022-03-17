@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
+import ch.proximeety.proximeety.presentation.navigation.graphs.AuthenticationNavigationCommands
+import ch.proximeety.proximeety.presentation.navigation.graphs.MainNavigationCommands
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -22,7 +24,13 @@ class HomeViewModel @Inject constructor(
 
     fun onEvent(event: HomeEvent) {
         when (event) {
-
+            HomeEvent.NavigateToNearbyUsersViewModel -> {
+                navigationManager.navigate(MainNavigationCommands.nearbyUsers)
+            }
+            HomeEvent.SignOut -> {
+                userInteractions.signOut()
+                navigationManager.navigate(AuthenticationNavigationCommands.default)
+            }
         }
     }
 

@@ -1,14 +1,17 @@
 package ch.proximeety.proximeety.di
 
-import ch.proximeety.proximeety.core.interactions.AuthenticateWithGoogle
-import ch.proximeety.proximeety.core.interactions.GetAuthenticatedUser
-import ch.proximeety.proximeety.core.interactions.UserInteractions
+import android.content.Context
+import ch.proximeety.proximeety.core.interactions.*
 import ch.proximeety.proximeety.core.repositories.UserRepository
+import ch.proximeety.proximeety.data.repositories.UserRepositoryImplementation
 import ch.proximeety.proximeety.data.repositories.UserRepositoryMockImplementation
+import ch.proximeety.proximeety.data.sources.BluetoothService
+import ch.proximeety.proximeety.data.sources.FirebaseAccessObject
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -35,8 +38,12 @@ class TestAppModule {
     @Singleton
     fun provideUserInteractions(repository: UserRepository): UserInteractions {
         return UserInteractions(
+            setActivity = SetActivity(repository),
             getAuthenticatedUser = GetAuthenticatedUser(repository),
-            authenticateWithGoogle = AuthenticateWithGoogle(repository)
+            authenticateWithGoogle = AuthenticateWithGoogle(repository),
+            setAuthenticatedUserVisible = SetAuthenticatedUserVisible(repository),
+            getNearbyUsers = GetNearbyUsers(repository),
+            signOut = SignOut(repository)
         )
     }
 }
