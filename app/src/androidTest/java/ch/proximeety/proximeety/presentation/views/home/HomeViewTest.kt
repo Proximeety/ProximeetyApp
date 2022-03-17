@@ -1,5 +1,6 @@
 package ch.proximeety.proximeety.presentation.views.home
 
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import ch.proximeety.proximeety.di.TestAppModule
@@ -32,7 +33,13 @@ class HomeViewTest {
     }
 
     @Test
-    fun sampleTest() {
-        composeTestRule.onNodeWithText("Welcome", substring = true).assertExists()
+    fun textIsDisplayed() {
+        composeTestRule.onNodeWithText(text = "Proximeety").assertExists()
+        composeTestRule.onNodeWithText(text = "map").assertExists()
+        composeTestRule.onNodeWithText(text = "msg").assertExists()
+        composeTestRule.onNodeWithText(text = "Search").assertExists()
+        composeTestRule.onNodeWithText(text = "Camera").assertExists()
+        composeTestRule.onNodeWithText(text = "Profile").assertExists()
+        composeTestRule.onNodeWithText(text = "Displaying", substring = true).assertExists()
     }
 }
