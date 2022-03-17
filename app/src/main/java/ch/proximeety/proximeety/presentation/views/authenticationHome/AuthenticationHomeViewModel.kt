@@ -6,6 +6,7 @@ import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
 import ch.proximeety.proximeety.presentation.navigation.graphs.MainNavigationCommands
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
@@ -26,8 +27,8 @@ class AuthenticationHomeViewModel @Inject constructor(
     fun onEvent(event: AuthenticationHomeEvent) {
         when (event) {
             is AuthenticationHomeEvent.AuthenticateWithGoogle -> {
-                viewModelScope.launch {
-                    userInteractions.authenticateWithGoogle(event.activity)?.also {
+                viewModelScope.launch(Dispatchers.IO) {
+                    userInteractions.authenticateWithGoogle()?.also {
                         navigationManager.navigate(MainNavigationCommands.default)
                     }
                 }

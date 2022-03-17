@@ -8,9 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
-import ch.proximeety.proximeety.util.extensions.getActivity
 import kotlinx.coroutines.flow.collectLatest
 
 /**
@@ -20,8 +18,6 @@ import kotlinx.coroutines.flow.collectLatest
 fun AuthenticationHomeView(
     viewModel: AuthenticationHomeViewModel = hiltViewModel()
 ) {
-
-    val context = LocalContext.current
 
     LaunchedEffect(true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -34,10 +30,7 @@ fun AuthenticationHomeView(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        Button(onClick = {
-            context.getActivity()
-                ?.let { viewModel.onEvent(AuthenticationHomeEvent.AuthenticateWithGoogle(it)) }
-        }) {
+        Button(onClick = { viewModel.onEvent(AuthenticationHomeEvent.AuthenticateWithGoogle) }) {
             Text(text = "Login")
         }
     }

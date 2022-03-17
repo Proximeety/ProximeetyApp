@@ -32,6 +32,7 @@ fun HomeView(
         context.getActivity()?.finish()
     }
 
+//<<<<<<< HEAD
     Scaffold(
         topBar = {
             homeTopBar()
@@ -55,6 +56,20 @@ fun HomeView(
 
         }
         Divider(color = Color.Black)
+//=======
+//    Column(
+//        modifier = Modifier.fillMaxSize(),
+//        verticalArrangement = Arrangement.Center,
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//        Text("Welcome ${viewModel.state.value.user?.displayName}")
+//        Button(onClick = { viewModel.onEvent(HomeEvent.NavigateToNearbyUsersViewModel) }) {
+//            Text("Go to nearby users")
+//        }
+//        Button(onClick = { viewModel.onEvent(HomeEvent.SignOut) }) {
+//            Text("Sign out")
+//        }
+//>>>>>>> 0ccb5a2 (Add bluetooth nearby friends)
     }
 }
 
