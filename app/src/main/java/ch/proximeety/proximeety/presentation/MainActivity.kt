@@ -7,8 +7,10 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
 import ch.proximeety.proximeety.presentation.navigation.graphs.AuthenticationNavigationCommands
+import ch.proximeety.proximeety.presentation.navigation.graphs.MainNavigationCommands
 import ch.proximeety.proximeety.presentation.navigation.graphs.authenticationNavigationGraph
 import ch.proximeety.proximeety.presentation.navigation.graphs.mainNavigationGraph
 import ch.proximeety.proximeety.presentation.theme.ProximeetyTheme
@@ -22,14 +24,19 @@ class MainActivity : SyncActivity() {
     @Inject
     lateinit var navigationManager: NavigationManager
 
+    @Inject
+    lateinit var userInteractions: UserInteractions
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        userInteractions.setActivity(this)
+
         setContent {
             val navController = rememberNavController()
             navigationManager.command.collectAsState().value?.also { command ->
-                if (command.route.isNotEmpty()) {
-                    navController.navigate(command.route)
-                }
+                navController.navigate(command.route)
+                navigationManager.clear()
             }
 
             ProximeetyTheme {
@@ -38,7 +45,11 @@ class MainActivity : SyncActivity() {
                 ) {
                     NavHost(
                         navController = navController,
-                        startDestination = AuthenticationNavigationCommands.default.route,
+                        startDestination =
+                        if (userInteractions.getAuthenticatedUser() == null)
+                            AuthenticationNavigationCommands.default.route
+                        else
+                            MainNavigationCommands.default.route,
                     ) {
                         authenticationNavigationGraph()
                         mainNavigationGraph()

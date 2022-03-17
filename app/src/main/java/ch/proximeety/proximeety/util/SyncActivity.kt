@@ -1,8 +1,8 @@
 package ch.proximeety.proximeety.util
 
 import android.content.Intent
-import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.core.app.ActivityCompat
 import kotlinx.coroutines.CompletableDeferred
 
 
@@ -15,21 +15,27 @@ class ActivityResult(
 )
 
 /**
+ * A permission result.
+ */
+class PermissionResult(
+    val grantResults: IntArray
+)
+
+/**
  * An synchronous activity.
  *
  * Used to send an receive intent synchronously in a coroutine.
  */
-abstract class SyncActivity : ComponentActivity() {
+abstract class SyncActivity : ComponentActivity(),
+    ActivityCompat.OnRequestPermissionsResultCallback {
 
     private var resultByCode = mutableMapOf<Int, CompletableDeferred<ActivityResult?>>()
+    private var permissionsRequestCode = 0
+    private var permissionsResultByCode =
+        mutableMapOf<Int, CompletableDeferred<PermissionResult?>>()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        Log.d("onActivityResult", "$resultByCode")
-        resultByCode[requestCode]?.let {
-            Log.d("onActivityResult", "in $requestCode")
-            it.complete(ActivityResult(resultCode, data))
-            resultByCode.remove(requestCode)
-        } ?: run {
+        resultByCode[requestCode]?.complete(ActivityResult(resultCode, data)) ?: run {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
@@ -49,6 +55,37 @@ abstract class SyncActivity : ComponentActivity() {
 
         val result = activityResult.await()
         resultByCode.remove(requestCode)
+        return result
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        permissionsResultByCode[requestCode]?.complete(PermissionResult(grantResults)) ?: run {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+    }
+
+    /**
+     * Launch a permission request and wait for the result to come back before continuing.
+     *
+     * @param permissions the list of permissions to request.
+     * @return The result of the permissions request.
+     */
+    suspend fun waitForPermissionResult(
+        permissions: Array<String>
+    ): PermissionResult? {
+        val permissionResult = CompletableDeferred<PermissionResult?>()
+
+        val requestCode = permissionsRequestCode
+        permissionsRequestCode += 1
+        permissionsResultByCode[requestCode] = permissionResult
+        requestPermissions(permissions, requestCode)
+
+        val result = permissionResult.await()
+        permissionsResultByCode.remove(requestCode)
         return result
     }
 

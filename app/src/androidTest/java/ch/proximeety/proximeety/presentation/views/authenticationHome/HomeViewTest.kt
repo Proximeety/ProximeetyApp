@@ -3,6 +3,7 @@ package ch.proximeety.proximeety.presentation.views.authenticationHome
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import ch.proximeety.proximeety.di.AppModule
 import ch.proximeety.proximeety.di.TestAppModule
 import ch.proximeety.proximeety.presentation.MainActivity
 import ch.proximeety.proximeety.presentation.theme.ProximeetyTheme
@@ -14,7 +15,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @HiltAndroidTest
-@UninstallModules(TestAppModule::class)
+@UninstallModules(AppModule::class)
 class AuthenticationHomeViewTest {
 
     @get:Rule(order = 0)
