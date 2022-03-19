@@ -18,6 +18,5 @@ fun NavGraphBuilder.authenticationNavigationGraph() {
         ) {
             AuthenticationHomeView()
         }
-
     }
 }
