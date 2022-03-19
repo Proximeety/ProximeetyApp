@@ -26,12 +26,6 @@ class ConversationListViewTest {
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    @get:Rule
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
-
-    @Inject
-    lateinit var userInteractions : UserInteractions
-
     @Before
     fun setup() {
         composeTestRule.setContent {
