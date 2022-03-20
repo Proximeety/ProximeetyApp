@@ -38,7 +38,7 @@ fun ConversationListView(
     val messages = viewModel.messages.observeAsState(listOf())
 
     Scaffold(
-        topBar = { messagesListTopBar() }
+        topBar = { MessagesListTopBar() }
     ) {
 //        messagesList(list = list, itemClick = itemClick) // TODO list of message + message onClick
 
@@ -77,7 +77,7 @@ fun ConversationListView(
 }
 
 @Composable
-fun messagesListTopBar() {
+fun MessagesListTopBar() {
     TopAppBar(
         title = {
             Text(
