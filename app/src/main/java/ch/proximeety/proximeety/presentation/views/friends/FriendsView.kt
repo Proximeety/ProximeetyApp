@@ -14,12 +14,10 @@ import ch.proximeety.proximeety.presentation.views.friends.components.UserList
 fun FriendsView(viewModel: FriendsViewModel = hiltViewModel()) {
     val context = LocalContext.current
 
-
     Column {
         UserList(viewModel.state.value)
     }
 }
-
 
 
 @Preview

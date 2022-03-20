@@ -32,14 +32,11 @@ fun UserCard(user : User){
                 )
                 Spacer(modifier = Modifier.width(20.dp))
 
-
                 Column {
                     Text(text = user.displayName.toString(), fontSize = 20.sp)
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(text = user.email.toString())
                 }
-
-
             }
         }
     }

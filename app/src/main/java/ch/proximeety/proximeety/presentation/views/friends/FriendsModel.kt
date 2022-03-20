@@ -35,8 +35,6 @@ var user4: User = User(
     "user4@gmail.com"
 )
 
-
-
 data class FriendsModel (
     var users: List<User> = listOf(user1, user2, user3, user4)
 )
