@@ -1,6 +1,5 @@
 package ch.proximeety.proximeety.presentation.views.friends.components
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -19,14 +18,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
-
+import ch.proximeety.proximeety.presentation.views.friends.FriendsViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun SearchBar(
     onSearch: (String) -> Unit = {}
 ){
-
-    var hint: String = "Search..."
+    val friendsViewModel: FriendsViewModel = hiltViewModel()
+    var hint = "Search..."
 
     var query by remember {
         mutableStateOf("")
@@ -60,8 +60,13 @@ fun SearchBar(
                     .onFocusChanged {
                         isHintDisplayed = !it.isFocused
                     },
-
-                keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() })
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        if (query == "") {
+                            friendsViewModel.updateSearch(query)
+                        }
+                        focusManager.clearFocus() }
+                )
             )
             if (isHintDisplayed && query=="") {
                 Text(
@@ -70,10 +75,12 @@ fun SearchBar(
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
                 )
             }
-
         }
         Button(
-            onClick = { Toast.makeText(context, query, Toast.LENGTH_LONG).show()},
+            onClick =
+            {
+                friendsViewModel.updateSearch(query)
+            },
             shape = CircleShape,
             modifier = Modifier
                 .padding(vertical = 12.dp)
