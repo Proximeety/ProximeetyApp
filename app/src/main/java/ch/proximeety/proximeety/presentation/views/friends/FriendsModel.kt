@@ -18,8 +18,7 @@ var user2: User = User(
     "user2",
     "user2",
     "user2@gmail.com",
-
-    )
+)
 var user3: User = User(
     "3",
     "Mery",

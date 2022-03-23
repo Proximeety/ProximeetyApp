@@ -21,7 +21,6 @@ fun FriendsView(viewModel: FriendsViewModel = hiltViewModel()) {
     }
 }
 
-
 @Preview
 @Composable
 fun PreviewUserCard(){

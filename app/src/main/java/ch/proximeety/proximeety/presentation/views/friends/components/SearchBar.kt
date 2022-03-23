@@ -17,6 +17,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import ch.proximeety.proximeety.presentation.views.friends.FriendsViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -57,6 +58,7 @@ fun SearchBar(
                     .shadow(5.dp, CircleShape)
                     .background(Color.White, CircleShape)
                     .padding(horizontal = 20.dp, vertical = 12.dp)
+                    .testTag("textField")
                     .onFocusChanged {
                         isHintDisplayed = !it.isFocused
                     },
@@ -85,6 +87,7 @@ fun SearchBar(
             modifier = Modifier
                 .padding(vertical = 12.dp)
                 .fillMaxWidth(0.9f)
+                .testTag("button")
         ) {
             Icon(
                 imageVector = Icons.Filled.Search,
