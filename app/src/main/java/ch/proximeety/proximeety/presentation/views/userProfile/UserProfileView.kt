@@ -6,7 +6,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -30,7 +33,7 @@ fun UserProfileView(
 ) {
     //val context = LocalContext.current
 
-    Column (Modifier.fillMaxWidth()){
+    Column (Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
         ProfileTopBar()
         Column(modifier = Modifier
             .fillMaxWidth()
@@ -46,8 +49,52 @@ fun UserProfileView(
                 PostsStat()
                 FriendStat()
             }
+            Row(modifier = Modifier.fillMaxWidth().padding(top = 20.dp)) {
+                SinglePost()
+                SinglePost()
+                SinglePost()
+            }
+            Row(modifier = Modifier.fillMaxWidth()) {
+                SinglePost()
+                SinglePost()
+                SinglePost()
+            }
+            Row(modifier = Modifier.fillMaxWidth()) {
+                SinglePost()
+                SinglePost()
+                SinglePost()
+            }
+            Row(modifier = Modifier.fillMaxWidth()) {
+                SinglePost()
+                SinglePost()
+                SinglePost()
+            }
         }
     }
+}
+
+@Preview
+@Composable
+fun SinglePost(
+    /*TODO adapt to user*/
+) {
+    val config = LocalConfiguration.current
+    val screenWidth = config.screenWidthDp.dp
+    Image(
+        painter = painterResource(R.drawable.post1),
+        contentScale = ContentScale.Crop,
+        contentDescription = "profile pic",
+        modifier = Modifier
+            .size(screenWidth/3)
+            .border(
+                width = 1.dp,
+                color = Color.White,
+            ).size(50.dp)
+            .padding(
+                horizontal = 2.dp
+            )
+            .aspectRatio(1f, matchHeightConstraintsFirst = false)
+    )
 }
 
 @Composable
