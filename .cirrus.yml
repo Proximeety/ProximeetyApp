@@ -5,6 +5,7 @@ check_android_task:
     TARGET: google_apis
     ARCH: x86
     CC_TEST_REPORTER_ID: ENCRYPTED[057f45dd6e2212e99d7371f5327d8d1db196c054a989922f72829bd6ad4bbc54559d41054210513dccafb58ccb6527fa]
+    MAPS_API_KEY: SECURED[AIzaSyDJoQ6Lxlt25Z5Vhyj3pAdWOtO5zDDNx3o]
   container:
     image: reactivecircus/android-emulator-$API_LEVEL:latest
     kvm: true
@@ -14,7 +15,9 @@ check_android_task:
     echo no | avdmanager create avd --force --name test --abi "$TARGET/$ARCH" --package "system-images;android-$API_LEVEL;$TARGET;$ARCH"
   start_emulator_background_script:
     $ANDROID_SDK_ROOT/emulator/emulator -avd test -no-window -gpu swiftshader_indirect -no-snapshot -no-audio -no-boot-anim -camera-back none
-  build_script: |
+  add_keys_to_local_properties_script:
+    touch local.properties
+  build_script: | 
     chmod +x gradlew
     ./gradlew assembleDebugAndroidTest
   wait_for_emulator_script: |

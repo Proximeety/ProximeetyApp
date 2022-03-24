@@ -9,5 +9,7 @@ data class UserInteractions(
     val authenticateWithGoogle: AuthenticateWithGoogle,
     val setAuthenticatedUserVisible: SetAuthenticatedUserVisible,
     val getNearbyUsers: GetNearbyUsers,
-    val signOut: SignOut
+    val signOut: SignOut,
+    val fetchUserById: FetchUserById,
+    val addFriend: AddFriend
 )

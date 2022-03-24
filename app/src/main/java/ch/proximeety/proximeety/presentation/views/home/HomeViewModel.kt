@@ -19,8 +19,7 @@ class HomeViewModel @Inject constructor(
     private val userInteractions: UserInteractions
 ) : ViewModel() {
 
-    private val _state = mutableStateOf(HomeModel(userInteractions.getAuthenticatedUser()))
-    val state: State<HomeModel> = _state
+    val user = userInteractions.getAuthenticatedUser()
 
     fun onEvent(event: HomeEvent) {
         when (event) {
@@ -32,7 +31,7 @@ class HomeViewModel @Inject constructor(
                 navigationManager.navigate(AuthenticationNavigationCommands.default)
             }
             HomeEvent.NavigateToMapView -> {
-//                navigationManager.navigate(MainNavigationCommands.)
+                navigationManager.navigate(MainNavigationCommands.map)
             }
 
             HomeEvent.NavigateToMessagingView -> {
@@ -40,10 +39,6 @@ class HomeViewModel @Inject constructor(
             }
 
             HomeEvent.NavigateToProfileView -> {
-//                navigationManager.navigate(MainNavigationCommands.)
-            }
-
-            HomeEvent.NavigateToSearchBarView -> {
 //                navigationManager.navigate(MainNavigationCommands.)
             }
 

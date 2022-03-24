@@ -2,11 +2,9 @@ package ch.proximeety.proximeety.presentation.views.home
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,6 +23,8 @@ import ch.proximeety.proximeety.util.extensions.getActivity
 fun HomeView(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
+
+    val user = viewModel.user.observeAsState()
 
     val context = LocalContext.current
 
@@ -46,11 +46,14 @@ fun HomeView(
                 .fillMaxHeight(),
         ) {
             Text(
-                text = "Displaying ${viewModel.state.value.user?.displayName}'s feed",
+                text = "Displaying ${user.value?.displayName}'s feed",
                 modifier = Modifier.padding(all = 5.dp),
                 style = MaterialTheme.typography.h3,
                 textAlign = TextAlign.Center
             )
+            Button(onClick = {viewModel.onEvent(HomeEvent.SignOut)}) {
+                Text("Sign out")
+            }
         }
     }
 }

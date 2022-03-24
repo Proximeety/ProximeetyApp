@@ -43,7 +43,9 @@ class TestAppModule {
             authenticateWithGoogle = AuthenticateWithGoogle(repository),
             setAuthenticatedUserVisible = SetAuthenticatedUserVisible(repository),
             getNearbyUsers = GetNearbyUsers(repository),
-            signOut = SignOut(repository)
+            signOut = SignOut(repository),
+            fetchUserById = FetchUserById(repository),
+            addFriend = AddFriend(repository)
         )
     }
 }

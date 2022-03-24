@@ -9,7 +9,6 @@ sealed class HomeEvent {
     object NavigateToMapView : HomeEvent()
     object NavigateToMessagingView: HomeEvent()
     object NavigateToProfileView: HomeEvent()
-    object NavigateToSearchBarView: HomeEvent()
     object NavigateToNearbyUsersView: HomeEvent()
     object NavigateToCameraView: HomeEvent()
 }
