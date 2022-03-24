@@ -3,6 +3,7 @@ package ch.proximeety.proximeety.data.sources
 import android.app.Activity
 import android.content.Context
 import androidx.lifecycle.*
+import android.util.Log
 import ch.proximeety.proximeety.R
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.util.SyncActivity
