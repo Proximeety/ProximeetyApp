@@ -36,7 +36,7 @@ class HomeViewModel @Inject constructor(
             }
 
             HomeEvent.NavigateToMessagingView -> {
-//                navigationManager.navigate(MainNavigationCommands.)
+                navigationManager.navigate(MainNavigationCommands.conversationList)
             }
 
             HomeEvent.NavigateToProfileView -> {
