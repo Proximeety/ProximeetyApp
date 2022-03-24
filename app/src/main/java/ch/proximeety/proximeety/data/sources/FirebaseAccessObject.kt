@@ -8,6 +8,11 @@ import ch.proximeety.proximeety.util.SyncActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Tasks
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 /**
  * Object used to access firebase.
@@ -24,18 +29,14 @@ class FirebaseAccessObject(
         private const val REQUEST_CODE_GOOGLE_SIGN_IN = 1
     }
 
+    private var auth = Firebase.auth
+
     /**
      * Gets the currently authenticated user.
      * @return The authenticated user.
      */
     fun getAuthenticatedUser(): User? {
-        GoogleSignIn.getLastSignedInAccount(context)?.also {
-            return User(
-                displayName = it.displayName ?: "User ${it.id}"
-            )
-        }
-
-        return null
+        return auth.currentUser?.let { firebaseToLocalUser(it) }
     }
 
     /**
@@ -60,16 +61,28 @@ class FirebaseAccessObject(
             activity.startActivityForResult(intent, REQUEST_CODE_GOOGLE_SIGN_IN)
         }, REQUEST_CODE_GOOGLE_SIGN_IN)
 
-        result?.also {
-            if (it.resultCode == Activity.RESULT_OK) {
+        result?.also { activityResult ->
+            if (activityResult.resultCode == Activity.RESULT_OK) {
                 try {
-                    val account = GoogleSignIn.getSignedInAccountFromIntent(it.data).result
-                    return User(displayName = account.displayName ?: "User ${account.id}")
+                    val account =
+                        GoogleSignIn.getSignedInAccountFromIntent(activityResult.data).result
+                    val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+                    Tasks.await(auth.signInWithCredential(credential)).user?.also {
+                        return firebaseToLocalUser(it)
+                    }
                 } catch (e: ApiException) {
                 }
             }
         }
 
         return null
+    }
+
+    private fun firebaseToLocalUser(user: FirebaseUser): User {
+        return User(id = user.uid, displayName = user.displayName ?: user.uid)
+    }
+
+    fun signOut() {
+        auth.signOut()
     }
 }

@@ -15,4 +15,12 @@ object MainNavigationCommands {
         override val arguments = emptyList<NamedNavArgument>()
         override val route = "home_view"
     }
+    val conversationList = object : NavigationCommand {
+        override val arguments = emptyList<NamedNavArgument>()
+        override val route = "conversation_list_view"
+    }
+    val nearbyUsers = object : NavigationCommand {
+        override val arguments = emptyList<NamedNavArgument>()
+        override val route = "nearby_users_view"
+    }
 }

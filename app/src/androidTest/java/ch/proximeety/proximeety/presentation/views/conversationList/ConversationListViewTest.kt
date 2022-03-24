@@ -1,10 +1,11 @@
-package ch.proximeety.proximeety.presentation.views.authenticationHome
+package ch.proximeety.proximeety.presentation.views.conversationList
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
+import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.di.AppModule
-import ch.proximeety.proximeety.di.TestAppModule
 import ch.proximeety.proximeety.presentation.MainActivity
 import ch.proximeety.proximeety.presentation.theme.ProximeetyTheme
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -13,10 +14,11 @@ import dagger.hilt.android.testing.UninstallModules
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import javax.inject.Inject
 
 @HiltAndroidTest
 @UninstallModules(AppModule::class)
-class AuthenticationHomeViewTest {
+class ConversationListViewTest {
 
     @get:Rule(order = 0)
     val hiltRule = HiltAndroidRule(this)
@@ -28,14 +30,13 @@ class AuthenticationHomeViewTest {
     fun setup() {
         composeTestRule.setContent {
             ProximeetyTheme {
-                AuthenticationHomeView()
+                ConversationListView()
             }
         }
     }
 
     @Test
-    fun sampleTest() {
-        composeTestRule.onNodeWithText("Login").assertExists()
-        composeTestRule.onNodeWithText("Login").performClick()
+    fun shouldDisplayConversations() {
+        composeTestRule.onAllNodesWithText("Test sender", substring = true)
     }
 }
