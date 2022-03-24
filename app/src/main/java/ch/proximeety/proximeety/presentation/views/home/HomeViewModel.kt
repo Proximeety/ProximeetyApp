@@ -32,7 +32,7 @@ class HomeViewModel @Inject constructor(
                 navigationManager.navigate(AuthenticationNavigationCommands.default)
             }
             HomeEvent.NavigateToMapView -> {
-//                navigationManager.navigate(MainNavigationCommands.)
+                navigationManager.navigate(MainNavigationCommands.map)
             }
 
             HomeEvent.NavigateToMessagingView -> {

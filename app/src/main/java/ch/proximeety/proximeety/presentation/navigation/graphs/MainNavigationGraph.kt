@@ -5,6 +5,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import ch.proximeety.proximeety.presentation.views.conversationList.ConversationListView
 import ch.proximeety.proximeety.presentation.views.home.HomeView
+import ch.proximeety.proximeety.presentation.views.mapView.MapView
 import ch.proximeety.proximeety.presentation.views.nearbyUsers.NearbyUsersView
 
 /**
@@ -29,6 +30,11 @@ fun NavGraphBuilder.mainNavigationGraph() {
             route = MainNavigationCommands.conversationList.route
         ) {
             ConversationListView()
+        }
+        composable(
+            route = MainNavigationCommands.map.route
+        ) {
+            MapView()
         }
     }
 }

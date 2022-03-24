@@ -23,4 +23,8 @@ object MainNavigationCommands {
         override val arguments = emptyList<NamedNavArgument>()
         override val route = "nearby_users_view"
     }
+    val map = object : NavigationCommand {
+        override val arguments = emptyList<NamedNavArgument>()
+        override val route = "map_view"
+    }
 }
