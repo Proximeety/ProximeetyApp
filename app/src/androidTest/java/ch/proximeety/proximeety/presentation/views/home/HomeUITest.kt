@@ -14,7 +14,7 @@ import org.junit.Test
 
 @HiltAndroidTest
 @UninstallModules(TestAppModule::class)
-class HomeViewTest {
+class HomeUITest {
 
     @get:Rule(order = 0)
     val hiltRule = HiltAndroidRule(this)
@@ -32,7 +32,13 @@ class HomeViewTest {
     }
 
     @Test
-    fun sampleTest() {
-        composeTestRule.onNodeWithText("Welcome", substring = true).assertExists()
+    fun textIsDisplayed() {
+        composeTestRule.onNodeWithText(text = "Proximeety").assertExists()
+        composeTestRule.onNodeWithText(text = "map").assertExists()
+        composeTestRule.onNodeWithText(text = "msg").assertExists()
+        composeTestRule.onNodeWithText(text = "Search").assertExists()
+        composeTestRule.onNodeWithText(text = "Camera").assertExists()
+        composeTestRule.onNodeWithText(text = "Profile").assertExists()
+        composeTestRule.onNodeWithText(text = "Displaying", substring = true).assertExists()
     }
 }

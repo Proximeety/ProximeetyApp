@@ -31,7 +31,25 @@ class HomeViewModel @Inject constructor(
                 userInteractions.signOut()
                 navigationManager.navigate(AuthenticationNavigationCommands.default)
             }
+            HomeEvent.NavigateToMapView -> {
+//                navigationManager.navigate(MainNavigationCommands.)
+            }
+
+            HomeEvent.NavigateToMessagingView -> {
+//                navigationManager.navigate(MainNavigationCommands.)
+            }
+
+            HomeEvent.NavigateToProfileView -> {
+//                navigationManager.navigate(MainNavigationCommands.)
+            }
+
+            HomeEvent.NavigateToSearchBarView -> {
+//                navigationManager.navigate(MainNavigationCommands.)
+            }
+
+            HomeEvent.NavigateToNearbyUsersView -> {
+                navigationManager.navigate(MainNavigationCommands.nearbyUsers)
+            }
         }
     }
-
 }

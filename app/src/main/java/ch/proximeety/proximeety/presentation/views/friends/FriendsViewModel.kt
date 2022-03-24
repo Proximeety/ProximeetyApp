@@ -17,12 +17,16 @@ class FriendsViewModel @Inject constructor(
     private val userInteractions: UserInteractions
 ) : ViewModel() {
 
-    private val _state = mutableStateOf(FriendsModel())
+    private val _state = mutableStateOf(value = FriendsModel())
     val state: State<FriendsModel> = _state
 
     fun onEvent(event: FriendsEvent) {
         when (event) {
 
         }
+    }
+
+    fun updateSearch(newQuery : String) {
+        _state.value = FriendsModel(newQuery)
     }
 }

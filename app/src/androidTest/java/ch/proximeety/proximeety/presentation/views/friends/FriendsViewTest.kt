@@ -1,9 +1,7 @@
 package ch.proximeety.proximeety.presentation.views.friends
 
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onAllNodesWithContentDescription
-import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.onNodeWithText
 import ch.proximeety.proximeety.di.AppModule
 import ch.proximeety.proximeety.presentation.MainActivity
 import ch.proximeety.proximeety.presentation.theme.ProximeetyTheme
@@ -33,16 +31,30 @@ class FriendsViewTest {
     }
 
     @Test
-    fun sampleTest() {
-        composeTestRule.onNodeWithText("User 1").assertExists()
-        composeTestRule.onNodeWithText("User 2").assertExists()
-        composeTestRule.onNodeWithText("User 3").assertExists()
-        composeTestRule.onNodeWithText("User 4").assertExists()
+    fun friendListTest() {
+        composeTestRule.onNodeWithText("Tom").assertExists()
+        composeTestRule.onNodeWithText("Tomas").assertExists()
+        composeTestRule.onNodeWithText("Mery").assertExists()
+        composeTestRule.onNodeWithText("Mark").assertExists()
         composeTestRule.onNodeWithText("user1@gmail.com").assertExists()
         composeTestRule.onNodeWithText("user2@gmail.com").assertExists()
         composeTestRule.onNodeWithText("user3@gmail.com").assertExists()
         composeTestRule.onNodeWithText("user4@gmail.com").assertExists()
         composeTestRule.onAllNodesWithContentDescription("User profile picture")
     }
-}
 
+    @Test
+    fun searchBarTest() {
+        composeTestRule.onNodeWithTag("textField").performClick().performTextInput("tom")
+        composeTestRule.onNodeWithTag("button").performClick()
+        composeTestRule.onNodeWithText("Tom").assertExists()
+        composeTestRule.onNodeWithText("Tomas").assertExists()
+
+        composeTestRule.onNodeWithTag("textField").performClick().performTextClearance()
+        composeTestRule.onNodeWithTag("button").performClick()
+        composeTestRule.onNodeWithText("Tom").assertExists()
+        composeTestRule.onNodeWithText("Tomas").assertExists()
+        composeTestRule.onNodeWithText("Mery").assertExists()
+        composeTestRule.onNodeWithText("Mark").assertExists()
+    }
+}
