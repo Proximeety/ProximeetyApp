@@ -2,8 +2,8 @@ package ch.proximeety.proximeety.data.sources
 
 import android.app.Activity
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.*
+import android.util.Log
 import ch.proximeety.proximeety.R
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.util.SyncActivity
@@ -16,9 +16,12 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
+import java.util.HashMap
+
 
 /**
  * Object used to access firebase.
@@ -185,5 +188,18 @@ class FirebaseAccessObject(
     fun signOut() {
         auth.signOut()
     }
+  
+  fun writeNewUser(userId: String, name: String, email: String) {
+        val user = User(name, email)
 
+        database.child("users").child(userId).setValue(user)
+    }
+
+    fun readAllMessages(userId: String, name: String, email: String) {
+        database.child("messages").child(userId).get().addOnSuccessListener {
+            Log.i("firebase", "Got value ${it.value}")
+        }.addOnFailureListener {
+            Log.i("firebase", "Error getting data", it)
+        }
+    }
 }
