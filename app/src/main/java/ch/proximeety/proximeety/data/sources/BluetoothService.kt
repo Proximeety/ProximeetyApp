@@ -20,6 +20,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.util.SyncActivity
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 
 
@@ -167,16 +170,27 @@ class BluetoothService(
 
         if (missingPermissions.isNotEmpty()) {
             activity.waitForPermissionResult(missingPermissions.toTypedArray())?.also { result ->
+                delay(100)
                 return isReady(activity)
             }
         }
 
         if (!bluetoothAdapter.isEnabled) {
-            activity.startActivity(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
+            activity.waitForIntentResult({
+                activity.startActivityForResult(
+                    Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
+                    2
+                )
+            }, 2)
         }
 
         if (!LocationManagerCompat.isLocationEnabled(locationManger)) {
-            activity.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            activity.waitForIntentResult({
+                activity.startActivityForResult(
+                    Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS),
+                    3
+                )
+            }, 3)
         }
 
         return true

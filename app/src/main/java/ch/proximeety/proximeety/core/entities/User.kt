@@ -1,5 +1,8 @@
 package ch.proximeety.proximeety.core.entities
 
+import android.net.Uri
+import java.net.URI
+
 /**
  * Immutable representation of an user.
  */
@@ -23,5 +26,9 @@ data class User(
     /**
      * The email address of the user.
      */
-    val email: String? = null
+    val email: String? = null,
+    /**
+     * The profile picture URL.
+     */
+    val profilePicture : String? = null
 )

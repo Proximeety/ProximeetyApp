@@ -39,7 +39,7 @@ fun HomeBottomBar(viewModel: HomeViewModel) {
                     .padding(all = 5.dp)
                     .clickable(
                         enabled = true,
-                        onClick = { viewModel.onEvent(HomeEvent.NavigateToSearchBarView) }
+                        onClick = { viewModel.onEvent(HomeEvent.NavigateToNearbyUsersView) }
                     )
             )
 

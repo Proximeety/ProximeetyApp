@@ -1,6 +1,8 @@
 package ch.proximeety.proximeety.presentation.navigation.graphs
 
 import androidx.navigation.NamedNavArgument
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import ch.proximeety.proximeety.presentation.navigation.NavigationCommand
 
 /**
@@ -26,5 +28,16 @@ object MainNavigationCommands {
     val map = object : NavigationCommand {
         override val arguments = emptyList<NamedNavArgument>()
         override val route = "map_view"
+    }
+
+    val profile = object : NavigationCommand {
+        override val arguments : List<NamedNavArgument> = listOf(navArgument("userId") {type = NavType.StringType})
+        override val route = "profile/{userId}"
+    }
+
+    fun profileWithArgs(userId : String) = object : NavigationCommand {
+        override val arguments: List<NamedNavArgument> = profile.arguments
+        override val route: String = "profile/$userId"
+
     }
 }
