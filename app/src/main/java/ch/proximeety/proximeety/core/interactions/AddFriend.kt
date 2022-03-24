@@ -1,17 +1,16 @@
 package ch.proximeety.proximeety.core.interactions
 
-import androidx.lifecycle.LiveData
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.core.repositories.UserRepository
 
 /**
- * A user interaction used to get the currently authenticated user.
+ * Add a friend to the authenticate list.
  * @param repository the user repository.
  */
-class GetAuthenticatedUser(
+class AddFriend(
     private val repository: UserRepository
 ) {
-    operator fun invoke(): LiveData<User?> {
-        return repository.getAuthenticatedUser()
+    suspend operator fun invoke(id : String) {
+        repository.addFriend(id)
     }
 }

@@ -46,7 +46,7 @@ class MainActivity : SyncActivity() {
                     NavHost(
                         navController = navController,
                         startDestination =
-                        if (userInteractions.getAuthenticatedUser() == null)
+                        if (userInteractions.getAuthenticatedUser().value == null)
                             AuthenticationNavigationCommands.default.route
                         else
                             MainNavigationCommands.default.route,

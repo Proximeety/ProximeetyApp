@@ -5,13 +5,13 @@ import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.core.repositories.UserRepository
 
 /**
- * A user interaction used to get the currently authenticated user.
+ * A user interaction used to fetch an user by id
  * @param repository the user repository.
  */
-class GetAuthenticatedUser(
+class FetchUserById(
     private val repository: UserRepository
 ) {
-    operator fun invoke(): LiveData<User?> {
-        return repository.getAuthenticatedUser()
+    operator fun invoke(id: String): LiveData<User?> {
+        return repository.fetchUserById(id)
     }
 }

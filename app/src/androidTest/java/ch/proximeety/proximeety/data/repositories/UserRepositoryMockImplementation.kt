@@ -15,8 +15,8 @@ class UserRepositoryMockImplementation : UserRepository {
 
     override fun setActivity(activity: SyncActivity) {}
 
-    override fun getAuthenticatedUser(): User? {
-        return user
+    override fun getAuthenticatedUser(): LiveData<User?> {
+        return MutableLiveData(user)
     }
 
     override suspend fun authenticateWithGoogle(): User? {
@@ -38,5 +38,12 @@ class UserRepositoryMockImplementation : UserRepository {
 
     override fun signOut() {
         user = null
+    }
+
+    override fun fetchUserById(id: String): LiveData<User?> {
+        return MutableLiveData()
+    }
+
+    override suspend fun addFriend(id: String) {
     }
 }

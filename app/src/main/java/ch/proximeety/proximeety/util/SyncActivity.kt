@@ -32,7 +32,7 @@ abstract class SyncActivity : ComponentActivity(),
     private var resultByCode = mutableMapOf<Int, CompletableDeferred<ActivityResult?>>()
     private var permissionsRequestCode = 0
     private var permissionsResultByCode =
-        mutableMapOf<Int, CompletableDeferred<PermissionResult?>>()
+        mutableMapOf<Int, CompletableDeferred<PermissionResult>>()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         resultByCode[requestCode]?.complete(ActivityResult(resultCode, data)) ?: run {
@@ -77,7 +77,7 @@ abstract class SyncActivity : ComponentActivity(),
     suspend fun waitForPermissionResult(
         permissions: Array<String>
     ): PermissionResult? {
-        val permissionResult = CompletableDeferred<PermissionResult?>()
+        val permissionResult = CompletableDeferred<PermissionResult>()
 
         val requestCode = permissionsRequestCode
         permissionsRequestCode += 1

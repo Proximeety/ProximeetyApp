@@ -1,5 +1,6 @@
 package ch.proximeety.proximeety.core.repositories
 
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.util.SyncActivity
@@ -17,7 +18,7 @@ interface UserRepository {
     /**
      * Get the currently authenticated user.
      */
-    fun getAuthenticatedUser(): User?
+    fun getAuthenticatedUser(): LiveData<User?>
 
     /**
      * Authenticate a new user with Google.
@@ -39,4 +40,19 @@ interface UserRepository {
      * Logout the user.
      */
     fun signOut()
+
+    /**
+     * Fetch an user
+     *
+     * @param id the id of the user to fetch.
+     * @return the user as a LiveData.
+     */
+    fun fetchUserById(id: String): LiveData<User?>
+
+    /**
+     * Add user as friend.
+     *
+     * @param id the id of the user to add as friend.
+     */
+    suspend fun addFriend(id: String)
 }
