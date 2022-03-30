@@ -22,8 +22,10 @@ suspend fun <T> LiveData<T>.await(): T {
         suspendCancellableCoroutine { continuation ->
             val observer = object : Observer<T> {
                 override fun onChanged(value: T) {
-                    removeObserver(this)
-                    continuation.resume(value, null)
+                    if (value != null) {
+                        removeObserver(this)
+                        continuation.resume(value, null)
+                    }
                 }
             }
 

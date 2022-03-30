@@ -5,6 +5,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.collectAsState
+import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import ch.proximeety.proximeety.core.interactions.UserInteractions
@@ -31,6 +32,8 @@ class MainActivity : SyncActivity() {
         super.onCreate(savedInstanceState)
 
         userInteractions.setActivity(this)
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
             val navController = rememberNavController()

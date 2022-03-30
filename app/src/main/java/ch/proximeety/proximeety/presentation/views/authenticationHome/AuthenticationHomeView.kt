@@ -9,6 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import ch.proximeety.proximeety.util.SafeArea
 import kotlinx.coroutines.flow.collectLatest
 
 /**
@@ -26,12 +27,14 @@ fun AuthenticationHomeView(
         }
     }
 
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Button(onClick = { viewModel.onEvent(AuthenticationHomeEvent.AuthenticateWithGoogle) }) {
-            Text(text = "Login")
+    SafeArea {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Button(onClick = { viewModel.onEvent(AuthenticationHomeEvent.AuthenticateWithGoogle) }) {
+                Text(text = "Login")
+            }
         }
     }
 }

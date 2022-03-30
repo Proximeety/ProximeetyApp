@@ -13,9 +13,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.proximeety.proximeety.presentation.theme.spacing
+import ch.proximeety.proximeety.util.SafeArea
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 
@@ -27,29 +27,38 @@ import coil.compose.rememberImagePainter
 fun ProfileView(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
+    val isAuthenticatedUserProfile = viewModel.isAuthenticatedUserProfile
     val user = viewModel.user.value.observeAsState()
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        user.value?.also {
-            Image(
-                painter = rememberImagePainter(it.profilePicture),
-                contentDescription = "Profile picture of ${it.displayName}",
-                modifier = Modifier
-                    .fillMaxWidth(0.3f)
-                    .aspectRatio(1f)
-                    .clip(CircleShape)
-                    .background(
-                        Color.Gray
-                    )
-            )
-            Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
-            Text(text = it.displayName, style = MaterialTheme.typography.h1)
-            Button(onClick = {viewModel.onEvent(ProfileEvent.AddAsFriend)}) {
-               Text("Add")
+    SafeArea {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            user.value?.also {
+                Image(
+                    painter = rememberImagePainter(it.profilePicture),
+                    contentDescription = "Profile picture of ${it.displayName}",
+                    modifier = Modifier
+                        .fillMaxWidth(0.3f)
+                        .aspectRatio(1f)
+                        .clip(CircleShape)
+                        .background(
+                            Color.Gray
+                        )
+                )
+                Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
+                Text(text = it.displayName, style = MaterialTheme.typography.h1)
+                if (!isAuthenticatedUserProfile) {
+                    Button(onClick = { viewModel.onEvent(ProfileEvent.AddAsFriend) }) {
+                        Text("Add")
+                    }
+                } else {
+                    Button(onClick = { viewModel.onEvent(ProfileEvent.SignOut) }) {
+                        Text("Sign out")
+                    }
+                }
             }
         }
     }

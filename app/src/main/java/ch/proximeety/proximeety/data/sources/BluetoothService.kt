@@ -20,9 +20,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.util.SyncActivity
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.*
 
 
@@ -125,7 +123,11 @@ class BluetoothService(
         val bluetoothScanner = bluetoothAdapter.bluetoothLeScanner
 
         val serviceFilter = ScanFilter.Builder()
-            .setServiceData(ParcelUuid(SERVICE_UUID), List<Byte>(28) {0}.toByteArray(),List<Byte>(28) {0}.toByteArray())
+            .setServiceData(
+                ParcelUuid(SERVICE_UUID),
+                List<Byte>(28) { 0 }.toByteArray(),
+                List<Byte>(28) { 0 }.toByteArray()
+            )
             .build()
         val filters = listOf(serviceFilter)
 

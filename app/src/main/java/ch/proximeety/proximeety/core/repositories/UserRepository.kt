@@ -1,7 +1,7 @@
 package ch.proximeety.proximeety.core.repositories
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import ch.proximeety.proximeety.core.entities.Post
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.util.SyncActivity
 
@@ -55,4 +55,34 @@ interface UserRepository {
      * @param id the id of the user to add as friend.
      */
     suspend fun addFriend(id: String)
+
+    /**
+     * Get the friends of the authenticated user.
+     */
+    suspend fun getFriends(): List<User>
+
+    /**
+     * Get the posts of an user.
+     *
+     * @param id the user id.
+     *
+     * @return The list of posts.
+     */
+    suspend fun getPostsByUserId(id: String): List<Post>
+
+    /**
+     * Post a picture
+     *
+     * @param url the local URL of the image.
+     */
+    suspend fun post(url: String)
+
+    /**
+     * Download the image of the post and returns the post.
+     *
+     * @param post the post download.
+     *
+     * @return The post with its postURL none null.
+     */
+    suspend fun downloadPost(post: Post): Post
 }

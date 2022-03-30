@@ -26,7 +26,7 @@ class FriendsViewModel @Inject constructor(
         }
     }
 
-    fun updateSearch(newQuery : String) {
+    fun updateSearch(newQuery: String) {
         _state.value = FriendsModel(newQuery)
     }
 }
