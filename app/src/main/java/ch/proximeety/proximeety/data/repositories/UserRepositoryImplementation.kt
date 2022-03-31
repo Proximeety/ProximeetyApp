@@ -91,4 +91,12 @@ class UserRepositoryImplementation(
         firebaseAccessObject.post(url)
     }
 
+    override suspend fun togglePostLike(post: Post) {
+        firebaseAccessObject.togglePostLike(post)
+    }
+
+    override suspend fun isPostLiked(post: Post) : Boolean {
+        return firebaseAccessObject.isPostLiked(post)
+    }
+
 }

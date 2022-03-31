@@ -42,6 +42,8 @@ class TestAppModule {
             getFriends = GetFriends(repository),
             getNearbyUsers = GetNearbyUsers(repository),
             post = Post(repository),
+            togglePostLike = TogglePostLike(repository),
+            isPostLiked = IsPostLiked(repository),
             setActivity = SetActivity(repository),
             setAuthenticatedUserVisible = SetAuthenticatedUserVisible(repository),
             signOut = SignOut(repository),

@@ -59,6 +59,7 @@ class FirebaseAccessObject(
         private const val USER_FRIENDS_PATH = "usersFriends"
 
         private const val POSTS_PATH = "posts"
+        private const val POST_POSTER_ID_KEY = "posterId"
         private const val POST_USER_DISPLAY_NAME_KEY = "userDisplayName"
         private const val POST_USER_PROFILE_PICTURE_KEY = "userProfilePicture"
         private const val POST_TIMESTAMP_KEY = "timestamp"
@@ -261,15 +262,18 @@ class FirebaseAccessObject(
         return database.child(POSTS_PATH).child(userId).get()
             .await().children.mapNotNull { snapshot ->
                 if (snapshot.exists() && snapshot.key != null) {
+                    val posterId =
+                        snapshot.child(POST_POSTER_ID_KEY).value as String?
                     val userDisplayName =
                         snapshot.child(POST_USER_DISPLAY_NAME_KEY).value as String?
                     val userProfilePicture =
                         snapshot.child(POST_USER_PROFILE_PICTURE_KEY).value as String?
                     val timestamp = snapshot.child(POST_TIMESTAMP_KEY).value as Long?
                     val likes = snapshot.child(POST_LIKES_KEY).children.count()
-                    if (userDisplayName != null || userProfilePicture != null || timestamp != null || likes != null) {
+                    if (posterId != null && userDisplayName != null && userProfilePicture != null && timestamp != null) {
                         return@mapNotNull Post(
                             snapshot.key!!,
+                            posterId!!,
                             userDisplayName!!,
                             userProfilePicture!!,
                             timestamp!!,
@@ -314,10 +318,10 @@ class FirebaseAccessObject(
                     storage.child(STORAGE_POST_PATH).child(key).putBytes(data).await()
                     ref.setValue(
                         mapOf(
+                            POST_POSTER_ID_KEY to user.id,
                             POST_USER_DISPLAY_NAME_KEY to user.displayName,
                             POST_USER_PROFILE_PICTURE_KEY to user.profilePicture,
-                            POST_TIMESTAMP_KEY to Calendar.getInstance().timeInMillis,
-                            POST_LIKES_KEY to 0
+                            POST_TIMESTAMP_KEY to Calendar.getInstance().timeInMillis
                         )
                     )
                 } catch (e: Exception) {
@@ -341,6 +345,25 @@ class FirebaseAccessObject(
         } catch (e: Exception) {
             Log.e(TAG, e.message.toString())
             post
+        }
+    }
+
+    suspend fun isPostLiked(post: Post): Boolean {
+        authenticatedUser?.value?.also { user ->
+            val ref = database.child(POSTS_PATH).child(post.posterId).child(post.id).child(POST_LIKES_KEY).child(user.id)
+            (ref.get().await().value as? Boolean)?.also {
+                return it
+            }
+        }
+        return false
+    }
+
+    suspend fun togglePostLike(post : Post) {
+        authenticatedUser?.value?.also { user ->
+            val ref = database.child(POSTS_PATH).child(post.posterId).child(post.id).child(POST_LIKES_KEY).child(user.id)
+            (ref.get().await().value as? Boolean).also {
+                ref.setValue(if(it == null) true else !it)
+            }
         }
     }
 }
