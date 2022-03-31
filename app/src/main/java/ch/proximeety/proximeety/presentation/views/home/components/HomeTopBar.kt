@@ -35,6 +35,9 @@ fun HomeTopBar(viewModel: HomeViewModel) {
                 IconButton(onClick = { viewModel.onEvent(HomeEvent.NavigateToUploadView) }) {
                     Icon(imageVector = Icons.Rounded.Add, contentDescription = "Upload")
                 }
+                IconButton(onClick = { viewModel.onEvent(HomeEvent.NavigateToFriendsView) }) {
+                    Icon(imageVector = Icons.Rounded.Search, contentDescription = "Friends")
+                }
                 IconButton(onClick = { viewModel.onEvent(HomeEvent.NavigateToNearbyUsersView) }) {
                     Icon(imageVector = Icons.Rounded.NearMe, contentDescription = "Nearby")
                 }

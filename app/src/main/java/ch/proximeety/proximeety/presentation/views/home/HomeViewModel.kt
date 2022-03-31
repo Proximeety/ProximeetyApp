@@ -68,6 +68,9 @@ class HomeViewModel @Inject constructor(
             HomeEvent.NavigateToUploadView -> {
                 navigationManager.navigate(MainNavigationCommands.upload)
             }
+            HomeEvent.NavigateToFriendsView -> {
+                navigationManager.navigate(MainNavigationCommands.friends)
+            }
             HomeEvent.Refresh -> {
                 refresh()
             }
