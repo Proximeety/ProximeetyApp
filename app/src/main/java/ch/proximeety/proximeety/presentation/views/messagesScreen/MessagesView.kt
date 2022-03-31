@@ -1,6 +1,7 @@
 package ch.proximeety.proximeety.presentation.views.messagesScreen
 
 import android.widget.EditText
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberImagePainter
 import androidx.compose.material.Text as Text
 
 @Composable
@@ -77,6 +79,10 @@ fun MessagesTopBar(viewModel: MessageViewModel = hiltViewModel()) {
     val user = viewModel.user.observeAsState(listOf())
     TopAppBar(
         title = {
+            Row {
+            Image(
+                painter = rememberImagePainter(user.value[0].profilePicture),
+            ),
             Text(
                 text = user.value[0].displayName,
                 style = TextStyle(
@@ -85,7 +91,7 @@ fun MessagesTopBar(viewModel: MessageViewModel = hiltViewModel()) {
                     fontStyle = FontStyle.Normal,
                     fontWeight = FontWeight.Bold
                 )
-            )
+            )}
         },
         actions = {
             IconButton(
