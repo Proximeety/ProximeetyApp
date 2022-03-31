@@ -44,7 +44,8 @@ class TestAppModule {
             post = Post(repository),
             setActivity = SetActivity(repository),
             setAuthenticatedUserVisible = SetAuthenticatedUserVisible(repository),
-            signOut = SignOut(repository)
+            signOut = SignOut(repository),
+            getPostUserId = GetPostUserId(repository)
         )
     }
 }

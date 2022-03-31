@@ -27,5 +27,9 @@ data class User(
     /**
      * The profile picture URL.
      */
-    val profilePicture: String? = null
+    val profilePicture: String? = null,
+    /**
+     * The bio of the user
+     */
+    val bio: String? = null
 )
