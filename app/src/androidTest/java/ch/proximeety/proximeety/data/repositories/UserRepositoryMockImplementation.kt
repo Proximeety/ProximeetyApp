@@ -14,56 +14,64 @@ class UserRepositoryMockImplementation : UserRepository {
 
     private var user: User? = null
     private var friends = mutableListOf<User>()
-    private var posts = mutableListOf<Post>(
-        Post(
-            id = "-MzLEU_55gpq5ZQgAOAp",
-            userDisplayName = "Yanis De Busschere",
-            userProfilePicture = null,
-            timestamp = 1648566863399,
-            postURL = null,
-            likes = 0
-        ),
-        Post(
-            id = "-MzLCslyh0zEGu6dioMT",
-            userDisplayName = "Yanis De Busschere",
-            userProfilePicture = null,
-            timestamp = 1648566440714,
-            postURL = null,
-            likes = 0
-        ),
-        Post(
-            id = "-MzLClBigTOTIoY6fLHT",
-            userDisplayName = "Yanis De Busschere",
-            userProfilePicture = null,
-            timestamp = 1648566409875,
-            postURL = null,
-            likes = 0
-        ),
-        Post(
-            id = "-MzKNArXlI8iMmVkVeXP",
-            userDisplayName = "Yanis De Busschere",
-            userProfilePicture = null,
-            timestamp = 1648552363683,
-            postURL = null,
-            likes = 0
-        ),
-        Post(
-            id = "-MzJUlMmW-UnG1MnuC7o",
-            userDisplayName = "Yanis De Busschere",
-            userProfilePicture = null,
-            timestamp = 1648537574380,
-            postURL = null,
-            likes = 0
-        ),
-        Post(
-            id = "-MzJUaBgPuPH8EHhw0yQ",
-            userDisplayName = "Yanis De Busschere",
-            userProfilePicture = null,
-            timestamp = 1648537528605,
-            postURL = null,
-            likes = 0
+    private var posts = user?.id?.let {
+        mutableListOf<Post>(
+            Post(
+                id = "-MzLEU_55gpq5ZQgAOAp",
+                userDisplayName = "Yanis De Busschere",
+                userProfilePicture = null,
+                timestamp = 1648566863399,
+                postURL = null,
+                likes = 0,
+                posterId = it
+            ),
+            Post(
+                id = "-MzLCslyh0zEGu6dioMT",
+                userDisplayName = "Yanis De Busschere",
+                userProfilePicture = null,
+                timestamp = 1648566440714,
+                postURL = null,
+                likes = 0,
+                posterId = it
+            ),
+            Post(
+                id = "-MzLClBigTOTIoY6fLHT",
+                userDisplayName = "Yanis De Busschere",
+                userProfilePicture = null,
+                timestamp = 1648566409875,
+                postURL = null,
+                likes = 0,
+                posterId = it
+            ),
+            Post(
+                id = "-MzKNArXlI8iMmVkVeXP",
+                userDisplayName = "Yanis De Busschere",
+                userProfilePicture = null,
+                timestamp = 1648552363683,
+                postURL = null,
+                likes = 0,
+                posterId = it
+            ),
+            Post(
+                id = "-MzJUlMmW-UnG1MnuC7o",
+                userDisplayName = "Yanis De Busschere",
+                userProfilePicture = null,
+                timestamp = 1648537574380,
+                postURL = null,
+                likes = 0,
+                posterId = it
+            ),
+            Post(
+                id = "-MzJUaBgPuPH8EHhw0yQ",
+                userDisplayName = "Yanis De Busschere",
+                userProfilePicture = null,
+                timestamp = 1648537528605,
+                postURL = null,
+                likes = 0,
+                posterId = it
+            )
         )
-    )
+    }
 
     override fun setActivity(activity: SyncActivity) {}
 
@@ -116,17 +124,40 @@ class UserRepositoryMockImplementation : UserRepository {
     override suspend fun getPostsByUserId(id: String): List<Post> {
         when (id) {
             user?.id -> {
-                return posts
+                posts?.toList()?.also {
+                    return it
+                }
             }
         }
         return listOf()
     }
 
     override suspend fun post(url: String) {
-       posts.add(Post(id = url, userDisplayName = "", userProfilePicture = null, timestamp = 0, likes = 0))
+        user?.id?.let {
+            Post(
+                id = url,
+                userDisplayName = "",
+                userProfilePicture = null,
+                timestamp = 0,
+                likes = 0,
+                posterId = it
+            )
+        }?.let {
+            posts?.add(
+                it
+            )
+        }
     }
 
     override suspend fun downloadPost(post: Post): Post {
         return post
+    }
+
+    override suspend fun togglePostLike(post: Post) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun isPostLiked(post: Post): Boolean {
+        TODO("Not yet implemented")
     }
 }
