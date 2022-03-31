@@ -85,4 +85,18 @@ interface UserRepository {
      * @return The post with its postURL none null.
      */
     suspend fun downloadPost(post: Post): Post
+
+    /**
+     * Toggle likes on a User's  Post
+     *
+     * @param postId the post's id
+     */
+    suspend fun togglePostLike(postId: String)
+
+    /**
+     * is a Post liked
+     *
+     * @param postId the post's id
+     */
+    suspend fun isPostLiked(postId: String) : Boolean
 }

@@ -266,15 +266,15 @@ class FirebaseAccessObject(
                     val userProfilePicture =
                         snapshot.child(POST_USER_PROFILE_PICTURE_KEY).value as String?
                     val timestamp = snapshot.child(POST_TIMESTAMP_KEY).value as Long?
-                    val likes = (snapshot.child(POST_LIKES_KEY).value as Long?)?.toInt()
-                    if (userDisplayName != null || userProfilePicture != null || timestamp != null || likes != null) {
+                    val likes = snapshot.child(POST_LIKES_KEY).children.count()
+                    if (userDisplayName != null || userProfilePicture != null || timestamp != null) {
                         return@mapNotNull Post(
                             snapshot.key!!,
                             userDisplayName!!,
                             userProfilePicture!!,
                             timestamp!!,
                             null,
-                            likes!!
+                            likes
                         )
                     }
                 }
@@ -316,8 +316,7 @@ class FirebaseAccessObject(
                         mapOf(
                             POST_USER_DISPLAY_NAME_KEY to user.displayName,
                             POST_USER_PROFILE_PICTURE_KEY to user.profilePicture,
-                            POST_TIMESTAMP_KEY to Calendar.getInstance().timeInMillis,
-                            POST_LIKES_KEY to 0
+                            POST_TIMESTAMP_KEY to Calendar.getInstance().timeInMillis
                         )
                     )
                 } catch (e: Exception) {
@@ -341,6 +340,25 @@ class FirebaseAccessObject(
         } catch (e: Exception) {
             Log.e(TAG, e.message.toString())
             post
+        }
+    }
+
+    suspend fun isPostLiked(postId: String): Boolean {
+        authenticatedUser?.value?.also { user ->
+            val ref = database.child(POSTS_PATH).child(postId).child(POST_LIKES_KEY).child(user.id)
+            (ref.get().await().value as? Boolean)?.also {
+                return it
+            }
+        }
+        return false
+    }
+
+    suspend fun togglePostLike(postId: String) {
+        authenticatedUser?.value?.also { user ->
+            val ref = database.child(POSTS_PATH).child(postId).child(POST_LIKES_KEY).child(user.id)
+            (ref.get().await().value as? Boolean)?.also {
+                ref.setValue(!it)
+            }
         }
     }
 }
