@@ -7,4 +7,5 @@ import ch.proximeety.proximeety.util.SyncActivity
  */
 sealed class ConversationListEvent {
     class ConversationClick(val message: MessagesModel) : ConversationListEvent()
+    // TODO will have to change this signature here to send user IDs and then load the message inside?
 }

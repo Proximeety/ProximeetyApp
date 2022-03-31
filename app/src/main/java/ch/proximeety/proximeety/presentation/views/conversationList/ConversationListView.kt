@@ -49,7 +49,7 @@ fun ConversationListView(
                         .padding(MaterialTheme.spacing.extraSmall)
                         .fillMaxWidth()
                         .clip(MaterialTheme.shapes.medium)
-                        .clickable {  viewModel.onEvent(ConversationListEvent.ConversationClick(it))},
+                        .clickable { viewModel.onEvent(ConversationListEvent.ConversationClick(it))},
                     verticalAlignment = Alignment.CenterVertically,
 
 
