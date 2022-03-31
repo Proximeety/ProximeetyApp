@@ -49,7 +49,7 @@ class FriendsViewModel @Inject constructor(
             showAllFriends()
         }
         else {
-            _friends.value = _friends.value.filter { (it.displayName).toLowerCase()!!.startsWith(newQuery.toLowerCase()) }
+            _friends.value = _friends.value.filter { (it.displayName).lowercase().startsWith(newQuery.lowercase()) }
         }
     }
 }

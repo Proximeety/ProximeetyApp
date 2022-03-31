@@ -38,7 +38,6 @@ fun SearchBar(
         mutableStateOf(hint != "")
     }
 
-    val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
     Row {

@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.presentation.views.friends.FriendsEvent
-import ch.proximeety.proximeety.presentation.views.friends.FriendsModel
 import ch.proximeety.proximeety.presentation.views.friends.FriendsViewModel
 
 @Composable
