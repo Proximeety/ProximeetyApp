@@ -52,6 +52,7 @@ fun MessagesView(
                         Column(
                             horizontalAlignment = if (it.from == user.value[0].id) Alignment.End else Alignment.Start,
 //                            horizontalAlignment = Alignment.Start,
+                            modifier = Modifier.fillMaxWidth()
                         ) {
                             Text(
                                 text = it.value,
