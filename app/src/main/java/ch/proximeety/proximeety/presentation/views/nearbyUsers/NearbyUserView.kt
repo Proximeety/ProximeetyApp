@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.proximeety.proximeety.presentation.theme.spacing
-import ch.proximeety.proximeety.presentation.views.profile.ProfileViewModel
+import ch.proximeety.proximeety.util.SafeArea
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 
@@ -30,40 +30,43 @@ fun NearbyUsersView(
 ) {
     val nearbyUsers = viewModel.nearbyUsers.observeAsState(listOf())
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    SafeArea {
         Column(
+            modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
-        )
-        {
-            nearbyUsers.value.forEach {
-                Box(
-                    modifier = Modifier
-                        .clip(MaterialTheme.shapes.medium)
-                        .clickable {
-                            viewModel.onEvent(NearbyUsersEvent.NavigateToUserProfile(it.id)) }
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(MaterialTheme.spacing.extraSmall)
+        ) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            )
+            {
+                nearbyUsers.value.forEach {
+                    Box(
+                        modifier = Modifier
+                            .clip(MaterialTheme.shapes.medium)
+                            .clickable {
+                                viewModel.onEvent(NearbyUsersEvent.NavigateToUserProfile(it.id))
+                            }
                     ) {
-                        Image(
-                            painter = rememberImagePainter(it.profilePicture),
-                            contentDescription = "Profile picture of ${it.displayName}",
-                            modifier = Modifier
-                                .width(32.dp)
-                                .aspectRatio(1f)
-                                .clip(CircleShape)
-                                .background(
-                                    Color.Gray
-                                )
-                        )
-                        Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
-                        Text(text = it.displayName, style = MaterialTheme.typography.h5)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(MaterialTheme.spacing.extraSmall)
+                        ) {
+                            Image(
+                                painter = rememberImagePainter(it.profilePicture),
+                                contentDescription = "Profile picture of ${it.displayName}",
+                                modifier = Modifier
+                                    .width(32.dp)
+                                    .aspectRatio(1f)
+                                    .clip(CircleShape)
+                                    .background(
+                                        Color.Gray
+                                    )
+                            )
+                            Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
+                            Text(text = it.displayName, style = MaterialTheme.typography.h5)
+                        }
                     }
                 }
             }

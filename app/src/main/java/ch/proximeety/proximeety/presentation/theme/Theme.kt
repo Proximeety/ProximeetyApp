@@ -7,6 +7,7 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val DarkColorPalette = darkColors(
@@ -33,7 +34,8 @@ fun ProximeetyTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Compos
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.setSystemBarsColor(
-            color = colors.background
+            color = Color.Transparent,
+            darkIcons = !darkTheme
         )
     }
 

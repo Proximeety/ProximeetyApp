@@ -10,9 +10,9 @@ import androidx.compose.ui.unit.dp
 import ch.proximeety.proximeety.presentation.views.friends.FriendsModel
 
 @Composable
-fun UserList(model: FriendsModel){
+fun UserList(model: FriendsModel) {
 
-    LazyColumn{
+    LazyColumn {
         items(model.users) { user ->
             UserCard(user = user)
             Spacer(modifier = Modifier.height(4.dp))

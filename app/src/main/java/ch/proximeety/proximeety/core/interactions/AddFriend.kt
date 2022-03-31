@@ -1,6 +1,5 @@
 package ch.proximeety.proximeety.core.interactions
 
-import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.core.repositories.UserRepository
 
 /**
@@ -10,7 +9,7 @@ import ch.proximeety.proximeety.core.repositories.UserRepository
 class AddFriend(
     private val repository: UserRepository
 ) {
-    suspend operator fun invoke(id : String) {
+    suspend operator fun invoke(id: String) {
         repository.addFriend(id)
     }
 }

@@ -5,4 +5,5 @@ package ch.proximeety.proximeety.presentation.views.profile
  */
 sealed class ProfileEvent {
     object AddAsFriend : ProfileEvent()
+    object SignOut : ProfileEvent()
 }

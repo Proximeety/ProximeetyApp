@@ -1,9 +1,9 @@
 package ch.proximeety.proximeety.data.repositories
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
+import ch.proximeety.proximeety.core.entities.Post
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.core.repositories.UserRepository
 import ch.proximeety.proximeety.data.sources.BluetoothService
@@ -37,7 +37,7 @@ class UserRepositoryImplementation(
     }
 
     override suspend fun setAuthenticatedUserVisible() {
-        val user = getAuthenticatedUser().await()?.also {
+        getAuthenticatedUser().await()?.also {
             bluetoothService.advertiseUser(it, activity)
         }
     }
@@ -49,9 +49,12 @@ class UserRepositoryImplementation(
             bluetoothService.scanForUsers(activity).observe(activity) { list ->
                 activity.lifecycleScope.launch(Dispatchers.Main) {
                     list.filterNot { requestedIds.contains(it.id) }.forEach { user ->
-                        firebaseAccessObject.fetchUserById(user.id, null).await()
-                            ?.also { fetchUser ->
-                                users.postValue(users.value?.plus(fetchUser)?.distinctBy { it.id })
+                        firebaseAccessObject.fetchUserById(user.id, activity)
+                            .observe(activity) { fetchUser ->
+                                if (fetchUser != null) {
+                                    users.postValue(users.value?.filter { it.id == fetchUser.id }
+                                        ?.plus(fetchUser)?.distinctBy { it.id })
+                                }
                             }
                     }
                 }
@@ -70,6 +73,22 @@ class UserRepositoryImplementation(
 
     override suspend fun addFriend(id: String) {
         firebaseAccessObject.addFriend(id)
+    }
+
+    override suspend fun getFriends(): List<User> {
+        return firebaseAccessObject.getFriends()
+    }
+
+    override suspend fun getPostsByUserId(id: String): List<Post> {
+        return firebaseAccessObject.getPostsByUserID(id)
+    }
+
+    override suspend fun downloadPost(post: Post): Post {
+        return firebaseAccessObject.downloadPost(post)
+    }
+
+    override suspend fun post(url: String) {
+        firebaseAccessObject.post(url)
     }
 
 }

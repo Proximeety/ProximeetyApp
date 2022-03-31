@@ -4,12 +4,16 @@ package ch.proximeety.proximeety.core.interactions
  * Set of user interactions or uses cases.
  */
 data class UserInteractions(
-    val setActivity: SetActivity,
-    val getAuthenticatedUser: GetAuthenticatedUser,
+    val addFriend: AddFriend,
     val authenticateWithGoogle: AuthenticateWithGoogle,
-    val setAuthenticatedUserVisible: SetAuthenticatedUserVisible,
-    val getNearbyUsers: GetNearbyUsers,
-    val signOut: SignOut,
+    val downloadPost: DownloadPost,
     val fetchUserById: FetchUserById,
-    val addFriend: AddFriend
+    val getAuthenticatedUser: GetAuthenticatedUser,
+    val getFeed: GetFeed,
+    val getFriends: GetFriends,
+    val getNearbyUsers: GetNearbyUsers,
+    val post: Post,
+    val setActivity: SetActivity,
+    val setAuthenticatedUserVisible: SetAuthenticatedUserVisible,
+    val signOut: SignOut
 )

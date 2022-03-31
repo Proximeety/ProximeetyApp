@@ -6,6 +6,7 @@ import androidx.lifecycle.*
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
+import ch.proximeety.proximeety.presentation.navigation.graphs.AuthenticationNavigationCommands
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,6 +21,7 @@ class ProfileViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    var isAuthenticatedUserProfile: Boolean = false
 
     private val _user = mutableStateOf<LiveData<User?>>(MutableLiveData(null))
     val user: State<LiveData<User?>> = _user
@@ -27,6 +29,7 @@ class ProfileViewModel @Inject constructor(
     init {
         savedStateHandle.get<String>("userId")?.also {
             _user.value = userInteractions.fetchUserById(it)
+            isAuthenticatedUserProfile = userInteractions.getAuthenticatedUser().value?.id == it
         }
     }
 
@@ -38,6 +41,10 @@ class ProfileViewModel @Inject constructor(
                         userInteractions.addFriend(it)
                     }
                 }
+            }
+            ProfileEvent.SignOut -> {
+                userInteractions.signOut()
+                navigationManager.navigate(AuthenticationNavigationCommands.default)
             }
         }
     }

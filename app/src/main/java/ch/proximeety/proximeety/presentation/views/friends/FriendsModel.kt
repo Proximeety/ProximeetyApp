@@ -1,6 +1,7 @@
 package ch.proximeety.proximeety.presentation.views.friends
 
 import ch.proximeety.proximeety.core.entities.User
+import java.util.*
 
 /**
  * The Model for the Friends View.
@@ -37,10 +38,11 @@ var user4: User = User(
 class FriendsModel {
     var users: List<User> = listOf()
 
-    constructor(query : String = ""){
+    constructor(query: String = "") {
         users = listOf(user4, user2, user1, user3).sortedWith(compareBy { it.givenName })
         if (query.isNotEmpty()) {
-            users = users.filter { (it.displayName).toLowerCase()!!.startsWith(query.toLowerCase()) }
+            users =
+                users.filter { (it.displayName).lowercase(Locale.getDefault()).startsWith(query.lowercase(Locale.getDefault())) }
         }
     }
 }
