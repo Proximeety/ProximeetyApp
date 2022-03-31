@@ -7,6 +7,7 @@ import ch.proximeety.proximeety.presentation.views.conversationList.Conversation
 import ch.proximeety.proximeety.presentation.views.friends.FriendsView
 import ch.proximeety.proximeety.presentation.views.home.HomeView
 import ch.proximeety.proximeety.presentation.views.mapView.MapView
+import ch.proximeety.proximeety.presentation.views.messagesScreen.MessagesView
 import ch.proximeety.proximeety.presentation.views.nearbyUsers.NearbyUsersView
 import ch.proximeety.proximeety.presentation.views.profile.ProfileView
 import ch.proximeety.proximeety.presentation.views.upload.UploadView
@@ -45,6 +46,12 @@ fun NavGraphBuilder.mainNavigationGraph() {
         ) {
             MapView()
         }
+        composable(
+            route = MainNavigationCommands.messages.route
+        ) {
+            MessagesView()
+        }
+        
         composable(
             route = MainNavigationCommands.upload.route
         ) {

@@ -266,7 +266,7 @@ class FirebaseAccessObject(
                     val userProfilePicture =
                         snapshot.child(POST_USER_PROFILE_PICTURE_KEY).value as String?
                     val timestamp = snapshot.child(POST_TIMESTAMP_KEY).value as Long?
-                    val likes = (snapshot.child(POST_LIKES_KEY).value as Long?)?.toInt()
+                    val likes = snapshot.child(POST_LIKES_KEY).children.count()
                     if (userDisplayName != null || userProfilePicture != null || timestamp != null || likes != null) {
                         return@mapNotNull Post(
                             snapshot.key!!,
@@ -274,7 +274,7 @@ class FirebaseAccessObject(
                             userProfilePicture!!,
                             timestamp!!,
                             null,
-                            likes!!
+                            likes
                         )
                     }
                 }
