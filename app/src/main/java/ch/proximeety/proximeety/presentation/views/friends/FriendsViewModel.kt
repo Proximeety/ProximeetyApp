@@ -40,6 +40,7 @@ class FriendsViewModel @Inject constructor(
     private fun showAllFriends(){
         viewModelScope.launch(Dispatchers.IO) {
             _friends.value = userInteractions.getFriends()
+            _friends.value = _friends.value.sortedWith(compareBy { it.givenName })
         }
     }
 
