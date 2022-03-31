@@ -14,7 +14,7 @@ class UserRepositoryMockImplementation : UserRepository {
 
     private var user: User? = null
     private var friends = mutableListOf<User>()
-    private var posts = user?.id?.let {
+    private var posts =
         mutableListOf<Post>(
             Post(
                 id = "-MzLEU_55gpq5ZQgAOAp",
@@ -23,7 +23,7 @@ class UserRepositoryMockImplementation : UserRepository {
                 timestamp = 1648566863399,
                 postURL = null,
                 likes = 0,
-                posterId = it
+                posterId = "testUserId"
             ),
             Post(
                 id = "-MzLCslyh0zEGu6dioMT",
@@ -32,7 +32,7 @@ class UserRepositoryMockImplementation : UserRepository {
                 timestamp = 1648566440714,
                 postURL = null,
                 likes = 0,
-                posterId = it
+                posterId = "testUserId"
             ),
             Post(
                 id = "-MzLClBigTOTIoY6fLHT",
@@ -41,7 +41,7 @@ class UserRepositoryMockImplementation : UserRepository {
                 timestamp = 1648566409875,
                 postURL = null,
                 likes = 0,
-                posterId = it
+                posterId = "testUserId"
             ),
             Post(
                 id = "-MzKNArXlI8iMmVkVeXP",
@@ -50,7 +50,7 @@ class UserRepositoryMockImplementation : UserRepository {
                 timestamp = 1648552363683,
                 postURL = null,
                 likes = 0,
-                posterId = it
+                posterId = "testUserId"
             ),
             Post(
                 id = "-MzJUlMmW-UnG1MnuC7o",
@@ -59,7 +59,7 @@ class UserRepositoryMockImplementation : UserRepository {
                 timestamp = 1648537574380,
                 postURL = null,
                 likes = 0,
-                posterId = it
+                posterId = "testUserId"
             ),
             Post(
                 id = "-MzJUaBgPuPH8EHhw0yQ",
@@ -68,10 +68,10 @@ class UserRepositoryMockImplementation : UserRepository {
                 timestamp = 1648537528605,
                 postURL = null,
                 likes = 0,
-                posterId = it
+                posterId = "testUserId"
             )
         )
-    }
+
 
     override fun setActivity(activity: SyncActivity) {}
 
@@ -124,9 +124,7 @@ class UserRepositoryMockImplementation : UserRepository {
     override suspend fun getPostsByUserId(id: String): List<Post> {
         when (id) {
             user?.id -> {
-                posts?.toList()?.also {
-                    return it
-                }
+                return posts.toList()
             }
         }
         return listOf()
@@ -154,10 +152,9 @@ class UserRepositoryMockImplementation : UserRepository {
     }
 
     override suspend fun togglePostLike(post: Post) {
-        TODO("Not yet implemented")
     }
 
     override suspend fun isPostLiked(post: Post): Boolean {
-        TODO("Not yet implemented")
+        return true
     }
 }
