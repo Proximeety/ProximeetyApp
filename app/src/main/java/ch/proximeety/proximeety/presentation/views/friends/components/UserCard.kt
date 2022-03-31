@@ -13,11 +13,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.R
+import ch.proximeety.proximeety.core.entities.User
 
 @Composable
-fun UserCard(user : User){
+fun UserCard(user: User) {
     Box(Modifier.fillMaxSize()) {
         Surface(
             modifier = Modifier.fillMaxWidth(),
@@ -28,12 +28,14 @@ fun UserCard(user : User){
                 Image(
                     painter = painterResource(id = R.drawable.ic_launcher_background),
                     contentDescription = "User profile picture",
-                    modifier = Modifier.size(50.dp).clip(CircleShape)
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clip(CircleShape)
                 )
                 Spacer(modifier = Modifier.width(20.dp))
 
                 Column {
-                    Text(text = user.displayName.toString(), fontSize = 20.sp)
+                    Text(text = user.displayName, fontSize = 20.sp)
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(text = user.email.toString())
                 }

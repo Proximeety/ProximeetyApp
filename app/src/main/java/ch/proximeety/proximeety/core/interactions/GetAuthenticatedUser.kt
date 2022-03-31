@@ -1,5 +1,6 @@
 package ch.proximeety.proximeety.core.interactions
 
+import androidx.lifecycle.LiveData
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.core.repositories.UserRepository
 
@@ -10,7 +11,7 @@ import ch.proximeety.proximeety.core.repositories.UserRepository
 class GetAuthenticatedUser(
     private val repository: UserRepository
 ) {
-    operator fun invoke(): User? {
+    operator fun invoke(): LiveData<User?> {
         return repository.getAuthenticatedUser()
     }
 }

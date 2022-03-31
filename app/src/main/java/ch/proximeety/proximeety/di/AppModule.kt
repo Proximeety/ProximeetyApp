@@ -52,11 +52,17 @@ class AppModule {
     @Singleton
     fun provideUserInteractions(repository: UserRepository): UserInteractions {
         return UserInteractions(
-            setActivity = SetActivity(repository),
-            getAuthenticatedUser = GetAuthenticatedUser(repository),
+            addFriend = AddFriend(repository),
             authenticateWithGoogle = AuthenticateWithGoogle(repository),
-            setAuthenticatedUserVisible = SetAuthenticatedUserVisible(repository),
+            downloadPost = DownloadPost(repository),
+            fetchUserById = FetchUserById(repository),
+            getAuthenticatedUser = GetAuthenticatedUser(repository),
+            getFeed = GetFeed(repository),
+            getFriends = GetFriends(repository),
             getNearbyUsers = GetNearbyUsers(repository),
+            post = Post(repository),
+            setActivity = SetActivity(repository),
+            setAuthenticatedUserVisible = SetAuthenticatedUserVisible(repository),
             signOut = SignOut(repository)
         )
     }

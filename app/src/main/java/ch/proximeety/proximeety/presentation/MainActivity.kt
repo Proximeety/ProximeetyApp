@@ -5,6 +5,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.collectAsState
+import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import ch.proximeety.proximeety.core.interactions.UserInteractions
@@ -32,6 +33,8 @@ class MainActivity : SyncActivity() {
 
         userInteractions.setActivity(this)
 
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         setContent {
             val navController = rememberNavController()
             navigationManager.command.collectAsState().value?.also { command ->
@@ -46,7 +49,7 @@ class MainActivity : SyncActivity() {
                     NavHost(
                         navController = navController,
                         startDestination =
-                        if (userInteractions.getAuthenticatedUser() == null)
+                        if (userInteractions.getAuthenticatedUser().value == null)
                             AuthenticationNavigationCommands.default.route
                         else
                             MainNavigationCommands.default.route,

@@ -2,17 +2,35 @@ package ch.proximeety.proximeety.data.sources
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.media.ExifInterface
+import android.net.Uri
+import android.util.Log
+import androidx.lifecycle.*
 import ch.proximeety.proximeety.R
+import ch.proximeety.proximeety.core.entities.Post
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.util.SyncActivity
+import ch.proximeety.proximeety.util.extensions.await
+import ch.proximeety.proximeety.util.extensions.rotate
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Tasks
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.tasks.await
+import java.io.BufferedInputStream
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.util.*
+
 
 /**
  * Object used to access firebase.
@@ -27,16 +45,59 @@ class FirebaseAccessObject(
          * Intent request code for Google Authentication
          */
         private const val REQUEST_CODE_GOOGLE_SIGN_IN = 1
+
+        private const val TAG = "FIREBASE_ACCESS_OBJECT"
+
+        private const val USER_PATH = "users"
+        private const val USER_DISPLAY_NAME_KEY = "displayName"
+        private const val USER_NAME_KEY = "displayName"
+        private const val USER_GIVEN_NAME_KEY = "givenName"
+        private const val USER_FAMILY_NAME_KEY = "familyName"
+        private const val USER_EMAIL_KEY = "email"
+        private const val USER_PROFILE_PICTURE_KEY = "profilePicture"
+
+        private const val USER_FRIENDS_PATH = "usersFriends"
+
+        private const val POSTS_PATH = "posts"
+        private const val POST_USER_DISPLAY_NAME_KEY = "userDisplayName"
+        private const val POST_USER_PROFILE_PICTURE_KEY = "userProfilePicture"
+        private const val POST_TIMESTAMP_KEY = "timestamp"
+        private const val POST_URL_KEY = "postURL"
+        private const val POST_LIKES_KEY = "likes"
+
+        private const val STORAGE_POST_PATH = "posts"
     }
 
     private var auth = Firebase.auth
+    private var database = Firebase.database.reference
+    private var storage = Firebase.storage.reference
+
+    private var authenticatedUser: MutableLiveData<User?>? = null
 
     /**
      * Gets the currently authenticated user.
      * @return The authenticated user.
      */
-    fun getAuthenticatedUser(): User? {
-        return auth.currentUser?.let { firebaseToLocalUser(it) }
+    fun getAuthenticatedUser(lifecycleOwner: LifecycleOwner): LiveData<User?> {
+        if (auth.currentUser != null) {
+            if (authenticatedUser != null) return authenticatedUser!!
+            authenticatedUser =
+                MutableLiveData(User(auth.currentUser!!.uid, auth.currentUser!!.uid))
+            fetchUserById(auth.currentUser!!.uid, lifecycleOwner).observe(lifecycleOwner) {
+                if (it != null) {
+                    authenticatedUser!!.value = it
+                }
+            }
+            return authenticatedUser!!
+        }
+        return MutableLiveData(null)
+    }
+
+    /**
+     * Sign out the currently authenticated user.
+     */
+    fun signOut() {
+        auth.signOut()
     }
 
     /**
@@ -49,6 +110,7 @@ class FirebaseAccessObject(
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(context.resources.getString(R.string.firebase_server_client_id))
             .requestEmail()
+            .requestProfile()
             .requestId()
             .build()
 
@@ -67,8 +129,36 @@ class FirebaseAccessObject(
                     val account =
                         GoogleSignIn.getSignedInAccountFromIntent(activityResult.data).result
                     val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-                    Tasks.await(auth.signInWithCredential(credential)).user?.also {
-                        return firebaseToLocalUser(it)
+                    auth.signInWithCredential(credential).await().user?.also { firebaseUser ->
+                        val user = User(
+                            id = firebaseUser.uid,
+                            displayName = account.displayName ?: firebaseUser.uid,
+                            givenName = account.givenName,
+                            familyName = account.familyName,
+                            email = account.email,
+                            profilePicture = account.photoUrl?.toString()
+                        )
+                        database.child(USER_PATH).child(user.id).setValue(
+                            mapOf(
+                                USER_DISPLAY_NAME_KEY to user.displayName,
+                                USER_NAME_KEY to user.displayName,
+                                USER_GIVEN_NAME_KEY to user.givenName,
+                                USER_FAMILY_NAME_KEY to user.familyName,
+                                USER_EMAIL_KEY to user.email,
+                                USER_PROFILE_PICTURE_KEY to user.profilePicture,
+                            )
+                        ).addOnSuccessListener {
+                            Log.d(
+                                TAG,
+                                "Added user"
+                            )
+                        }.addOnFailureListener {
+                            Log.e(
+                                TAG,
+                                it.message.toString()
+                            )
+                        }
+                        return user
                     }
                 } catch (e: ApiException) {
                 }
@@ -78,11 +168,179 @@ class FirebaseAccessObject(
         return null
     }
 
-    private fun firebaseToLocalUser(user: FirebaseUser): User {
-        return User(id = user.uid, displayName = user.displayName ?: user.uid)
+    /**
+     * Fetch a user using it's id.
+     *
+     * @param id the id of the user to fetch.
+     * @param owner the [LifecycleOwner]. As long as the owner is alive, the user will be updated. If null is passed, the user will be updated once.
+     * @return A [LiveData] of the user.
+     */
+    fun fetchUserById(id: String, owner: LifecycleOwner?): LiveData<User?> {
+        val user = MutableLiveData<User>(null)
+        val ref = database.child(USER_PATH).child(id)
+        val listener = ref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    user.value =
+                        User(
+                            id = id,
+                            displayName = snapshot.child(USER_DISPLAY_NAME_KEY).value as String?
+                                ?: id,
+                            givenName = snapshot.child(USER_GIVEN_NAME_KEY).value as String?,
+                            familyName = snapshot.child(USER_FAMILY_NAME_KEY).value as String?,
+                            email = snapshot.child(USER_EMAIL_KEY).value as String?,
+                            profilePicture = snapshot.child(USER_PROFILE_PICTURE_KEY).value as String?,
+                        )
+                }
+                if (owner == null) {
+                    ref.removeEventListener(this)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e(TAG, error.message)
+                if (owner == null) {
+                    ref.removeEventListener(this)
+                }
+            }
+        })
+
+        owner?.lifecycle?.addObserver(LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_DESTROY -> ref.removeEventListener(listener)
+                else -> {}
+            }
+        })
+
+        return user
     }
 
-    fun signOut() {
-        auth.signOut()
+    /**
+     * Adds a friend to the authenticated user.
+     * @param id the id of the friend.
+     */
+    fun addFriend(id: String) {
+        authenticatedUser?.value?.also {
+            database.child(USER_FRIENDS_PATH).child(it.id).child(id).setValue(true)
+        }
+    }
+
+    fun writeNewUser(userId: String, name: String, email: String) {
+        val user = User(name, email)
+
+        database.child("users").child(userId).setValue(user)
+    }
+
+    fun readAllMessages(userId: String, name: String, email: String) {
+        database.child("messages").child(userId).get().addOnSuccessListener {
+            Log.i("firebase", "Got value ${it.value}")
+        }.addOnFailureListener {
+            Log.i("firebase", "Error getting data", it)
+        }
+    }
+
+
+    /**
+     * Gets the friends of a users.
+     */
+    suspend fun getFriends(): List<User> {
+        authenticatedUser?.value?.also { user ->
+            val friendsIds = database.child(USER_FRIENDS_PATH).child(user.id).get()
+                .await().children.mapNotNull { it.key }
+
+            return friendsIds.mapNotNull { id -> fetchUserById(id, null).await() }
+        }
+        return listOf()
+    }
+
+    /**
+     * Gets all the posts of a users. This function does the download the post images. You have to call [downloadPost] afterwards for each of them.
+     * @param userId the id of the user whose posts are downloaded.
+     */
+    suspend fun getPostsByUserID(userId: String): List<Post> {
+        return database.child(POSTS_PATH).child(userId).get()
+            .await().children.mapNotNull { snapshot ->
+                if (snapshot.exists() && snapshot.key != null) {
+                    val userDisplayName =
+                        snapshot.child(POST_USER_DISPLAY_NAME_KEY).value as String?
+                    val userProfilePicture =
+                        snapshot.child(POST_USER_PROFILE_PICTURE_KEY).value as String?
+                    val timestamp = snapshot.child(POST_TIMESTAMP_KEY).value as Long?
+                    val likes = (snapshot.child(POST_LIKES_KEY).value as Long?)?.toInt()
+                    if (userDisplayName != null || userProfilePicture != null || timestamp != null || likes != null) {
+                        return@mapNotNull Post(
+                            snapshot.key!!,
+                            userDisplayName!!,
+                            userProfilePicture!!,
+                            timestamp!!,
+                            null,
+                            likes!!
+                        )
+                    }
+                }
+                return@mapNotNull null
+            }
+    }
+
+    /**
+     * Posts a new picture.
+     *
+     * @param url the url of the picture (local file).
+     */
+    suspend fun post(url: String) {
+        val uri = Uri.parse(url)
+        authenticatedUser?.value?.let { user ->
+            val ref = database.child(POSTS_PATH).child(user.id).push()
+            ref.key?.also { key ->
+                val orientation =
+                    context.contentResolver.openFileDescriptor(uri, "r")?.fileDescriptor?.let {
+                        ExifInterface(
+                            it
+                        ).getAttributeInt(
+                            ExifInterface.TAG_ORIENTATION,
+                            ExifInterface.ORIENTATION_UNDEFINED
+                        )
+                    } ?: ExifInterface.ORIENTATION_UNDEFINED
+                val bitmap = BitmapFactory.decodeStream(
+                    BufferedInputStream(
+                        context.contentResolver.openInputStream(uri)
+                    )
+                ).rotate(orientation) ?: return
+                val baos = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos)
+                val data = baos.toByteArray()
+
+                try {
+                    storage.child(STORAGE_POST_PATH).child(key).putBytes(data).await()
+                    ref.setValue(
+                        mapOf(
+                            POST_USER_DISPLAY_NAME_KEY to user.displayName,
+                            POST_USER_PROFILE_PICTURE_KEY to user.profilePicture,
+                            POST_TIMESTAMP_KEY to Calendar.getInstance().timeInMillis,
+                            POST_LIKES_KEY to 0
+                        )
+                    )
+                } catch (e: Exception) {
+                    Log.e(TAG, e.message.toString())
+                }
+            }
+        }
+    }
+
+    /**
+     * Downloads the content of a post. This must be used [Post.postURL] is null.
+     * The function [getPostsByUserID] only returns the metadata of posts but does not download each images.
+     * @param post the post to download.
+     * @return The same post with a non-null [Post.postURL].
+     */
+    suspend fun downloadPost(post: Post): Post {
+        return try {
+            val localFile = File.createTempFile("images", "jpeg")
+            storage.child(POSTS_PATH).child(post.id).getFile(localFile).await()
+            post.copy(postURL = localFile.toURI().toString())
+        } catch (e: Exception) {
+            Log.e(TAG, e.message.toString())
+            post
+        }
     }
 }
