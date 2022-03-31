@@ -4,6 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import ch.proximeety.proximeety.presentation.views.conversationList.ConversationListView
+import ch.proximeety.proximeety.presentation.views.friends.FriendsView
 import ch.proximeety.proximeety.presentation.views.home.HomeView
 import ch.proximeety.proximeety.presentation.views.mapView.MapView
 import ch.proximeety.proximeety.presentation.views.messagesScreen.MessagesView
@@ -55,6 +56,11 @@ fun NavGraphBuilder.mainNavigationGraph() {
             route = MainNavigationCommands.upload.route
         ) {
             UploadView()
+        }
+        composable(
+            route = MainNavigationCommands.friends.route
+        ) {
+            FriendsView()
         }
     }
 }
