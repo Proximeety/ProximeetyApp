@@ -22,6 +22,7 @@ class FriendsViewModel @Inject constructor(
     private val userInteractions: UserInteractions
 ) : ViewModel() {
 
+    private var _allFriends = listOf<User>()
     private val _friends = mutableStateOf<List<User>>(listOf())
     var friends: State<List<User>> = _friends
 
@@ -39,17 +40,20 @@ class FriendsViewModel @Inject constructor(
 
     private fun showAllFriends(){
         viewModelScope.launch(Dispatchers.IO) {
-            _friends.value = userInteractions.getFriends()
-            _friends.value = _friends.value.sortedWith(compareBy { it.givenName })
+            val list = userInteractions.getFriends().sortedWith(compareBy { it.givenName })
+            viewModelScope.launch(Dispatchers.Main) {
+                _friends.value = list
+                _allFriends = _friends.value
+            }
         }
     }
 
     fun updateSearch(newQuery: String) {
         if (newQuery == "") {
-            showAllFriends()
+            _friends.value = _allFriends
         }
         else {
-            _friends.value = _friends.value.filter { (it.displayName).lowercase().startsWith(newQuery.lowercase()) }
+            _friends.value = _allFriends.filter { (it.displayName).lowercase().startsWith(newQuery.lowercase()) }
         }
     }
 }

@@ -1,7 +1,9 @@
 package ch.proximeety.proximeety.presentation.views.friends
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.proximeety.proximeety.presentation.views.friends.components.SearchBar
@@ -16,7 +18,7 @@ fun FriendsView(viewModel: FriendsViewModel = hiltViewModel()) {
     val friends = viewModel.friends.value
 
     SafeArea {
-        Column {
+        Column (modifier = Modifier.fillMaxSize()) {
             SearchBar()
             UserList(friends, viewModel)
         }
