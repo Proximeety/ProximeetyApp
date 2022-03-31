@@ -19,7 +19,7 @@ class ConversationListViewModel @Inject constructor(
     private val _state = mutableStateOf(msg2)
     val state: State<MessagesModel> = _state
 
-    val messages = MutableLiveData(List(150){msg2})
+    val messages = MutableLiveData(List(150) { msg2 })
 
     fun onEvent(event: ConversationListEvent) {
         when (event) {

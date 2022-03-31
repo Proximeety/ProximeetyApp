@@ -76,7 +76,7 @@ abstract class SyncActivity : ComponentActivity(),
      */
     suspend fun waitForPermissionResult(
         permissions: Array<String>
-    ): PermissionResult? {
+    ): PermissionResult {
         val permissionResult = CompletableDeferred<PermissionResult>()
 
         val requestCode = permissionsRequestCode

@@ -13,25 +13,30 @@ object MainNavigationCommands {
         override val arguments = emptyList<NamedNavArgument>()
         override val route = "main_graph"
     }
+
     val home = object : NavigationCommand {
         override val arguments = emptyList<NamedNavArgument>()
         override val route = "home_view"
     }
+
     val conversationList = object : NavigationCommand {
         override val arguments = emptyList<NamedNavArgument>()
         override val route = "conversation_list_view"
     }
+
     val nearbyUsers = object : NavigationCommand {
         override val arguments = emptyList<NamedNavArgument>()
         override val route = "nearby_users_view"
     }
+
     val map = object : NavigationCommand {
         override val arguments = emptyList<NamedNavArgument>()
         override val route = "map_view"
     }
 
     val profile = object : NavigationCommand {
-        override val arguments : List<NamedNavArgument> = listOf(navArgument("userId") {type = NavType.StringType})
+        override val arguments: List<NamedNavArgument> =
+            listOf(navArgument("userId") { type = NavType.StringType })
         override val route = "profile/{userId}"
     }
 
@@ -40,9 +45,13 @@ object MainNavigationCommands {
         override val route = "messages_view"
     }
 
-    fun profileWithArgs(userId : String) = object : NavigationCommand {
+    fun profileWithArgs(userId: String) = object : NavigationCommand {
         override val arguments: List<NamedNavArgument> = profile.arguments
         override val route: String = "profile/$userId"
+    }
 
+    val upload = object : NavigationCommand {
+        override val arguments = emptyList<NamedNavArgument>()
+        override val route = "upload_view"
     }
 }

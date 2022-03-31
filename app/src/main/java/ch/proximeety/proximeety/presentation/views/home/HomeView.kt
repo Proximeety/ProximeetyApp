@@ -1,20 +1,25 @@
 package ch.proximeety.proximeety.presentation.views.home
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.proximeety.proximeety.presentation.views.home.components.HomeTopBar
-import ch.proximeety.proximeety.presentation.views.home.components.HomeBottomBar
+import ch.proximeety.proximeety.presentation.views.home.components.Post
+import ch.proximeety.proximeety.presentation.views.home.components.Stories
+import ch.proximeety.proximeety.util.SafeArea
 import ch.proximeety.proximeety.util.extensions.getActivity
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 /**
  * The Home View.
@@ -23,37 +28,49 @@ import ch.proximeety.proximeety.util.extensions.getActivity
 fun HomeView(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-
-    val user = viewModel.user.observeAsState()
-
     val context = LocalContext.current
+    val friends = viewModel.friends.value
+    val posts = viewModel.posts.value
 
     BackHandler {
         context.getActivity()?.finish()
     }
-    Scaffold(
-        topBar = {
-            HomeTopBar(viewModel)
-        },
-        bottomBar = {
-            HomeBottomBar(viewModel)
-        }) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(),
+    SafeArea {
+        Scaffold(
+            topBar = {
+                HomeTopBar(viewModel)
+            }
         ) {
-            Text(
-                text = "Displaying ${user.value?.displayName}'s feed",
-                modifier = Modifier.padding(all = 5.dp),
-                style = MaterialTheme.typography.h3,
-                textAlign = TextAlign.Center
-            )
-            Button(onClick = {viewModel.onEvent(HomeEvent.SignOut)}) {
-                Text("Sign out")
+            SwipeRefresh(
+                state = rememberSwipeRefreshState(isRefreshing = viewModel.isRefreshing.value),
+                onRefresh = { viewModel.onEvent(HomeEvent.Refresh) }) {
+                LazyColumn(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(),
+                ) {
+                    if (friends.isNotEmpty()) {
+                        item {
+                            Stories(
+                                users = friends,
+                                onStoryClick = { id -> viewModel.onEvent(HomeEvent.OnStoryClick(id)) },
+                                loading = viewModel.isRefreshing.value
+                            )
+                        }
+                    }
+                    items(posts) {
+                        SideEffect {
+                            if (it.postURL == null) {
+                                viewModel.onEvent(HomeEvent.DownloadPost(it.id))
+                            }
+                        }
+                        Post(it)
+                    }
+                }
             }
         }
     }
 }
+

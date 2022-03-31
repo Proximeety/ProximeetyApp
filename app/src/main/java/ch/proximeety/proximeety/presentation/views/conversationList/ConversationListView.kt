@@ -6,10 +6,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
@@ -22,12 +20,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.proximeety.proximeety.presentation.theme.spacing
+import ch.proximeety.proximeety.util.SafeArea
 
 
 @Composable
@@ -37,43 +34,45 @@ fun ConversationListView(
 
     val messages = viewModel.messages.observeAsState(listOf())
 
-    Scaffold(
-        topBar = { MessagesListTopBar() }
-    ) {
-//        messagesList(list = list, itemClick = itemClick) // TODO list of message + message onClick
-
-        LazyColumn {
-            items(messages.value) {
-                Row(
-                    modifier = Modifier
-                        .padding(MaterialTheme.spacing.extraSmall)
-                        .fillMaxWidth()
-                        .clip(MaterialTheme.shapes.medium)
-                        .clickable { viewModel.onEvent(ConversationListEvent.ConversationClick(it))},
-                    verticalAlignment = Alignment.CenterVertically,
-
-
-                ) {
-                    Box(
+    SafeArea {
+        Scaffold(
+            topBar = { MessagesListTopBar() }
+        ) {
+            LazyColumn {
+                items(messages.value) {
+                    Row(
                         modifier = Modifier
-                            .padding(MaterialTheme.spacing.medium)
-                            .clip(CircleShape)
-                            .width(40.dp)
-                            .aspectRatio(1f)
-                            .background(Color.Gray)
+                            .padding(MaterialTheme.spacing.extraSmall)
+                            .fillMaxWidth()
+                            .clip(MaterialTheme.shapes.medium)
+                            .clickable {
+                                viewModel.onEvent(
+                                    ConversationListEvent.ConversationClick(
+                                        it
+                                    )
+                                )
+                            },
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
+                        Box(
+                            modifier = Modifier
+                                .padding(MaterialTheme.spacing.medium)
+                                .clip(CircleShape)
+                                .width(40.dp)
+                                .aspectRatio(1f)
+                                .background(Color.Gray)
+                        ) {
 
-                    }
-                    Column {
-                        Text(it.sender)
-                        Text(it.message)
+                        }
+                        Column {
+                            Text(it.sender)
+                            Text(it.message)
+                        }
                     }
                 }
             }
         }
-
     }
-
 }
 
 @Composable

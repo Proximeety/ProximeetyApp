@@ -9,6 +9,7 @@ import ch.proximeety.proximeety.presentation.views.mapView.MapView
 import ch.proximeety.proximeety.presentation.views.messagesScreen.MessagesView
 import ch.proximeety.proximeety.presentation.views.nearbyUsers.NearbyUsersView
 import ch.proximeety.proximeety.presentation.views.profile.ProfileView
+import ch.proximeety.proximeety.presentation.views.upload.UploadView
 
 /**
  * Main navigation. Nested in Root Navigation.
@@ -48,6 +49,12 @@ fun NavGraphBuilder.mainNavigationGraph() {
             route = MainNavigationCommands.messages.route
         ) {
             MessagesView()
+        }
+        
+        composable(
+            route = MainNavigationCommands.upload.route
+        ) {
+            UploadView()
         }
     }
 }

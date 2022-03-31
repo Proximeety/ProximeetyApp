@@ -6,10 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
-import ch.proximeety.proximeety.presentation.navigation.graphs.MainNavigationCommands
-import ch.proximeety.proximeety.presentation.views.conversationList.ConversationListEvent
-import ch.proximeety.proximeety.presentation.views.conversationList.MessagesModel
-import ch.proximeety.proximeety.presentation.views.conversationList.msg2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
