@@ -7,14 +7,19 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ch.proximeety.proximeety.presentation.views.friends.FriendsModel
+import ch.proximeety.proximeety.core.entities.User
+import ch.proximeety.proximeety.presentation.views.friends.FriendsEvent
+import ch.proximeety.proximeety.presentation.views.friends.FriendsViewModel
 
 @Composable
-fun UserList(model: FriendsModel) {
+fun UserList(users: List<User>, viewModel: FriendsViewModel) {
 
     LazyColumn {
-        items(model.users) { user ->
-            UserCard(user = user)
+        items(users) {
+            UserCard(
+                user = it,
+                onUserClick = { id -> viewModel.onEvent(FriendsEvent.OnUserClick(id)) }
+            )
             Spacer(modifier = Modifier.height(4.dp))
         }
     }
