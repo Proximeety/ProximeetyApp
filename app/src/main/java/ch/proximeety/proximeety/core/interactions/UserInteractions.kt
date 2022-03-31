@@ -15,5 +15,6 @@ data class UserInteractions(
     val post: Post,
     val setActivity: SetActivity,
     val setAuthenticatedUserVisible: SetAuthenticatedUserVisible,
-    val signOut: SignOut
+    val signOut: SignOut,
+    val getPostUserId: GetPostUserId
 )
