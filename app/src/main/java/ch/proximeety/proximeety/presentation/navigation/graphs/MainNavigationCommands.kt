@@ -40,6 +40,11 @@ object MainNavigationCommands {
         override val route = "profile/{userId}"
     }
 
+    val messages = object: NavigationCommand {
+        override val arguments = emptyList<NamedNavArgument>()
+        override val route = "messages_view"
+    }
+
     fun profileWithArgs(userId: String) = object : NavigationCommand {
         override val arguments: List<NamedNavArgument> = profile.arguments
         override val route: String = "profile/$userId"
@@ -48,6 +53,10 @@ object MainNavigationCommands {
     val upload = object : NavigationCommand {
         override val arguments = emptyList<NamedNavArgument>()
         override val route = "upload_view"
+    }
+    val settings = object : NavigationCommand {
+        override val arguments = emptyList<NamedNavArgument>()
+        override val route = "settings_view"
     }
 
     val friends = object : NavigationCommand {
