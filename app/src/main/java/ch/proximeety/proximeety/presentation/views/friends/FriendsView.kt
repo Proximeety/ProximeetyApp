@@ -15,17 +15,12 @@ import ch.proximeety.proximeety.util.SafeArea
 @Composable
 fun FriendsView(viewModel: FriendsViewModel = hiltViewModel()) {
     val context = LocalContext.current
+    val friends = viewModel.friends.value
 
     SafeArea {
         Column {
             SearchBar()
-            UserList(viewModel.state.value)
+            UserList(friends, viewModel)
         }
     }
-}
-
-@Preview
-@Composable
-fun PreviewUserCard() {
-    UserList(FriendsModel())
 }
