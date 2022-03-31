@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ch.proximeety.proximeety.R
 import ch.proximeety.proximeety.core.entities.User
+import coil.compose.rememberImagePainter
 
 @Composable
 fun UserCard(user: User, onUserClick: (String) -> Unit) {
@@ -27,9 +28,9 @@ fun UserCard(user: User, onUserClick: (String) -> Unit) {
             shape = MaterialTheme.shapes.medium,
             elevation = 3.dp
         ) {
-            Row(modifier = Modifier.padding(all = 10.dp)) {
+            Row(modifier = Modifier.padding(all = 20.dp)) {
                 Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_background),
+                    painter = rememberImagePainter(user.profilePicture),
                     contentDescription = "User profile picture",
                     modifier = Modifier
                         .size(50.dp)
