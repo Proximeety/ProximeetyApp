@@ -49,4 +49,9 @@ object MainNavigationCommands {
         override val arguments = emptyList<NamedNavArgument>()
         override val route = "upload_view"
     }
+
+    val friends = object : NavigationCommand {
+        override val arguments = emptyList<NamedNavArgument>()
+        override val route = "friends_view"
+    }
 }

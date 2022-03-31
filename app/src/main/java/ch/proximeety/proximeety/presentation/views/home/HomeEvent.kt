@@ -12,6 +12,7 @@ sealed class HomeEvent {
     object NavigateToNearbyUsersViewModel : HomeEvent()
     object NavigateToProfileView : HomeEvent()
     object NavigateToUploadView : HomeEvent()
+    object NavigateToFriendsView : HomeEvent()
     object Refresh : HomeEvent()
     object SignOut : HomeEvent()
 }
