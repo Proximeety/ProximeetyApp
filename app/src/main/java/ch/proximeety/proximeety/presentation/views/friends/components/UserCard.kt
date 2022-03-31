@@ -2,6 +2,7 @@ package ch.proximeety.proximeety.presentation.views.friends.components
 
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
@@ -17,10 +18,12 @@ import ch.proximeety.proximeety.R
 import ch.proximeety.proximeety.core.entities.User
 
 @Composable
-fun UserCard(user: User) {
+fun UserCard(user: User, onUserClick: (String) -> Unit) {
     Box(Modifier.fillMaxSize()) {
         Surface(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable{onUserClick(user.id)},
             shape = MaterialTheme.shapes.medium,
             elevation = 3.dp
         ) {

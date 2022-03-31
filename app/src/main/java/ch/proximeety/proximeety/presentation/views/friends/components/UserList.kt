@@ -18,7 +18,8 @@ fun UserList(users: List<User>, viewModel: FriendsViewModel) {
     LazyColumn {
         items(users) {
             UserCard(
-                user = it
+                user = it,
+                onUserClick = { id -> viewModel.onEvent(FriendsEvent.OnUserClick(id)) }
             )
             Spacer(modifier = Modifier.height(4.dp))
         }
