@@ -11,6 +11,10 @@ data class Post(
     /**
      *  The display name of the user.
      */
+    val posterId: String,
+    /**
+     *  The display name of the user.
+     */
     val userDisplayName: String,
     /**
      * The profile picture URL of the user.
@@ -28,4 +32,8 @@ data class Post(
      * The number of likes.
      */
     val likes: Int,
+    /**
+     * True if the post is liked by the authenticated user.
+     */
+    val isLiked: Boolean = false
 )

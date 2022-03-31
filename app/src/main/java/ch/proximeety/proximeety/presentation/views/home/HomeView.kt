@@ -63,10 +63,15 @@ fun HomeView(
                     items(posts) {
                         SideEffect {
                             if (it.postURL == null) {
-                                viewModel.onEvent(HomeEvent.DownloadPost(it.id))
+                                viewModel.onEvent(HomeEvent.DownloadPost(it))
                             }
                         }
-                        Post(it)
+                        Post(
+                            post = it,
+                            onLike = {
+                                viewModel.onEvent(HomeEvent.TogglePostLike(it))
+                            }
+                        )
                     }
                 }
             }

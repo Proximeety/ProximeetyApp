@@ -89,14 +89,14 @@ interface UserRepository {
     /**
      * Toggle likes on a User's  Post
      *
-     * @param postId the post's id
+     * @param post the post
      */
-    suspend fun togglePostLike(postId: String)
+    suspend fun togglePostLike(post: Post)
 
     /**
      * is a Post liked
      *
-     * @param postId the post's id
+     * @param post the post
      */
-    suspend fun isPostLiked(postId: String) : Boolean
+    suspend fun isPostLiked(post: Post) : Boolean
 }

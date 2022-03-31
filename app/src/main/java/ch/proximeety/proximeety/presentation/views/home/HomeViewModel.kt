@@ -74,9 +74,11 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.DownloadPost -> {
                 if (downloadJob == null) {
                     downloadJob = viewModelScope.launch(Dispatchers.IO) {
-                        val index = _posts.value.indexOfFirst { it.id == event.id }
+                        val index = _posts.value.indexOfFirst { it.id == event.post.id }
                         val newList = _posts.value.toMutableList()
-                        newList[index] = userInteractions.downloadPost(newList[index])
+                        newList[index] = userInteractions.downloadPost(newList[index]).copy(
+                            isLiked = userInteractions.isPostLiked(event.post)
+                        )
                         _posts.value = newList.toList()
                         downloadJob = null
                     }
@@ -84,6 +86,17 @@ class HomeViewModel @Inject constructor(
             }
             is HomeEvent.OnStoryClick -> {
                 navigationManager.navigate(MainNavigationCommands.profileWithArgs(event.id))
+            }
+            is HomeEvent.TogglePostLike -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    userInteractions.togglePostLike(event.post)
+                }
+                val index = _posts.value.indexOfFirst { it.id == event.post.id }
+                val newList = _posts.value.toMutableList()
+                newList[index] = newList[index].copy(
+                    isLiked = !newList[index].isLiked
+                )
+                _posts.value = newList.toList()
             }
         }
     }
