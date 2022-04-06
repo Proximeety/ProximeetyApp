@@ -269,14 +269,16 @@ class FirebaseAccessObject(
                     val userProfilePicture =
                         snapshot.child(POST_USER_PROFILE_PICTURE_KEY).value as String?
                     val timestamp = snapshot.child(POST_TIMESTAMP_KEY).value as Long?
-                    val likes = snapshot.child(POST_LIKES_KEY).children.count()
+                    val likes =
+                        snapshot.child(POST_LIKES_KEY).children.mapNotNull { it.value as? Boolean }
+                            .filter { it }.count()
                     if (posterId != null && userDisplayName != null && userProfilePicture != null && timestamp != null) {
                         return@mapNotNull Post(
                             snapshot.key!!,
-                            posterId!!,
-                            userDisplayName!!,
-                            userProfilePicture!!,
-                            timestamp!!,
+                            posterId,
+                            userDisplayName,
+                            userProfilePicture,
+                            timestamp,
                             null,
                             likes
                         )
@@ -350,7 +352,9 @@ class FirebaseAccessObject(
 
     suspend fun isPostLiked(post: Post): Boolean {
         authenticatedUser?.value?.also { user ->
-            val ref = database.child(POSTS_PATH).child(post.posterId).child(post.id).child(POST_LIKES_KEY).child(user.id)
+            val ref =
+                database.child(POSTS_PATH).child(post.posterId).child(post.id).child(POST_LIKES_KEY)
+                    .child(user.id)
             (ref.get().await().value as? Boolean)?.also {
                 return it
             }
@@ -358,11 +362,13 @@ class FirebaseAccessObject(
         return false
     }
 
-    suspend fun togglePostLike(post : Post) {
+    suspend fun togglePostLike(post: Post) {
         authenticatedUser?.value?.also { user ->
-            val ref = database.child(POSTS_PATH).child(post.posterId).child(post.id).child(POST_LIKES_KEY).child(user.id)
+            val ref =
+                database.child(POSTS_PATH).child(post.posterId).child(post.id).child(POST_LIKES_KEY)
+                    .child(user.id)
             (ref.get().await().value as? Boolean).also {
-                ref.setValue(if(it == null) true else !it)
+                ref.setValue(if (it == null) true else !it)
             }
         }
     }

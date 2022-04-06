@@ -97,6 +97,7 @@ class HomeViewModel @Inject constructor(
                 val index = _posts.value.indexOfFirst { it.id == event.post.id }
                 val newList = _posts.value.toMutableList()
                 newList[index] = newList[index].copy(
+                    likes = newList[index].likes + if (newList[index].isLiked) -1 else 1,
                     isLiked = !newList[index].isLiked
                 )
                 _posts.value = newList.toList()
