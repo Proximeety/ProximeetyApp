@@ -10,7 +10,7 @@ import ch.proximeety.proximeety.core.repositories.UserRepository
 class GetPostUserId(
     private val repository: UserRepository
 ) {
-    suspend operator fun invoke(id : String): List<Post> {
+    suspend operator fun invoke(id: String): List<Post> {
         return repository.getPostsByUserId(id).sortedBy { post -> post.timestamp }.reversed()
 
     }

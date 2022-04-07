@@ -2,6 +2,7 @@ package ch.proximeety.proximeety.core.repositories
 
 import androidx.lifecycle.LiveData
 import ch.proximeety.proximeety.core.entities.Post
+import ch.proximeety.proximeety.core.entities.Story
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.util.SyncActivity
 
@@ -78,6 +79,13 @@ interface UserRepository {
     suspend fun post(url: String)
 
     /**
+     * Post a story.
+     *
+     * @param url the local URL of the image.
+     */
+    suspend fun postStory(url: String)
+
+    /**
      * Download the image of the post and returns the post.
      *
      * @param post the post download.
@@ -98,5 +106,19 @@ interface UserRepository {
      *
      * @param post the post
      */
-    suspend fun isPostLiked(post: Post) : Boolean
+    suspend fun isPostLiked(post: Post): Boolean
+
+    /**
+     * Get the stories of an user.
+     */
+    suspend fun getStoriesByUserId(id: String): List<Story>
+
+    /**
+     * Download the image of the story and returns the story.
+     *
+     * @param story the story to download.
+     *
+     * @return The story post with its [Story.storyURL] not null.
+     */
+    suspend fun downloadStory(story: Story): Story
 }

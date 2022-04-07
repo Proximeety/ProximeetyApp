@@ -21,6 +21,13 @@ class NavigationManager {
     }
 
     /**
+     * Navigate to the previous screen.
+     */
+    fun goBack() {
+        this.command.value = NavigationCommand.GoBack
+    }
+
+    /**
      * Clear the last command.
      *
      * Must be called after the navigation is completed by the navigation controller.

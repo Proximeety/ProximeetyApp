@@ -31,5 +31,9 @@ data class User(
     /**
      * The bio of the user
      */
-    val bio: String? = null
+    val bio: String? = null,
+    /**
+     * True if the user has any stories.
+     */
+    val hasStories: Boolean = false
 )

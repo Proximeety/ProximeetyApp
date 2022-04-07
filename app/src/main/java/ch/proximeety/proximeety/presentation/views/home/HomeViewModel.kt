@@ -27,8 +27,8 @@ class HomeViewModel @Inject constructor(
 
     val user = userInteractions.getAuthenticatedUser()
 
-    private val _friends = mutableStateOf<List<User>>(listOf())
-    var friends: State<List<User>> = _friends
+    private val _friendsWithStories = mutableStateOf<List<User>>(listOf())
+    var friendsWithStories: State<List<User>> = _friendsWithStories
 
     private val _posts = mutableStateOf<List<Post>>(listOf())
     var posts: State<List<Post>> = _posts
@@ -88,7 +88,7 @@ class HomeViewModel @Inject constructor(
                 }
             }
             is HomeEvent.OnStoryClick -> {
-                navigationManager.navigate(MainNavigationCommands.profileWithArgs(event.id))
+                navigationManager.navigate(MainNavigationCommands.storiesWithArgs(event.id))
             }
             is HomeEvent.TogglePostLike -> {
                 viewModelScope.launch(Dispatchers.IO) {
@@ -97,6 +97,7 @@ class HomeViewModel @Inject constructor(
                 val index = _posts.value.indexOfFirst { it.id == event.post.id }
                 val newList = _posts.value.toMutableList()
                 newList[index] = newList[index].copy(
+                    likes = newList[index].likes + if (newList[index].isLiked) -1 else 1,
                     isLiked = !newList[index].isLiked
                 )
                 _posts.value = newList.toList()
@@ -108,7 +109,7 @@ class HomeViewModel @Inject constructor(
         refreshJob?.cancel()
         _isRefreshing.value = true
         refreshJob = viewModelScope.launch(Dispatchers.IO) {
-            _friends.value = userInteractions.getFriends()
+            _friendsWithStories.value = userInteractions.getFriends().filter { it.hasStories }
             _posts.value = userInteractions.getFeed()
             _isRefreshing.value = false
         }

@@ -30,7 +30,7 @@ fun SettingsView(
     val context = LocalContext.current
 
     SafeArea {
-        Scaffold() {
+        Scaffold {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()

@@ -18,7 +18,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import javax.inject.Inject
 
 @HiltAndroidTest
@@ -74,11 +74,11 @@ class UploadViewTest {
             .assertDoesNotExist()
     }
 
-/*    @Test
+    @Test
     fun postButtonShouldPost() {
         val randomUri ="random_uri_1234"
         viewModel.onEvent(UploadEvent.SetPostURI(Uri.parse(randomUri)))
-        composeTestRule.onNodeWithTag(context.getString(R.string.TT_UV_post_button))
+        composeTestRule.onNodeWithContentDescription("Upload post")
             .assertExists()
             .performClick()
         runBlocking {
@@ -86,18 +86,45 @@ class UploadViewTest {
             assertTrue(feed.filter { it.id == randomUri }.size == 1)
         }
     }
- */
 
     @Test
     fun cancelButtonShouldNotPost() {
         val randomUri ="random_uri_5678"
         viewModel.onEvent(UploadEvent.SetPostURI(Uri.parse(randomUri)))
-        composeTestRule.onNodeWithTag(context.getString(R.string.TT_UV_cancel_post_button))
+        composeTestRule.onNodeWithContentDescription("Cancel post")
             .assertExists()
             .performClick()
         runBlocking {
             val feed = userInteractions.getFeed()
-            assertTrue(feed.filter { it.id == randomUri }.isEmpty())
+            assertTrue(feed.none { it.id == randomUri })
+        }
+    }
+
+    @Test
+    fun postStoryButtonShouldPost() {
+        val randomUri ="random_uri_1234"
+        viewModel.onEvent(UploadEvent.SetPostURI(Uri.parse(randomUri)))
+        composeTestRule.onRoot().performTouchInput { swipeLeft() }
+        composeTestRule.onNodeWithContentDescription("Upload story")
+            .assertExists()
+            .performClick()
+        runBlocking {
+            val stories = userInteractions.getStoriesByUserId("testUserId")
+            assertTrue(stories.filter { it.id == randomUri }.size == 1)
+        }
+    }
+
+    @Test
+    fun cancelButtonShouldNotPostStory() {
+        val randomUri ="random_uri_5678"
+        viewModel.onEvent(UploadEvent.SetPostURI(Uri.parse(randomUri)))
+        composeTestRule.onRoot().performTouchInput { swipeLeft() }
+        composeTestRule.onNodeWithContentDescription("Cancel story")
+            .assertExists()
+            .performClick()
+        runBlocking {
+            val stories = userInteractions.getStoriesByUserId("testUserId")
+            assertTrue(stories.none { it.id == randomUri })
         }
     }
 }

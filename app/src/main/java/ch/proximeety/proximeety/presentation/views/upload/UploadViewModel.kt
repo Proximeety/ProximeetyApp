@@ -35,6 +35,14 @@ class UploadViewModel @Inject constructor(
                     navigationManager.navigate(MainNavigationCommands.default)
                 }
             }
+            UploadEvent.PostStory -> {
+                _imageUri.value.toString().also {
+                    viewModelScope.launch(Dispatchers.IO) {
+                        userInteractions.postStory(it)
+                    }
+                    navigationManager.navigate(MainNavigationCommands.default)
+                }
+            }
             is UploadEvent.SetPostURI -> {
                 _imageUri.value = event.uri
             }

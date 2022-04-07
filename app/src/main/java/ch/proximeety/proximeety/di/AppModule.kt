@@ -66,7 +66,10 @@ class AppModule {
             setActivity = SetActivity(repository),
             setAuthenticatedUserVisible = SetAuthenticatedUserVisible(repository),
             signOut = SignOut(repository),
-            getPostUserId = GetPostUserId(repository)
+            getPostUserId = GetPostUserId(repository),
+            postStory = PostStory(repository),
+            getStoriesByUserId = GetStoriesByUserId(repository),
+            downloadStory = DownloadStory(repository)
         )
     }
 }
