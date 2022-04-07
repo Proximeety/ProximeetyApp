@@ -176,6 +176,14 @@ tasks.withType(Test) {
     jacoco.excludes = ['jdk.internal.*']
 }
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        freeCompilerArgs += [
+                "-Xuse-experimental=com.google.accompanist.pager.ExperimentalPagerApi"
+        ]
+    }
+}
+
 task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
     group = "Reporting"
     description = "Generate Jacoco coverage reports"

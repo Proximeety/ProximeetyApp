@@ -23,17 +23,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.proximeety.proximeety.R
 import ch.proximeety.proximeety.util.SafeArea
-import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-
 /**
  * The Authentication Home View.
  */
-@ExperimentalPagerApi
 @Composable
 fun AuthenticationHomeView(
     viewModel: AuthenticationHomeViewModel = hiltViewModel()
@@ -50,7 +47,6 @@ fun AuthenticationHomeView(
     }
 }
 
-@ExperimentalPagerApi
 @Composable
 fun AuthenticationHomeScreen(viewModel: AuthenticationHomeViewModel) {
     val scaffoldState = rememberScaffoldState()
