@@ -54,11 +54,7 @@ fun AuthenticationHomeScreen(viewModel: AuthenticationHomeViewModel) {
     val authenticationHomeViewModel : AuthenticationHomeViewModel = viewModel
     val currentPage = authenticationHomeViewModel.currentPage.collectAsState()
 
-    val pagerState = rememberPagerState(
-        pageCount = screens.size,
-        initialPage = 0,
-        infiniteLoop = false
-    )
+    val pagerState = rememberPagerState(initialPage = 0)
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -84,7 +80,7 @@ fun AuthenticationHomeScreen(viewModel: AuthenticationHomeViewModel) {
                     verticalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    HorizontalPager(state = pagerState) { page ->
+                    HorizontalPager(count = screens.size,state = pagerState) { page ->
                         Column(
                             modifier = Modifier
                                 .padding(top = 65.dp)
