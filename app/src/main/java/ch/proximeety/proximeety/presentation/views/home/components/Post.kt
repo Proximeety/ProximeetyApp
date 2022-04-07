@@ -11,9 +11,10 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.rounded.*
+import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material.icons.rounded.Message
+import androidx.compose.material.icons.rounded.MoreHoriz
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,7 +32,7 @@ import com.google.accompanist.placeholder.material.placeholder
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-fun Post(post: Post, onLike : () -> Unit) {
+fun Post(post: Post, onLike: () -> Unit) {
     Column(
         modifier = Modifier
             .padding(MaterialTheme.spacing.medium)
@@ -98,7 +99,7 @@ fun Post(post: Post, onLike : () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = onLike ) {
+                IconButton(onClick = onLike) {
                     Icon(
                         imageVector = if (post.isLiked) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
                         contentDescription = "Like"

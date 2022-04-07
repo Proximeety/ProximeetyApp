@@ -6,12 +6,9 @@ import ch.proximeety.proximeety.di.TestAppModule
 import ch.proximeety.proximeety.presentation.MainActivity
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
 import ch.proximeety.proximeety.presentation.theme.ProximeetyTheme
-import ch.proximeety.proximeety.presentation.views.home.HomeView
-import ch.proximeety.proximeety.presentation.views.home.HomeViewModel
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

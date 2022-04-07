@@ -38,7 +38,7 @@ class FriendsViewModel @Inject constructor(
         }
     }
 
-    private fun showAllFriends(){
+    private fun showAllFriends() {
         viewModelScope.launch(Dispatchers.IO) {
             val list = userInteractions.getFriends().sortedWith(compareBy { it.givenName })
             viewModelScope.launch(Dispatchers.Main) {
@@ -51,9 +51,9 @@ class FriendsViewModel @Inject constructor(
     fun updateSearch(newQuery: String) {
         if (newQuery == "") {
             _friends.value = _allFriends
-        }
-        else {
-            _friends.value = _allFriends.filter { (it.displayName).lowercase().startsWith(newQuery.lowercase()) }
+        } else {
+            _friends.value =
+                _allFriends.filter { (it.displayName).lowercase().startsWith(newQuery.lowercase()) }
         }
     }
 }
