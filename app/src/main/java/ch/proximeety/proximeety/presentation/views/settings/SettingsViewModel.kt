@@ -2,9 +2,6 @@ package ch.proximeety.proximeety.presentation.views.settings
 
 import androidx.lifecycle.ViewModel
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
-import ch.proximeety.proximeety.presentation.navigation.graphs.MainNavigationCommands
-import ch.proximeety.proximeety.presentation.views.home.HomeEvent
-import ch.proximeety.proximeety.presentation.views.profile.ProfileEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -14,6 +11,4 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     val navigationManager: NavigationManager
-): ViewModel() {
-
-}
+) : ViewModel()

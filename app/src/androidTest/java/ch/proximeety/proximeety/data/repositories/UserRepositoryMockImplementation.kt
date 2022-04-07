@@ -3,6 +3,7 @@ package ch.proximeety.proximeety.data.repositories
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import ch.proximeety.proximeety.core.entities.Post
+import ch.proximeety.proximeety.core.entities.Story
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.core.repositories.UserRepository
 import ch.proximeety.proximeety.util.SyncActivity
@@ -68,6 +69,31 @@ class UserRepositoryMockImplementation : UserRepository {
                 timestamp = 1648537528605,
                 postURL = null,
                 likes = 0,
+                posterId = "testUserId"
+            )
+        )
+
+    private var stories =
+        mutableListOf<Story>(
+            Story(
+                id = "-MzKNArXlI8iMmVkVeXP",
+                userDisplayName = "Yanis De Busschere",
+                userProfilePicture = null,
+                timestamp = 1648552363683,
+                posterId = "testUserId",
+            ),
+            Story(
+                id = "-MzJUlMmW-UnG1MnuC7o",
+                userDisplayName = "Yanis De Busschere",
+                userProfilePicture = null,
+                timestamp = 1648537574380,
+                posterId = "testUserId"
+            ),
+            Story(
+                id = "-MzJUaBgPuPH8EHhw0yQ",
+                userDisplayName = "Yanis De Busschere",
+                userProfilePicture = null,
+                timestamp = 1648537528605,
                 posterId = "testUserId"
             )
         )
@@ -141,7 +167,23 @@ class UserRepositoryMockImplementation : UserRepository {
                 posterId = it
             )
         }?.let {
-            posts?.add(
+            posts.add(
+                it
+            )
+        }
+    }
+
+    override suspend fun postStory(url: String) {
+        user?.id?.let {
+            Story(
+                id = url,
+                userDisplayName = "",
+                userProfilePicture = null,
+                timestamp = 0,
+                posterId = it
+            )
+        }?.let {
+            stories.add(
                 it
             )
         }
@@ -156,5 +198,19 @@ class UserRepositoryMockImplementation : UserRepository {
 
     override suspend fun isPostLiked(post: Post): Boolean {
         return true
+    }
+
+    override suspend fun getStoriesByUserId(id: String): List<Story> {
+        return when (id) {
+            user?.id -> {
+                stories
+            }
+            else ->
+                listOf()
+        }
+    }
+
+    override suspend fun downloadStory(story: Story): Story {
+        return story.copy(storyURL = story.id)
     }
 }

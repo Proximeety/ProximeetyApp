@@ -17,5 +17,5 @@ sealed class HomeEvent {
     object NavigateToFriendsView : HomeEvent()
     object Refresh : HomeEvent()
     object SignOut : HomeEvent()
-    class TogglePostLike(val post : Post) : HomeEvent()
+    class TogglePostLike(val post: Post) : HomeEvent()
 }

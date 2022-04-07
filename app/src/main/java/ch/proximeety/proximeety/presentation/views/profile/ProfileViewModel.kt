@@ -9,7 +9,6 @@ import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
 import ch.proximeety.proximeety.presentation.navigation.graphs.AuthenticationNavigationCommands
 import ch.proximeety.proximeety.presentation.navigation.graphs.MainNavigationCommands
-import ch.proximeety.proximeety.presentation.views.home.HomeEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

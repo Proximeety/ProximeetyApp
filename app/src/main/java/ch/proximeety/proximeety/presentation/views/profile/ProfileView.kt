@@ -1,9 +1,8 @@
 package ch.proximeety.proximeety.presentation.views.profile
 
-import androidx.compose.foundation.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -12,6 +11,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -19,17 +19,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ch.proximeety.proximeety.R
+import androidx.hilt.navigation.compose.hiltViewModel
 import ch.proximeety.proximeety.core.entities.Post
 import ch.proximeety.proximeety.presentation.theme.spacing
-import ch.proximeety.proximeety.presentation.views.home.HomeEvent
-import ch.proximeety.proximeety.presentation.views.home.components.Post
-import ch.proximeety.proximeety.presentation.views.profile.components.ProfileTopBar
 import ch.proximeety.proximeety.util.SafeArea
 import coil.compose.rememberImagePainter
 
@@ -53,7 +49,7 @@ fun ProfileView(
             ) {
 
                 IconButton(
-                    onClick = {viewModel.onEvent(ProfileEvent.NavigateToSettings)})
+                    onClick = { viewModel.onEvent(ProfileEvent.NavigateToSettings) })
                 {
                     Icon(imageVector = Icons.Filled.Settings, contentDescription = "Settings")
                 }
@@ -72,7 +68,11 @@ fun ProfileView(
                 )
                 user.value?.bio?.let { UserBio(Modifier.padding(bottom = 20.dp), it) }
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     FriendStat(viewModel.friends.value.count())
                     PostsStat(viewModel.posts.value.count())
                 }
@@ -90,7 +90,7 @@ fun ProfileView(
                 Box(modifier = Modifier.padding(horizontal = MaterialTheme.spacing.small)) {
                     LazyVerticalGrid(
                         columns = GridCells.Adaptive(100.dp),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall) ,
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall),
                         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall)
                     ) {
                         items(viewModel.posts.value) {
@@ -140,7 +140,7 @@ fun UserBio(
 
 @Composable
 fun PostsStat(
-    count : Int
+    count: Int
 ) {
     val padding = 7.dp
     Column(
@@ -169,7 +169,7 @@ fun PostsStat(
 
 @Composable
 fun FriendStat(
-count : Int
+    count: Int
 ) {
     val padding = 7.dp
     Column(
