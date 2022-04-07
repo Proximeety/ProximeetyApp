@@ -36,18 +36,17 @@ class AuthenticationHomeViewTest {
 
     @Test
     fun sampleTest() {
-        // Screen 1
+        // Page 1
         composeTestRule.onNodeWithText("Welcome to Proximity!").assertExists()
         composeTestRule.onNodeWithText("Next").performClick()
 
-        // Screen 2
+        // Page 2
         composeTestRule.onNodeWithText("Back").assertExists()
         composeTestRule.onNodeWithText("Next").performClick()
 
-        // Screen 3
+        // Page 3
         composeTestRule.onNodeWithText("Back").assertExists()
         composeTestRule.onNodeWithText("Do you already have an account?").assertExists()
         composeTestRule.onAllNodesWithText("Login").onFirst().performClick()
-        //composeTestRule.onNodeWithText("Login").performClick()
     }
 }

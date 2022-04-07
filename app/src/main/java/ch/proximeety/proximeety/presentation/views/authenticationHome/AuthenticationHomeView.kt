@@ -71,12 +71,14 @@ fun AuthenticationHomeScreen(viewModel: AuthenticationHomeViewModel) {
             Box(
                 modifier = Modifier.fillMaxWidth()
             ) {
+                // Background
                 Image(
                     modifier = Modifier.fillMaxSize(),
                     painter = painterResource(R.drawable.background),
                     contentDescription = "background_image",
                     contentScale = ContentScale.FillBounds
                 )
+                // Page content
                 Column (
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceBetween,
@@ -89,6 +91,7 @@ fun AuthenticationHomeScreen(viewModel: AuthenticationHomeViewModel) {
                                 .fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+                            // First page: Bigger title
                             if (currentPage.value == 0) {
                                 Text(
                                     text = screens[page].title,
@@ -100,6 +103,7 @@ fun AuthenticationHomeScreen(viewModel: AuthenticationHomeViewModel) {
                                     lineHeight = 70.sp
                                 )
                             }
+                            // Rest of the pages: Smaller description
                             else {
                                 Text(
                                     text = screens[page].title,
@@ -109,20 +113,24 @@ fun AuthenticationHomeScreen(viewModel: AuthenticationHomeViewModel) {
                                     textAlign = TextAlign.Center,
                                     lineHeight = 40.sp
                                 )
-                            }
-                            if (currentPage.value == pagerState.pageCount - 1) {
-                                Button(
-                                    modifier = Modifier.padding(top = 70.dp),
-                                    onClick = { viewModel.onEvent(AuthenticationHomeEvent.AuthenticateWithGoogle) }) {
-                                    Text(text = "Login")
+
+                                // Last page: Login button
+                                if (currentPage.value == pagerState.pageCount - 1) {
+                                    Button(
+                                        modifier = Modifier.padding(top = 70.dp),
+                                        onClick = { viewModel.onEvent(AuthenticationHomeEvent.AuthenticateWithGoogle) }) {
+                                        Text(text = "Login")
+                                    }
                                 }
                             }
+
                         }
                     }
+                    // Page indicator point row
                     PagerIndicator(screens.size, pagerState.currentPage)
                 }
 
-
+                // Bottom bar with 'back' and 'next' buttons
                 Box(
                     modifier = Modifier.align(Alignment.BottomCenter)
                 ) {
@@ -140,77 +148,43 @@ fun AuthenticationHomeScreen(viewModel: AuthenticationHomeViewModel) {
                             }
                         }
                     ) {
-                        when (pagerState.currentPage) {
-                            0 -> {
-                                Text(
-                                    text = "Next",
-                                    color = Color.White,
-                                    modifier = Modifier
-                                        .clickable {
-                                            authenticationHomeViewModel.setCurrentPage(pagerState.currentPage + 1)
-                                            scope.launch {
-                                                pagerState.animateScrollToPage(
-                                                    page = currentPage.value
-                                                )
-                                            }
+                        // 'Back' button: Not in the first page
+                        if (pagerState.currentPage != 0) {
+                            Text(
+                                text = "Back",
+                                color = Color.White,
+                                modifier = Modifier
+                                    .clickable {
+                                        authenticationHomeViewModel.setCurrentPage(pagerState.currentPage - 1)
+                                        scope.launch {
+                                            pagerState.animateScrollToPage(
+                                                page = currentPage.value
+                                            )
                                         }
-                                        .padding(end = 30.dp),
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
-                            }
-                            pagerState.pageCount - 1 -> {
-                                Text(
-                                    text = "Back",
-                                    color = Color.White,
-                                    modifier = Modifier
-                                        .clickable {
-                                            authenticationHomeViewModel.setCurrentPage(pagerState.currentPage - 1)
-                                            scope.launch {
-                                                pagerState.animateScrollToPage(
-                                                    page = currentPage.value
-                                                )
-                                            }
+                                    }
+                                    .padding(start = 30.dp),
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                        // 'Next' button: not in the last page
+                        if (pagerState.currentPage != pagerState.pageCount - 1) {
+                            Text(
+                                text = "Next",
+                                color = Color.White,
+                                modifier = Modifier
+                                    .clickable {
+                                        authenticationHomeViewModel.setCurrentPage(pagerState.currentPage + 1)
+                                        scope.launch {
+                                            pagerState.animateScrollToPage(
+                                                page = currentPage.value
+                                            )
                                         }
-                                        .padding(start = 30.dp),
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
-                            }
-                            else -> {
-                                Text(
-                                    text = "Back",
-                                    color = Color.White,
-                                    modifier = Modifier
-                                        .clickable {
-                                            authenticationHomeViewModel.setCurrentPage(pagerState.currentPage - 1)
-                                            scope.launch {
-                                                pagerState.animateScrollToPage(
-                                                    page = currentPage.value
-                                                )
-                                            }
-                                        }
-                                        .padding(start = 30.dp),
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
-                                Text(
-                                    text = "Next",
-                                    color = Color.White,
-                                    modifier = Modifier
-                                        .clickable {
-                                            authenticationHomeViewModel.setCurrentPage(pagerState.currentPage + 1)
-                                            scope.launch {
-                                                pagerState.animateScrollToPage(
-                                                    page = currentPage.value
-                                                )
-                                            }
-                                        }
-                                        .padding(end = 30.dp),
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
-                            }
+                                    }
+                                    .padding(end = 30.dp),
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Medium
+                            )
                         }
                     }
                 }
