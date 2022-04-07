@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.proximeety.proximeety.R
-import ch.proximeety.proximeety.presentation.views.authenticationHome.components.screensItem
 import ch.proximeety.proximeety.util.SafeArea
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -60,7 +59,7 @@ fun AuthenticationHomeScreen(viewModel: AuthenticationHomeViewModel) {
     val currentPage = authenticationHomeViewModel.currentPage.collectAsState()
 
     val pagerState = rememberPagerState(
-        pageCount = screensItem.size,
+        pageCount = screens.size,
         initialPage = 0,
         infiniteLoop = false
     )
@@ -83,7 +82,9 @@ fun AuthenticationHomeScreen(viewModel: AuthenticationHomeViewModel) {
                     contentScale = ContentScale.FillBounds
                 )
                 Column (
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     HorizontalPager(state = pagerState) { page ->
                         Column(
@@ -92,14 +93,27 @@ fun AuthenticationHomeScreen(viewModel: AuthenticationHomeViewModel) {
                                 .fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(
-                                text = screensItem[page].title,
-                                modifier = Modifier.padding(top = 50.dp, start = 30.dp, end = 30.dp),
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp,
-                                textAlign = TextAlign.Center
-                            )
+                            if (currentPage.value == 0) {
+                                Text(
+                                    text = screens[page].title,
+                                    modifier = Modifier.padding(top = 100.dp, start = 30.dp, end = 30.dp),
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 40.sp,
+                                    textAlign = TextAlign.Center,
+                                    lineHeight = 70.sp
+                                )
+                            }
+                            else {
+                                Text(
+                                    text = screens[page].title,
+                                    modifier = Modifier.padding(top = 150.dp, start = 30.dp, end = 30.dp),
+                                    color = Color.White,
+                                    fontSize = 20.sp,
+                                    textAlign = TextAlign.Center,
+                                    lineHeight = 40.sp
+                                )
+                            }
                             if (currentPage.value == pagerState.pageCount - 1) {
                                 Button(
                                     modifier = Modifier.padding(top = 70.dp),
@@ -109,7 +123,7 @@ fun AuthenticationHomeScreen(viewModel: AuthenticationHomeViewModel) {
                             }
                         }
                     }
-                    PagerIndicator(screensItem.size, pagerState.currentPage)
+                    PagerIndicator(screens.size, pagerState.currentPage)
                 }
 
 
@@ -212,7 +226,7 @@ fun AuthenticationHomeScreen(viewModel: AuthenticationHomeViewModel) {
 @Composable
 fun PagerIndicator(size: Int, currentPage: Int) {
     Row(
-        modifier = Modifier.padding(top = 70.dp, bottom = 30.dp)
+        modifier = Modifier.padding(bottom = 40.dp)
     ) {
         repeat(size) {
             IndicateIcon(isSelected = it == currentPage)
