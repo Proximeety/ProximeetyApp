@@ -17,9 +17,11 @@ import ch.proximeety.proximeety.presentation.navigation.graphs.authenticationNav
 import ch.proximeety.proximeety.presentation.navigation.graphs.mainNavigationGraph
 import ch.proximeety.proximeety.presentation.theme.ProximeetyTheme
 import ch.proximeety.proximeety.util.SyncActivity
+import com.google.accompanist.pager.ExperimentalPagerApi
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@ExperimentalPagerApi
 @AndroidEntryPoint
 class MainActivity : SyncActivity() {
 

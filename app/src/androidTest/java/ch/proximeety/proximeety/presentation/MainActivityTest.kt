@@ -1,6 +1,8 @@
 package ch.proximeety.proximeety.presentation
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import ch.proximeety.proximeety.di.AppModule
@@ -22,8 +24,18 @@ class MainActivityTest {
 
     @Test
     fun sampleTest() {
-        composeTestRule.onNodeWithText("Login").assertExists()
-        composeTestRule.onNodeWithText("Login").performClick()
+        // Page 1
+        composeTestRule.onNodeWithText("Welcome to Proximity!").assertExists()
+        composeTestRule.onNodeWithText("Next").performClick()
+
+        // Page 2
+        composeTestRule.onNodeWithText("Back").assertExists()
+        composeTestRule.onNodeWithText("Next").performClick()
+
+        // Page 3
+        composeTestRule.onNodeWithText("Back").assertExists()
+        composeTestRule.onNodeWithText("Do you already have an account?").assertExists()
+        composeTestRule.onAllNodesWithText("Login").onFirst().performClick()
 //        composeTestRule.onNodeWithText("Displaying", substring = true).assertExists()
     }
 
