@@ -91,9 +91,10 @@ fun CommentTopBar(numComments: Int, onCloseClick: () -> Unit) {
                 text = "Comments",
                 style = MaterialTheme.typography.h5
             )
+            Spacer(modifier = Modifier.padding(horizontal = 4.dp))
             Text(
-                text = "30",
-                style = MaterialTheme.typography.h5
+                text = "$numComments",
+                style = MaterialTheme.typography.body1
             )
         }
 
