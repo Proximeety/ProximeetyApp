@@ -25,12 +25,16 @@ import ch.proximeety.proximeety.presentation.theme.spacing
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CommentSection(comments: List<Comment>, onCloseClick: () -> Unit) {
-    CommentTopBar(numComments = 10, onCloseClick)
-    CommentPostComponent()
+    Column(
+        modifier = Modifier.padding(30.dp)
+    ) {
+        CommentTopBar(numComments = 10, onCloseClick)
+        CommentPostComponent()
 
-    LazyColumn {
-        items(comments) {
-            CommentComponent(it)
+        LazyColumn {
+            items(comments) {
+                CommentComponent(it)
+            }
         }
     }
 }
