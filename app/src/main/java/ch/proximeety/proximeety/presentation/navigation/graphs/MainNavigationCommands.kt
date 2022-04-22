@@ -33,6 +33,10 @@ object MainNavigationCommands {
         override val arguments = emptyList<NamedNavArgument>()
         override val route = "map_view"
     }
+    val messages = object : NavigationCommand {
+        override val arguments = emptyList<NamedNavArgument>()
+        override val route = "messages_view"
+    }
 
     val profile = object : NavigationCommand {
         override val arguments: List<NamedNavArgument> =
@@ -48,5 +52,23 @@ object MainNavigationCommands {
     val upload = object : NavigationCommand {
         override val arguments = emptyList<NamedNavArgument>()
         override val route = "upload_view"
+    }
+    val settings = object : NavigationCommand {
+        override val arguments = emptyList<NamedNavArgument>()
+        override val route = "settings_view"
+    }
+    val friends = object : NavigationCommand {
+        override val arguments = emptyList<NamedNavArgument>()
+        override val route = "friends_view"
+    }
+    val stories = object : NavigationCommand {
+        override val arguments: List<NamedNavArgument> =
+            listOf(navArgument("userId") { type = NavType.StringType })
+        override val route = "stories/{userId}"
+    }
+
+    fun storiesWithArgs(userId: String) = object : NavigationCommand {
+        override val arguments: List<NamedNavArgument> = stories.arguments
+        override val route: String = "stories/$userId"
     }
 }

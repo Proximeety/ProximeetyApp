@@ -29,7 +29,7 @@ fun HomeView(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val friends = viewModel.friends.value
+    val friendsWithStories = viewModel.friendsWithStories.value
     val posts = viewModel.posts.value
 
     BackHandler {
@@ -51,10 +51,10 @@ fun HomeView(
                         .fillMaxWidth()
                         .fillMaxHeight(),
                 ) {
-                    if (friends.isNotEmpty()) {
+                    if (friendsWithStories.isNotEmpty()) {
                         item {
                             Stories(
-                                users = friends,
+                                users = friendsWithStories,
                                 onStoryClick = { id -> viewModel.onEvent(HomeEvent.OnStoryClick(id)) },
                                 loading = viewModel.isRefreshing.value
                             )
@@ -63,10 +63,15 @@ fun HomeView(
                     items(posts) {
                         SideEffect {
                             if (it.postURL == null) {
-                                viewModel.onEvent(HomeEvent.DownloadPost(it.id))
+                                viewModel.onEvent(HomeEvent.DownloadPost(it))
                             }
                         }
-                        Post(it)
+                        Post(
+                            post = it,
+                            onLike = {
+                                viewModel.onEvent(HomeEvent.TogglePostLike(it))
+                            }
+                        )
                     }
                 }
             }

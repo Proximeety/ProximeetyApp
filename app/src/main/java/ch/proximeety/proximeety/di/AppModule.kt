@@ -61,9 +61,15 @@ class AppModule {
             getFriends = GetFriends(repository),
             getNearbyUsers = GetNearbyUsers(repository),
             post = Post(repository),
+            togglePostLike = TogglePostLike(repository),
+            isPostLiked = IsPostLiked(repository),
             setActivity = SetActivity(repository),
             setAuthenticatedUserVisible = SetAuthenticatedUserVisible(repository),
-            signOut = SignOut(repository)
+            signOut = SignOut(repository),
+            getPostUserId = GetPostUserId(repository),
+            postStory = PostStory(repository),
+            getStoriesByUserId = GetStoriesByUserId(repository),
+            downloadStory = DownloadStory(repository)
         )
     }
 }

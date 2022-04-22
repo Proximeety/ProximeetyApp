@@ -24,7 +24,7 @@ class ConversationListViewModel @Inject constructor(
     fun onEvent(event: ConversationListEvent) {
         when (event) {
             is ConversationListEvent.ConversationClick -> {
-                navigationManager.navigate(MainNavigationCommands.home)
+                navigationManager.navigate(MainNavigationCommands.messages)
             }
         }
     }

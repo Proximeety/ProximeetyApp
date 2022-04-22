@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
@@ -38,7 +37,6 @@ fun SearchBar(
         mutableStateOf(hint != "")
     }
 
-    val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
     Row {

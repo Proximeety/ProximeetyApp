@@ -38,8 +38,6 @@ fun ConversationListView(
         Scaffold(
             topBar = { MessagesListTopBar() }
         ) {
-//        messagesList(list = list, itemClick = itemClick) // TODO list of message + message onClick
-
             LazyColumn {
                 items(messages.value) {
                     Row(

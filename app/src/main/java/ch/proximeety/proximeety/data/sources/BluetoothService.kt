@@ -171,7 +171,7 @@ class BluetoothService(
         }
 
         if (missingPermissions.isNotEmpty()) {
-            activity.waitForPermissionResult(missingPermissions.toTypedArray())?.also { result ->
+            activity.waitForPermissionResult(missingPermissions.toTypedArray()).also { result ->
                 delay(100)
                 return isReady(activity)
             }

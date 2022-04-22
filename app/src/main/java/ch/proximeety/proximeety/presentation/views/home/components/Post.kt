@@ -11,9 +11,10 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.Message
 import androidx.compose.material.icons.rounded.MoreHoriz
-import androidx.compose.material.icons.rounded.ThumbUp
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,7 +32,7 @@ import com.google.accompanist.placeholder.material.placeholder
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-fun Post(post: Post) {
+fun Post(post: Post, onLike: () -> Unit) {
     Column(
         modifier = Modifier
             .padding(MaterialTheme.spacing.medium)
@@ -96,9 +97,14 @@ fun Post(post: Post) {
         ) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable { }) {
-                Icon(imageVector = Icons.Rounded.ThumbUp, contentDescription = "Like")
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = onLike) {
+                    Icon(
+                        imageVector = if (post.isLiked) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
+                        contentDescription = "Like"
+                    )
+                }
                 Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
                 Text(text = post.likes.toString(), style = MaterialTheme.typography.h4)
             }
@@ -107,9 +113,14 @@ fun Post(post: Post) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.clickable { }) {
-                Icon(imageVector = Icons.Rounded.Message, contentDescription = "Comments")
+                IconButton(onClick = { /*TODO*/ }) {
+                    Icon(
+                        imageVector = Icons.Rounded.Message,
+                        contentDescription = "Comments"
+                    )
+                }
                 Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
-                Text(text = post.likes.toString(), style = MaterialTheme.typography.h4)
+                Text(text = "0", style = MaterialTheme.typography.h4)
             }
         }
     }
