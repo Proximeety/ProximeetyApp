@@ -22,7 +22,7 @@ import com.google.maps.android.compose.*
 
 private const val TAG = "MapViewActivity"
 
-val userCurrentLocation = LatLng(43.0, 5.0) // TODO: change later to fetch user location
+val userCurrentLocation = LatLng(46.0, 6.0) // TODO: change later to fetch user location
 
 @Composable
 fun MapView(

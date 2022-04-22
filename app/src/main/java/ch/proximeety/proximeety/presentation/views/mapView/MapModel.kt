@@ -10,11 +10,11 @@ data class MapModel(
     val Lng: Double
 )
 
-var friend0 = MapModel("2000-01-01", "Lausanne", 46.55, 6.63)
-var friend1 = MapModel("2021-01-01", "I just got home!", 50.5, 10.7)
+var friend0 = MapModel("2022-01-01", "Lausanne", 46.55, 6.63)
+var friend1 = MapModel("2022-01-01", "I just got home!", 50.5, 10.7)
 
 val friend2 = MapModel(
-    time = "2022-03-24",
+    time = "2022-01-01",
     moments = "Bonne nuit",
     Lat = 35.0,
     Lng = 22.0
