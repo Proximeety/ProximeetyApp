@@ -37,8 +37,8 @@ class MapViewTest {
 
     @Test
     fun shouldDisplayFriendsMarkers() {
-        composeTestRule.onNodeWithText("2022-01-01").assertExists()
-        composeTestRule.onNodeWithText("2022-01-01").performClick()
+        composeTestRule.onNodeWithText("Lausanne").assertExists()
+        composeTestRule.onNodeWithText("Lausanne").performClick()
     }
 
     // should center user
