@@ -27,7 +27,7 @@
         android:theme="@style/Theme.Proximeety">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="${MAPS_API_KEY}" />
+            android:value="AIzaSyDJoQ6Lxlt25Z5Vhyj3pAdWOtO5zDDNx3o" />
         <activity
             android:name=".presentation.MainActivity"
             android:exported="true"
