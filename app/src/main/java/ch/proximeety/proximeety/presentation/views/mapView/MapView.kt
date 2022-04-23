@@ -9,12 +9,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
@@ -68,56 +71,84 @@ fun GoogleMapView(
     onMapLoaded: () -> Unit,
     viewModel: MapViewModel = hiltViewModel()
 ) {
-    var uiSettings by remember { mutableStateOf(MapUiSettings(compassEnabled = false)) }
-    var shouldAnimateZoom by remember { mutableStateOf(true) }
-    var ticker by remember { mutableStateOf(0) }
+    var uiSettings by remember { mutableStateOf(MapUiSettings(myLocationButtonEnabled = false, zoomControlsEnabled = false)) }
     var mapProperties by remember {
-        mutableStateOf(MapProperties(mapType = MapType.NORMAL))
+        mutableStateOf(MapProperties(isMyLocationEnabled = true))
     }
-
     val friends = viewModel.friends.observeAsState(listOf())
+    var friendIndex = 0
 
-    GoogleMap(
-        modifier = modifier,
-        cameraPositionState = cameraPositionState,
-        properties = mapProperties,
-        uiSettings = uiSettings,
-        onMapLoaded = onMapLoaded,
-        onPOIClick = {
-            Log.d(TAG, "POI clicked: ${it.name}")
-        }
-    ) {
-        // Drawing on the map is accomplished with a child-based API
-        val markerClick: (Marker) -> Boolean = {
-            Log.d(TAG, "${it.title} was clicked")
-            cameraPositionState.projection?.let { projection ->
-                Log.d(TAG, "The current projection is: $projection")
+    val scaffoldState = rememberScaffoldState()
+    Scaffold(
+        scaffoldState = scaffoldState,
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+                cameraPositionState.move(CameraUpdateFactory.newLatLng(userCurrentLocation)) }) {
+                Icon(
+                    imageVector = Icons.Default.Sync, //or ".AssistantPhoto"
+                    contentDescription = "Sync with Current User Location"
+                )
             }
-            false
-        }
+        },
+        floatingActionButtonPosition = FabPosition.Center
+    ) {
+        GoogleMap(
+            modifier = modifier,
+            cameraPositionState = cameraPositionState,
+            properties = mapProperties,
+            uiSettings = uiSettings,
+            onMapLoaded = onMapLoaded,
+        ) {
+            // Drawing on the map is accomplished with a child-based API
+            val markerClick: (Marker) -> Boolean = {
+                Log.d(TAG, "${it.title} was clicked")
+                cameraPositionState.projection?.let { projection ->
+                    Log.d(TAG, "The current projection is: $projection")
+                }
+                false
+            }
 
-        friends.value.forEach {
+            friends.value.forEach {
+                Marker(
+                    position = LatLng(it.Lat, it.Lng),
+                    title = it.moments,
+                    onClick = markerClick
+                )
+            }
+
             Marker(
-                position = LatLng(it.Lat, it.Lng),
-                title = it.moments,
+                position = userCurrentLocation,
+                title = "My Location",
                 onClick = markerClick
+            )
+
+            Circle(
+                center = userCurrentLocation,
+                fillColor = MaterialTheme.colors.secondary,
+                strokeColor = MaterialTheme.colors.secondaryVariant,
+                radius = 1000.0,
             )
         }
 
-//        Circle(
-//            center = lausanne,
-//            fillColor = MaterialTheme.colors.secondary,
-//            strokeColor = MaterialTheme.colors.secondaryVariant,
-//            radius = 1000.0,
-//        )
-    }
-
-    Column {
-        MapTypeControls(onMapTypeClick = {
-            Log.d("GoogleMap", "Selected map type $it")
-            mapProperties = mapProperties.copy(mapType = it)
-        })
-        val coroutineScope = rememberCoroutineScope()
+//        Column {
+//            MapTypeControls(onMapTypeClick = {
+//                Log.d("GoogleMap", "Selected map type $it")
+//                mapProperties = mapProperties.copy(mapType = it)
+//            })
+//            val coroutineScope = rememberCoroutineScope()
+//        }
+        
+        Button(onClick = {
+            val nextFriend = friends.value.get(friendIndex)
+            cameraPositionState.move(CameraUpdateFactory.newLatLng(LatLng(nextFriend.Lat, nextFriend.Lng)))
+            if (friendIndex < friends.value.lastIndex) {
+                friendIndex++
+            } else {
+                friendIndex = 0
+            }
+        }) {
+            Text(text = "Find a friend!")
+        }
     }
 }
 
