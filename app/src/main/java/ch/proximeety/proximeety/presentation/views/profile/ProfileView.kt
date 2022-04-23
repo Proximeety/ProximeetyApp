@@ -90,7 +90,11 @@ fun ProfileView(
                                     viewModel.onEvent(ProfileEvent.DownloadPost(it))
                                 }
                             }
-                            SinglePost(it, isAuthenticatedUserProfile)
+                            SinglePost(
+                                post = it,
+                                viewModel = viewModel,
+                                onDelete = { viewModel.onEvent(ProfileEvent.DeletePost(it)) }
+                            )
                         }
                     }
 

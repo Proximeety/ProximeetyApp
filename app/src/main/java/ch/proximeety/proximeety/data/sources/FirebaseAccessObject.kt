@@ -381,6 +381,19 @@ class FirebaseAccessObject(
     }
 
     /**
+     * Delete a posts.
+     *
+     * @param postID the id of the picture (local file).
+     */
+    fun deletePost(postId: String) {
+        Log.d("UserRepositoryImplementaiton", "llega a deletePost")
+        authenticatedUser?.value?.also { user ->
+            database.child(POSTS_PATH).child(user.id).child(postId).removeValue()
+        }
+    }
+
+
+    /**
      * Downloads the content of a post. This must be used [Post.postURL] is null.
      * The function [getPostsByUserID] only returns the metadata of posts but does not download each images.
      * @param post the post to download.
