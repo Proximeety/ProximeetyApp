@@ -35,6 +35,7 @@ class MainActivity : SyncActivity() {
         super.onCreate(savedInstanceState)
 
         userInteractions.setActivity(this)
+        userInteractions.startLiveLocation()
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 

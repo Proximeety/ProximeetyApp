@@ -2,9 +2,9 @@ package ch.proximeety.proximeety.util
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun SafeArea(
@@ -13,7 +13,7 @@ fun SafeArea(
 ) {
     Box(
         modifier = Modifier
-            .background(MaterialTheme.colors.background)
+            .background(Color.Transparent)
             .windowInsetsPadding(WindowInsets.safeDrawing)
             .then(modifier),
         content = content

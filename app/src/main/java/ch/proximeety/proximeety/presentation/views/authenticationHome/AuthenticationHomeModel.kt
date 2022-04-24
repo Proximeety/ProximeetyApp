@@ -1,6 +1,6 @@
 package ch.proximeety.proximeety.presentation.views.authenticationHome
 
-data class AuthenticationHomeModel (
+data class AuthenticationHomeModel(
     val title: String
 )
 

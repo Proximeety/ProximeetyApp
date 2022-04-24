@@ -22,5 +22,7 @@ data class UserInteractions(
     val getPostUserId: GetPostUserId,
     val postStory: PostStory,
     val getStoriesByUserId: GetStoriesByUserId,
-    val downloadStory: DownloadStory
+    val downloadStory: DownloadStory,
+    val getFriendsLocations: GetFriendsLocations,
+    val startLiveLocation: StartLiveLocation
 )

@@ -223,4 +223,29 @@ class UserRepositoryMockImplementation : UserRepository {
     override suspend fun downloadStory(story: Story): Story {
         return story.copy(storyURL = story.id)
     }
+
+    override fun getFriendsLocations(): LiveData<Map<String, Triple<Long, Double, Double>>> {
+        return MutableLiveData(
+            mapOf(
+                "testUserId1" to Triple(
+                    1648566863399,
+                    -122.4194,
+                    37.7749
+                ),
+                "testUserId2" to Triple(
+                    1648566863399,
+                    -122.4194,
+                    37.7749
+                ),
+                "testUserId3" to Triple(
+                    1648566863399,
+                    -122.4194,
+                    37.7749
+                )
+            )
+        )
+    }
+
+    override fun startLiveLocation() {
+    }
 }
