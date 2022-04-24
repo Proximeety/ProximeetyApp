@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +35,7 @@ fun HomeView(
     val context = LocalContext.current
     val friends = viewModel.friends.value
     val posts = viewModel.posts.value
+    val user = viewModel.user.value
 
     val scope = rememberCoroutineScope()
     val scaffoldState =
@@ -51,6 +53,7 @@ fun HomeView(
             },
             sheetContent = {
                 CommentSection(
+                    user = user,
                     comments = listOf(),
                     onCloseClick = {
                         scope.launch {
