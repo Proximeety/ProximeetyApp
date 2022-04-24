@@ -2,7 +2,9 @@ package ch.proximeety.proximeety.presentation.views.map.components
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Sync
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -15,9 +17,11 @@ import ch.proximeety.proximeety.util.SafeArea
 import ch.proximeety.proximeety.util.extensions.getRoundedCroppedBitmap
 import coil.compose.LocalImageLoader
 import coil.request.ImageRequest
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
+import kotlin.random.Random
 
 @Composable
 fun GoogleMapView(
@@ -45,39 +49,60 @@ fun GoogleMapView(
     val friendsPosition = viewModel.friendsPosition.observeAsState(mapOf())
     val friends = viewModel.friends
 
-    GoogleMap(
-        modifier = modifier.testTag("Google Map"),
-        cameraPositionState = cameraPositionState,
-        properties = mapProperties.value,
-        uiSettings = uiSettings,
-        contentPadding = WindowInsets.safeDrawing.asPaddingValues(),
-        onMapLoaded = onMapLoaded,
+    val scaffoldState = rememberScaffoldState()
+    Scaffold(
+        scaffoldState = scaffoldState,
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+                val nextFriendId = friends.value.get(Random.nextInt(0, friends.value.size)).id
+                val nextFriendPosition = friendsPosition.value[nextFriendId]
+                if (nextFriendPosition != null) {
+                    cameraPositionState.move(CameraUpdateFactory.newLatLng(LatLng(nextFriendPosition.second, nextFriendPosition.third)))
+                }
+            })
+            {
+                Icon(
+                    imageVector = Icons.Default.Sync, //or ".AssistantPhoto"
+                    contentDescription = "Jump to a random friend location"
+                )
+            }
+        },
+        floatingActionButtonPosition = FabPosition.Center
     ) {
-        if (friends.value.isNotEmpty()) {
-            friendsPosition.value.forEach { (id, position) ->
-                val bitmap = remember { mutableStateOf<Bitmap?>(null) }
-                val user = remember { friends.value.firstOrNull { it.id == id } }
+        GoogleMap(
+            modifier = modifier.testTag("Google Map"),
+            cameraPositionState = cameraPositionState,
+            properties = mapProperties.value,
+            uiSettings = uiSettings,
+            contentPadding = WindowInsets.safeDrawing.asPaddingValues(),
+            onMapLoaded = onMapLoaded,
+        ) {
+            if (friends.value.isNotEmpty()) {
+                friendsPosition.value.forEach { (id, position) ->
+                    val bitmap = remember { mutableStateOf<Bitmap?>(null) }
+                    val user = remember { friends.value.firstOrNull { it.id == id } }
 
-                if (user != null) {
-                    LaunchedEffect(Unit) {
-                        val request = ImageRequest.Builder(context)
-                            .data(user.profilePicture)
-                            .target { drawable ->
-                                bitmap.value =
-                                    drawable.toBitmap().copy(Bitmap.Config.ARGB_8888, false)
-                                        .getRoundedCroppedBitmap()
-                            }
-                            .build()
+                    if (user != null) {
+                        LaunchedEffect(Unit) {
+                            val request = ImageRequest.Builder(context)
+                                .data(user.profilePicture)
+                                .target { drawable ->
+                                    bitmap.value =
+                                        drawable.toBitmap().copy(Bitmap.Config.ARGB_8888, false)
+                                            .getRoundedCroppedBitmap()
+                                }
+                                .build()
 
-                        imageLoader.enqueue(request)
-                    }
+                            imageLoader.enqueue(request)
+                        }
 
-                    if (bitmap.value != null) {
-                        Marker(
-                            position = LatLng(position.second, position.third),
-                            title = user.displayName,
-                            icon = BitmapDescriptorFactory.fromBitmap(bitmap.value!!),
-                        )
+                        if (bitmap.value != null) {
+                            Marker(
+                                position = LatLng(position.second, position.third),
+                                title = user.displayName,
+                                icon = BitmapDescriptorFactory.fromBitmap(bitmap.value!!),
+                            )
+                        }
                     }
                 }
             }
