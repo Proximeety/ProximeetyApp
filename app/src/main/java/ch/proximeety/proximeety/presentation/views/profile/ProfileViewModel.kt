@@ -12,6 +12,9 @@ import ch.proximeety.proximeety.presentation.navigation.graphs.MainNavigationCom
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,6 +39,11 @@ class ProfileViewModel @Inject constructor(
 
     private val _friends = mutableStateOf<List<User>>(listOf())
     val friends: State<List<User>> = _friends
+
+    private val _showDialog = MutableStateFlow(false)
+    val showDialog: StateFlow<Boolean> = _showDialog.asStateFlow()
+
+
 
     init {
         savedStateHandle.get<String>("userId")?.also {
@@ -80,8 +88,22 @@ class ProfileViewModel @Inject constructor(
                     }
                 }
             }
-
+            is ProfileEvent.DeletePost -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    userInteractions.deletePost(event.post.id)
+                }
+                _showDialog.value = false
+            }
         }
+    }
+
+    fun onOpenDialogClicked() {
+        _showDialog.value = true
+    }
+
+
+    fun onCloseDialog() {
+        _showDialog.value = false
     }
 
 }

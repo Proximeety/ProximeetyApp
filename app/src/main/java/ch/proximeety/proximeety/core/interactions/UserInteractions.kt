@@ -13,6 +13,7 @@ data class UserInteractions(
     val getFriends: GetFriends,
     val getNearbyUsers: GetNearbyUsers,
     val post: Post,
+    val deletePost: DeletePost,
     val togglePostLike: TogglePostLike,
     val isPostLiked: IsPostLiked,
     val setActivity: SetActivity,

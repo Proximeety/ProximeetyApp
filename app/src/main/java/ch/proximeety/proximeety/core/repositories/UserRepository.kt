@@ -79,6 +79,13 @@ interface UserRepository {
     suspend fun post(url: String)
 
     /**
+     * Delete a picture
+     *
+     * @param id the local id of the image.
+     */
+    suspend fun deletePost(postId: String)
+
+    /**
      * Post a story.
      *
      * @param url the local URL of the image.

@@ -173,6 +173,16 @@ class UserRepositoryMockImplementation : UserRepository {
         }
     }
 
+    override suspend fun deletePost(postId: String) {
+        posts.forEach { post ->
+            if (post.id == postId) {
+                posts.remove(post)
+            }
+        }
+
+
+    }
+
     override suspend fun postStory(url: String) {
         user?.id?.let {
             Story(
