@@ -1,6 +1,6 @@
 package ch.proximeety.proximeety.presentation.views.messagesScreen
 
-data class MessagesModel (
+data class MessagesModel(
     val from: String,
     val to: String,
     val timestamp: Long,

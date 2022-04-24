@@ -1,6 +1,5 @@
 package ch.proximeety.proximeety.presentation.views.messagesScreen
 
-import android.widget.EditText
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,8 +25,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.proximeety.proximeety.R
 import ch.proximeety.proximeety.presentation.theme.spacing
-import coil.compose.rememberImagePainter
-import androidx.compose.material.Text as Text
 
 @Composable
 fun MessagesView(
@@ -45,9 +42,9 @@ fun MessagesView(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
-            ) {
+        ) {
             items(messages.value) {
-                Row() {
+                Row {
                     if (user.value.count() > 0) {
                         Column(
                             horizontalAlignment = if (it.from == user.value[0].id) Alignment.End else Alignment.Start,
@@ -58,7 +55,7 @@ fun MessagesView(
                                 text = it.value,
                                 softWrap = true,
                                 fontStyle = FontStyle.Normal,
-                                )
+                            )
                         }
                     }
                 }
@@ -69,7 +66,7 @@ fun MessagesView(
 
 @Composable
 fun MessagesBottomBar() {
-    var text = remember { mutableStateOf("")}
+    var text = remember { mutableStateOf("") }
     Row(
         modifier = Modifier
             .padding(MaterialTheme.spacing.extraSmall)
@@ -79,13 +76,15 @@ fun MessagesBottomBar() {
     ) {
         TextField(
             value = text.value,
-            onValueChange = {text.value=it},
-            label = {Text("Type your Message")},
+            onValueChange = { text.value = it },
+            label = { Text("Type your Message") },
             modifier = Modifier.padding(bottom = 8.dp, top = 20.dp),
         )
         Button(
             onClick = {},
-            modifier = Modifier.padding(bottom = 8.dp, top = 20.dp).fillMaxWidth(),
+            modifier = Modifier
+                .padding(bottom = 8.dp, top = 20.dp)
+                .fillMaxWidth(),
         ) {
             Text("Send")
         }
@@ -100,19 +99,19 @@ fun MessagesTopBar(viewModel: MessageViewModel = hiltViewModel()) {
             Row(
                 modifier = Modifier.padding(top = 30.dp)
             ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_background), // TODO load from user in db
-                contentDescription = "User Profile Picture",
-                modifier = Modifier.size(50.dp)
-            );
+                Image(
+                    painter = painterResource(id = R.drawable.ic_launcher_background), // TODO load from user in db
+                    contentDescription = "User Profile Picture",
+                    modifier = Modifier.size(50.dp)
+                )
                 if (user.value.count() > 0) {
                     Text(
                         text = user.value[0].displayName,
                         style = TextStyle(
-                        textAlign = TextAlign.Center,
-                        fontSize = 20.sp,
-                        fontStyle = FontStyle.Normal,
-                        fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            fontSize = 20.sp,
+                            fontStyle = FontStyle.Normal,
+                            fontWeight = FontWeight.Bold,
                         )
                     )
                 }
