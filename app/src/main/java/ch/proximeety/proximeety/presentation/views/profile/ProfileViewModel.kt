@@ -1,24 +1,14 @@
 package ch.proximeety.proximeety.presentation.views.profile
 
-import android.net.Uri
-import android.util.Log
-import android.widget.Toast
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.*
 import ch.proximeety.proximeety.core.entities.Post
 import ch.proximeety.proximeety.core.entities.User
-import ch.proximeety.proximeety.core.interactions.DeletePost
 import ch.proximeety.proximeety.core.interactions.UserInteractions
-import ch.proximeety.proximeety.presentation.navigation.NavigationCommand
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
 import ch.proximeety.proximeety.presentation.navigation.graphs.AuthenticationNavigationCommands
 import ch.proximeety.proximeety.presentation.navigation.graphs.MainNavigationCommands
-import ch.proximeety.proximeety.presentation.views.home.HomeEvent
-import ch.proximeety.proximeety.presentation.views.upload.EMPTY_IMAGE_URI
-import ch.proximeety.proximeety.presentation.views.upload.UploadEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

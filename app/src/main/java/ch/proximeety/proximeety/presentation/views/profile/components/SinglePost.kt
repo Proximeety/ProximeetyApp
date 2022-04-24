@@ -1,7 +1,6 @@
 package ch.proximeety.proximeety.presentation.views.profile.components
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -10,11 +9,9 @@ import androidx.compose.material.icons.rounded.MoreHoriz
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import ch.proximeety.proximeety.core.entities.Post
-import ch.proximeety.proximeety.presentation.views.profile.ProfileEvent
 import ch.proximeety.proximeety.presentation.views.profile.ProfileViewModel
 import coil.compose.rememberImagePainter
 
@@ -106,14 +103,14 @@ fun SimpleAlertDialog(
             onDismissRequest = onDismiss,
             confirmButton = {
                 TextButton(onClick = onConfirm)
-                { Text(text = "OK") }
+                { Text(text = "Confirm") }
             },
             dismissButton = {
                 TextButton(onClick = onDismiss)
                 { Text(text = "Cancel") }
             },
-            title = { Text(text = "Please confirm") },
-            text = { Text(text = "Should I continue with the requested action?") }
+            title = { Text(text = "Delete post") },
+            text = { Text(text = "Do you want to continue?") }
         )
     }
 }
