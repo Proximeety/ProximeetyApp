@@ -121,4 +121,14 @@ interface UserRepository {
      * @return The story post with its [Story.storyURL] not null.
      */
     suspend fun downloadStory(story: Story): Story
+
+    /**
+     * Get the location of the friends.
+     */
+    fun getFriendsLocations(): LiveData<Map<String, Triple<Long, Double, Double>>>
+
+    /**
+     * Start sharing the live location of the authenticated user.
+     */
+    fun startLiveLocation()
 }
