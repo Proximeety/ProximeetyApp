@@ -75,6 +75,11 @@ class FirebaseAccessObject(
         private const val STORY_TIMESTAMP_KEY = "timestamp"
         private const val STORY_URL_KEY = "storyURL"
 
+        private const val USER_LOCATION_PATH = "usersLocations"
+        private const val USER_LOCATION_LATITUDE_KEY = "latitude"
+        private const val USER_LOCATION_LONGITUDE_KEY = "longitude"
+        private const val USER_LOCATION_TIMESTAMP_KEY = "timestamp"
+
         private const val STORAGE_POST_PATH = "posts"
         private const val STORAGE_STORY_PATH = "stories"
     }
@@ -465,5 +470,62 @@ class FirebaseAccessObject(
             Log.e(TAG, e.message.toString())
             story
         }
+    }
+
+    /**
+     * Upload the location of the user.
+     */
+    fun uploadLocation(latitude: Double, longitude: Double) {
+        authenticatedUser?.value?.let { user ->
+            database.child(USER_LOCATION_PATH).child(user.id).setValue(
+                mapOf(
+                    USER_LOCATION_TIMESTAMP_KEY to Calendar.getInstance().timeInMillis,
+                    USER_LOCATION_LATITUDE_KEY to latitude,
+                    USER_LOCATION_LONGITUDE_KEY to longitude
+                )
+            )
+        }
+    }
+
+    /**
+     * Gets the locations of the friends.
+     */
+    fun getFriendsLocation(owner: LifecycleOwner?): LiveData<Map<String, Triple<Long, Double, Double>>> {
+        val result = MutableLiveData<Map<String, Triple<Long, Double, Double>>>(mapOf())
+        val ref = database.child(USER_LOCATION_PATH)
+        val listener = ref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val map = mutableMapOf<String, Pair<Int, Int>>()
+                snapshot.children.forEach { child ->
+                    child.key?.also {
+                        val newLocation = it to Triple(
+                            child.child(USER_LOCATION_TIMESTAMP_KEY).value as Long,
+                            child.child(USER_LOCATION_LATITUDE_KEY).value as Double,
+                            child.child(USER_LOCATION_LONGITUDE_KEY).value as Double,
+                        )
+                        result.value = result.value?.plus(newLocation) ?: mapOf(newLocation)
+                    }
+                }
+
+                if (owner == null) {
+                    ref.removeEventListener(this)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                if (owner == null) {
+                    ref.removeEventListener(this)
+                }
+            }
+        })
+
+        owner?.lifecycle?.addObserver(LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_DESTROY -> ref.removeEventListener(listener)
+                else -> {}
+            }
+        })
+
+        return result
     }
 }

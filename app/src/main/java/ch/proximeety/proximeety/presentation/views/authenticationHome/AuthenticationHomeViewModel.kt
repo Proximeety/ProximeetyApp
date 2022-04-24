@@ -27,7 +27,7 @@ class AuthenticationHomeViewModel @Inject constructor(
     val eventFlow = _eventFlow.asSharedFlow()
 
     private val _currentPage = MutableStateFlow(0)
-    val currentPage: StateFlow<Int> get () = _currentPage
+    val currentPage: StateFlow<Int> get() = _currentPage
 
     fun onEvent(event: AuthenticationHomeEvent) {
         when (event) {
@@ -41,7 +41,7 @@ class AuthenticationHomeViewModel @Inject constructor(
         }
     }
 
-    fun setCurrentPage(currentPage: Int){
+    fun setCurrentPage(currentPage: Int) {
         _currentPage.value = currentPage
     }
 }

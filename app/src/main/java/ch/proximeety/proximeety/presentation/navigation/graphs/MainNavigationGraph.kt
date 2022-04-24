@@ -6,7 +6,7 @@ import androidx.navigation.compose.navigation
 import ch.proximeety.proximeety.presentation.views.conversationList.ConversationListView
 import ch.proximeety.proximeety.presentation.views.friends.FriendsView
 import ch.proximeety.proximeety.presentation.views.home.HomeView
-import ch.proximeety.proximeety.presentation.views.mapView.MapView
+import ch.proximeety.proximeety.presentation.views.map.MapView
 import ch.proximeety.proximeety.presentation.views.messagesScreen.MessagesView
 import ch.proximeety.proximeety.presentation.views.nearbyUsers.NearbyUsersView
 import ch.proximeety.proximeety.presentation.views.profile.ProfileView

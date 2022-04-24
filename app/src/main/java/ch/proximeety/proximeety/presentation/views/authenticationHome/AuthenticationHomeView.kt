@@ -1,17 +1,17 @@
 package ch.proximeety.proximeety.presentation.views.authenticationHome
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -51,7 +51,7 @@ fun AuthenticationHomeView(
 fun AuthenticationHomeScreen(viewModel: AuthenticationHomeViewModel) {
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
-    val authenticationHomeViewModel : AuthenticationHomeViewModel = viewModel
+    val authenticationHomeViewModel: AuthenticationHomeViewModel = viewModel
     val currentPage = authenticationHomeViewModel.currentPage.collectAsState()
 
     val pagerState = rememberPagerState(initialPage = 0)
@@ -61,7 +61,7 @@ fun AuthenticationHomeScreen(viewModel: AuthenticationHomeViewModel) {
         scaffoldState = scaffoldState
     ) {
 
-        Surface (
+        Surface(
             modifier = Modifier.fillMaxSize()
         ) {
             Box(
@@ -75,12 +75,12 @@ fun AuthenticationHomeScreen(viewModel: AuthenticationHomeViewModel) {
                     contentScale = ContentScale.FillBounds
                 )
                 // Page content
-                Column (
+                Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    HorizontalPager(count = screens.size,state = pagerState) { page ->
+                    HorizontalPager(count = screens.size, state = pagerState) { page ->
                         Column(
                             modifier = Modifier
                                 .padding(top = 65.dp)
@@ -91,7 +91,11 @@ fun AuthenticationHomeScreen(viewModel: AuthenticationHomeViewModel) {
                             if (currentPage.value == 0) {
                                 Text(
                                     text = screens[page].title,
-                                    modifier = Modifier.padding(top = 100.dp, start = 30.dp, end = 30.dp),
+                                    modifier = Modifier.padding(
+                                        top = 100.dp,
+                                        start = 30.dp,
+                                        end = 30.dp
+                                    ),
                                     color = Color.White,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 40.sp,
@@ -103,7 +107,11 @@ fun AuthenticationHomeScreen(viewModel: AuthenticationHomeViewModel) {
                             else {
                                 Text(
                                     text = screens[page].title,
-                                    modifier = Modifier.padding(top = 150.dp, start = 30.dp, end = 30.dp),
+                                    modifier = Modifier.padding(
+                                        top = 150.dp,
+                                        start = 30.dp,
+                                        end = 30.dp
+                                    ),
                                     color = Color.White,
                                     fontSize = 20.sp,
                                     textAlign = TextAlign.Center,
@@ -130,16 +138,19 @@ fun AuthenticationHomeScreen(viewModel: AuthenticationHomeViewModel) {
                 Box(
                     modifier = Modifier.align(Alignment.BottomCenter)
                 ) {
-                    Row (
+                    Row(
                         modifier = Modifier
                             .padding(bottom = 20.dp)
                             .fillMaxWidth(),
                         horizontalArrangement =
-                        when (pagerState.currentPage) { 0 -> {
+                        when (pagerState.currentPage) {
+                            0 -> {
                                 Arrangement.End
-                            } pagerState.pageCount - 1 -> {
+                            }
+                            pagerState.pageCount - 1 -> {
                                 Arrangement.Start
-                            } else -> {
+                            }
+                            else -> {
                                 Arrangement.SpaceBetween
                             }
                         }

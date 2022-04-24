@@ -1,7 +1,6 @@
 package ch.proximeety.proximeety.util.extensions
 
-import android.graphics.Bitmap
-import android.graphics.Matrix
+import android.graphics.*
 import android.media.ExifInterface
 
 
@@ -37,3 +36,22 @@ fun Bitmap.rotate(orientation: Int): Bitmap? {
     }
 }
 
+fun Bitmap.getRoundedCroppedBitmap(): Bitmap? {
+    val widthLight = width
+    val heightLight = height
+
+    val output = Bitmap.createBitmap(
+        width, height,
+        Bitmap.Config.ARGB_8888
+    )
+
+    val canvas = Canvas(output)
+    val paintColor = Paint()
+    paintColor.flags = Paint.ANTI_ALIAS_FLAG
+    val rectF = RectF(Rect(0, 0, widthLight, heightLight))
+    canvas.drawRoundRect(rectF, (widthLight / 2).toFloat(), (heightLight / 2).toFloat(), paintColor)
+    val paintImage = Paint()
+    paintImage.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP)
+    canvas.drawBitmap(this, 0f, 0f, paintImage)
+    return output
+}

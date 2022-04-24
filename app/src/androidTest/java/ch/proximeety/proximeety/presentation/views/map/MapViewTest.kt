@@ -1,10 +1,11 @@
-package ch.proximeety.proximeety.presentation.views.settings
+package ch.proximeety.proximeety.presentation.views.map
 
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
 import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.di.AppModule
-import ch.proximeety.proximeety.di.TestAppModule
 import ch.proximeety.proximeety.presentation.MainActivity
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
 import ch.proximeety.proximeety.presentation.theme.ProximeetyTheme
@@ -19,7 +20,7 @@ import javax.inject.Inject
 
 @HiltAndroidTest
 @UninstallModules(AppModule::class)
-class SettingsViewTest {
+class MapViewTest {
 
     @get:Rule(order = 0)
     val hiltRule = HiltAndroidRule(this)
@@ -27,14 +28,13 @@ class SettingsViewTest {
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    private lateinit var viewModel: SettingsViewModel
-
+    @Inject
+    lateinit var navigationManager: NavigationManager
 
     @Inject
     lateinit var userInteractions: UserInteractions
 
-    @Inject
-    lateinit var navigationManager: NavigationManager
+    private lateinit var viewModel: MapViewModel
 
 
     @Before
@@ -45,19 +45,19 @@ class SettingsViewTest {
             userInteractions.authenticateWithGoogle()
         }
 
-        viewModel = SettingsViewModel(navigationManager)
+        viewModel = MapViewModel(navigationManager, userInteractions)
 
         composeTestRule.setContent {
             ProximeetyTheme {
-                SettingsView(viewModel)
+                MapView(viewModel)
             }
         }
+
+        composeTestRule.waitForIdle()
     }
 
     @Test
-    fun textIsDisplayed() {
-        composeTestRule.onNodeWithText(text = "Test with switch").assertExists()
-        composeTestRule.onNodeWithText(text = "Test with slider").assertExists()
-        composeTestRule.onNodeWithText(text = "Test with Dropdown Menu").assertExists()
+    fun mapIsLoading() {
+        composeTestRule.onNodeWithTag("Map Loading Indicator").assertExists()
     }
 }
