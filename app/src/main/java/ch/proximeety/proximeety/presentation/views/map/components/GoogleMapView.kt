@@ -53,29 +53,32 @@ fun GoogleMapView(
         contentPadding = WindowInsets.safeDrawing.asPaddingValues(),
         onMapLoaded = onMapLoaded,
     ) {
-        friendsPosition.value.forEach { (id, position) ->
-            val bitmap = remember { mutableStateOf<Bitmap?>(null) }
-            val user = remember { friends.value.firstOrNull { it.id == id } }
+        if (friends.value.isNotEmpty()) {
+            friendsPosition.value.forEach { (id, position) ->
+                val bitmap = remember { mutableStateOf<Bitmap?>(null) }
+                val user = remember { friends.value.firstOrNull { it.id == id } }
 
-            if (user != null) {
-                LaunchedEffect(Unit) {
-                    val request = ImageRequest.Builder(context)
-                        .data(friends.value.first().profilePicture)
-                        .target { drawable ->
-                            bitmap.value = drawable.toBitmap().copy(Bitmap.Config.ARGB_8888, false)
-                                .getRoundedCroppedBitmap()
-                        }
-                        .build()
+                if (user != null) {
+                    LaunchedEffect(Unit) {
+                        val request = ImageRequest.Builder(context)
+                            .data(user.profilePicture)
+                            .target { drawable ->
+                                bitmap.value =
+                                    drawable.toBitmap().copy(Bitmap.Config.ARGB_8888, false)
+                                        .getRoundedCroppedBitmap()
+                            }
+                            .build()
 
-                    imageLoader.enqueue(request)
-                }
+                        imageLoader.enqueue(request)
+                    }
 
-                if (bitmap.value != null) {
-                    Marker(
-                        position = LatLng(position.second, position.third),
-                        title = user.displayName,
-                        icon = BitmapDescriptorFactory.fromBitmap(bitmap.value!!),
-                    )
+                    if (bitmap.value != null) {
+                        Marker(
+                            position = LatLng(position.second, position.third),
+                            title = user.displayName,
+                            icon = BitmapDescriptorFactory.fromBitmap(bitmap.value!!),
+                        )
+                    }
                 }
             }
         }
