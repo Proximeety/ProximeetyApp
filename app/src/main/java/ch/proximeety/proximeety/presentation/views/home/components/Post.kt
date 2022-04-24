@@ -32,7 +32,7 @@ import com.google.accompanist.placeholder.material.placeholder
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-fun Post(post: Post, onLike: () -> Unit) {
+fun Post(post: Post, onLike: () -> Unit, onCommentClick: () -> Unit) {
     Column(
         modifier = Modifier
             .padding(MaterialTheme.spacing.medium)
@@ -101,7 +101,8 @@ fun Post(post: Post, onLike: () -> Unit) {
             ) {
                 IconButton(onClick = onLike) {
                     Icon(
-                        imageVector = if (post.isLiked) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
+                        imageVector = if (post.isLiked) Icons.Rounded.Favorite
+                        else Icons.Rounded.FavoriteBorder,
                         contentDescription = "Like"
                     )
                 }
@@ -113,7 +114,7 @@ fun Post(post: Post, onLike: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.clickable { }) {
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = onCommentClick) {
                     Icon(
                         imageVector = Icons.Rounded.Message,
                         contentDescription = "Comments"
