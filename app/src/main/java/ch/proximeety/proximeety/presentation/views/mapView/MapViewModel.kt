@@ -22,8 +22,7 @@ class MapViewModel @Inject constructor(
 
     fun onEvent(event: MapEvent) {
         when (event) {
-            is MapEvent.MapClick -> {
-                //navigationManager.navigate(MainNavigationCommands.home)
+            is MapEvent.CenterAtUserLocation -> {
             }
         }
     }
