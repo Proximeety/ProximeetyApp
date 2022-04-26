@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.proximeety.proximeety.presentation.theme.spacing
+import ch.proximeety.proximeety.presentation.views.home.HomeEvent
 import ch.proximeety.proximeety.presentation.views.profile.components.*
 import ch.proximeety.proximeety.util.SafeArea
 
@@ -51,7 +52,11 @@ fun ProfileView(
                     .padding(top = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                ProfilePic(user.value?.profilePicture, user.value?.givenName)
+                ProfilePic(
+                    picUrl = user.value?.profilePicture,
+                    displayName = user.value?.givenName,
+                    onStoryClick = { viewModel.onEvent(ProfileEvent.OnStoryClick) }
+                )
                 Text(
                     text = user.value?.displayName.toString(),
                     fontSize = 30.sp,

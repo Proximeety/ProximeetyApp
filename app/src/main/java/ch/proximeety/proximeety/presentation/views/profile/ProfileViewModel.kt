@@ -94,6 +94,11 @@ class ProfileViewModel @Inject constructor(
                 }
                 _showDialog.value = false
             }
+            is ProfileEvent.OnStoryClick -> {
+                user.value.value?.id?.also {
+                    navigationManager.navigate(MainNavigationCommands.storiesWithArgs(it))
+                }
+            }
         }
     }
 
@@ -101,9 +106,7 @@ class ProfileViewModel @Inject constructor(
         _showDialog.value = true
     }
 
-
     fun onCloseDialog() {
         _showDialog.value = false
     }
-
 }

@@ -1,8 +1,10 @@
 package ch.proximeety.proximeety.presentation.views.profile.components
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,7 +19,7 @@ import coil.compose.rememberImagePainter
 
 @Composable
 fun ProfilePic(
-    picUrl: String?, displayName: String?
+    picUrl: String?, displayName: String?, onStoryClick: () -> Unit
 ) {
     Image(
         painter = rememberImagePainter(picUrl),
@@ -36,5 +38,6 @@ fun ProfilePic(
             .clip(CircleShape)
             .aspectRatio(1f, matchHeightConstraintsFirst = false)
             .background(Color.Gray)
+            .clickable(onClick = onStoryClick)
     )
 }
