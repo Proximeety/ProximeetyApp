@@ -12,19 +12,24 @@ fun SimpleAlertDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
+    var title = "Delete story"
+    var question = "Do you want to continue?"
+    var confirm = "Confirm"
+    var dismiss = "Dismiss"
+
     if (show.value) {
         AlertDialog(
             onDismissRequest = onDismiss,
             confirmButton = {
                 TextButton(onClick = onConfirm)
-                { Text(text = "Confirm") }
+                { Text(text = confirm) }
             },
             dismissButton = {
                 TextButton(onClick = onDismiss)
-                { Text(text = "Cancel") }
+                { Text(text = dismiss) }
             },
-            title = { Text(text = "Delete post") },
-            text = { Text(text = "Do you want to continue?") }
+            title = { Text(text = title) },
+            text = { Text(text = question) }
         )
     }
 }
