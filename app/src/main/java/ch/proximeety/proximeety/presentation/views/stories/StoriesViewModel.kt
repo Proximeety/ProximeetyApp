@@ -138,7 +138,7 @@ class StoriesViewModel @Inject constructor(
             }
             is StoriesEvent.DeleteStory -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    //userInteractions.deleteStory(event.story!!.id)
+                    userInteractions.deleteStory(event.story!!.id)
                 }
                 _showDialog.value = false
             }

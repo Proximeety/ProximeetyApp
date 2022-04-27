@@ -100,6 +100,10 @@ class UserRepositoryImplementation(
         firebaseAccessObject.deletePost(postId)
     }
 
+    override suspend fun deleteStory(storyId: String) {
+        firebaseAccessObject.deleteStory(storyId)
+    }
+
     override suspend fun postStory(url: String) {
         firebaseAccessObject.postStory(url)
     }
