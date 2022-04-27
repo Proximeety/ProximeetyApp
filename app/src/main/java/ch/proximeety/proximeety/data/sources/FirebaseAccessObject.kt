@@ -392,7 +392,7 @@ class FirebaseAccessObject(
      */
     fun deletePost(postId: String) {
         authenticatedUser?.value?.also { user ->
-            database.child(STORY_PATH).child(user.id).child(postId).removeValue()
+            database.child(POSTS_PATH).child(user.id).child(postId).removeValue()
         }
     }
 
