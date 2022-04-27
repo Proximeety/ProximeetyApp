@@ -1,6 +1,5 @@
 package ch.proximeety.proximeety.presentation.views.stories
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
@@ -9,7 +8,6 @@ import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
 import ch.proximeety.proximeety.presentation.navigation.graphs.MainNavigationCommands
-import ch.proximeety.proximeety.presentation.views.profile.ProfileEvent
 import ch.proximeety.proximeety.util.Timer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

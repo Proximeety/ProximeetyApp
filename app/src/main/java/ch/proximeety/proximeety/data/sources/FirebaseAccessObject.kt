@@ -407,7 +407,6 @@ class FirebaseAccessObject(
         }
     }
 
-
     /**
      * Downloads the content of a post. This must be used [Post.postURL] is null.
      * The function [getPostsByUserID] only returns the metadata of posts but does not download each images.

@@ -1,7 +1,6 @@
 package ch.proximeety.proximeety.presentation.views.profile
 
 import ch.proximeety.proximeety.core.entities.Post
-import ch.proximeety.proximeety.presentation.views.home.HomeEvent
 
 /**
  * An event from the View to the ViewModel for the Nearby Users View.

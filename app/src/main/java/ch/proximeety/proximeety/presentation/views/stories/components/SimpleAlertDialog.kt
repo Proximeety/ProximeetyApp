@@ -12,10 +12,10 @@ fun SimpleAlertDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
-    var title = "Delete story"
-    var question = "Do you want to continue?"
-    var confirm = "Confirm"
-    var dismiss = "Dismiss"
+    val title = "Delete story"
+    val question = "Do you want to continue?"
+    val confirm = "Confirm"
+    val dismiss = "Dismiss"
 
     if (show.value) {
         AlertDialog(

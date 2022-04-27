@@ -21,7 +21,7 @@ fun ButtonExtended(viewModel: StoriesViewModel, onDelete: () -> Unit){
     val menuExpanded = remember { mutableStateOf(false) }
     val showDialog = remember { mutableStateOf(false) }
 
-    var options = arrayOf("Delete Story", "More")
+    val options = arrayOf("Delete Story", "More")
 
     IconButton( onClick = { menuExpanded.value = true }) {
         Icon(imageVector = Icons.Rounded.MoreHoriz, contentDescription = "More")
@@ -42,7 +42,6 @@ fun ButtonExtended(viewModel: StoriesViewModel, onDelete: () -> Unit){
             }) {
                 Text(text = options[0])
             }
-
             DropdownMenuItem(onClick = {  }) {
                 Text(text = options[1])
             }

@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.proximeety.proximeety.presentation.theme.spacing
-import ch.proximeety.proximeety.presentation.views.home.HomeEvent
 import ch.proximeety.proximeety.presentation.views.profile.components.*
 import ch.proximeety.proximeety.util.SafeArea
 
@@ -102,7 +101,6 @@ fun ProfileView(
                             )
                         }
                     }
-
                 }
             }
         }

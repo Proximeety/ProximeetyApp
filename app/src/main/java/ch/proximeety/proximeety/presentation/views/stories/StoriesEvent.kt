@@ -1,8 +1,6 @@
 package ch.proximeety.proximeety.presentation.views.stories
 
-import ch.proximeety.proximeety.core.entities.Post
 import ch.proximeety.proximeety.core.entities.Story
-import ch.proximeety.proximeety.presentation.views.profile.ProfileEvent
 
 /**
  * An event from the View to the ViewModel for the Stories View.
