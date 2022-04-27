@@ -1,5 +1,6 @@
 package ch.proximeety.proximeety.presentation.views.stories
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
@@ -8,8 +9,13 @@ import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
 import ch.proximeety.proximeety.presentation.navigation.graphs.MainNavigationCommands
+import ch.proximeety.proximeety.presentation.views.profile.ProfileEvent
 import ch.proximeety.proximeety.util.Timer
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.Duration
 import javax.inject.Inject
@@ -25,6 +31,8 @@ class StoriesViewModel @Inject constructor(
     private val userInteractions: UserInteractions,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    var isAuthenticatedUserProfile: Boolean = false
 
     private val _user = mutableStateOf<LiveData<User?>>(MutableLiveData(null))
     val user: State<LiveData<User?>> = _user
@@ -46,6 +54,9 @@ class StoriesViewModel @Inject constructor(
     private val _progress = mutableStateOf(0f)
     val progress: State<Float> = _progress
 
+    private val _showDialog = MutableStateFlow(false)
+    val showDialog: StateFlow<Boolean> = _showDialog.asStateFlow()
+
     private val timer =
         object : Timer(TIMER_DURATION, 10) {
             override fun onTick(millisUntilFinished: Long) {
@@ -65,6 +76,8 @@ class StoriesViewModel @Inject constructor(
     init {
         savedStateHandle.get<String>("userId")?.also { id ->
             _user.value = userInteractions.fetchUserById(id)
+            isAuthenticatedUserProfile = userInteractions.getAuthenticatedUser().value?.id == id
+
             viewModelScope.launch {
                 stories = userInteractions.getStoriesByUserId(id).toMutableList()
                 _storyCount.value = stories.size
@@ -122,6 +135,18 @@ class StoriesViewModel @Inject constructor(
                 user.value.value?.id?.also {
                     navigationManager.navigate(MainNavigationCommands.profileWithArgs(it))
                 }
+            }
+            is StoriesEvent.DeleteStory -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    //userInteractions.deleteStory(event.story!!.id)
+                }
+                _showDialog.value = false
+            }
+            is StoriesEvent.OnOpenDialogClicked -> {
+                _showDialog.value = true
+            }
+            is StoriesEvent.OnCloseDialog -> {
+                _showDialog.value = false
             }
         }
     }
