@@ -18,13 +18,16 @@ import ch.proximeety.proximeety.util.extensions.rotate
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.tasks.await
 import java.io.BufferedInputStream
@@ -84,11 +87,18 @@ class FirebaseAccessObject(
         private const val STORAGE_STORY_PATH = "stories"
     }
 
-    private var auth = Firebase.auth
-    private var database = Firebase.database.reference
-    private var storage = Firebase.storage.reference
+    private var auth: FirebaseAuth
+    private var database: DatabaseReference
+    private var storage: StorageReference
 
     private var authenticatedUser: MutableLiveData<User?>? = null
+
+    init {
+        Firebase.database.setPersistenceEnabled(false)
+        auth = Firebase.auth
+        database = Firebase.database.reference
+        storage = Firebase.storage.reference
+    }
 
     /**
      * Gets the currently authenticated user.
