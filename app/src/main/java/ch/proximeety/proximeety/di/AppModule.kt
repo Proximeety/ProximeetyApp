@@ -1,12 +1,16 @@
 package ch.proximeety.proximeety.di
 
 import android.content.Context
+import androidx.room.Room
 import ch.proximeety.proximeety.core.interactions.*
 import ch.proximeety.proximeety.core.repositories.UserRepository
 import ch.proximeety.proximeety.data.repositories.UserRepositoryImplementation
 import ch.proximeety.proximeety.data.sources.BluetoothService
 import ch.proximeety.proximeety.data.sources.FirebaseAccessObject
 import ch.proximeety.proximeety.data.sources.LocationService
+import ch.proximeety.proximeety.data.sources.cache.AuthenticatedUserCache
+import ch.proximeety.proximeety.data.sources.cache.FriendCacheDB
+import ch.proximeety.proximeety.data.sources.cache.PostCacheDB
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
 import dagger.Module
 import dagger.Provides
@@ -48,12 +52,50 @@ class AppModule {
 
     @Provides
     @Singleton
+    fun providePostCacheDatabase(@ApplicationContext context: Context): PostCacheDB {
+        return Room.databaseBuilder(
+            context,
+            PostCacheDB::class.java,
+            PostCacheDB.DB_NAME
+        ).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideFriendCacheDatabase(@ApplicationContext context: Context): FriendCacheDB {
+        return Room.databaseBuilder(
+            context,
+            FriendCacheDB::class.java,
+            FriendCacheDB.DB_NAME
+        ).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthenticatedUserCache(@ApplicationContext context: Context): AuthenticatedUserCache {
+        return AuthenticatedUserCache(context)
+    }
+
+    @Provides
+    @Singleton
     fun provideUserRepository(
+        @ApplicationContext context: Context,
         firebaseAccessObject: FirebaseAccessObject,
         bluetoothService: BluetoothService,
-        locationService: LocationService
+        locationService: LocationService,
+        postCacheDB: PostCacheDB,
+        friendCacheDB: FriendCacheDB,
+        authenticatedUserCache: AuthenticatedUserCache
     ): UserRepository {
-        return UserRepositoryImplementation(firebaseAccessObject, bluetoothService, locationService)
+        return UserRepositoryImplementation(
+            context,
+            firebaseAccessObject,
+            bluetoothService,
+            locationService,
+            postCacheDB.dao,
+            friendCacheDB.dao,
+            authenticatedUserCache
+        )
     }
 
     @Provides

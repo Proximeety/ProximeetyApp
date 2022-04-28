@@ -1,13 +1,17 @@
 package ch.proximeety.proximeety.core.entities
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
 /**
  * Immutable representation of an post.
  */
+@Entity(tableName = "posts")
 data class Post(
     /**
      * The unique id representing the post.
      */
-    val id: String,
+    @PrimaryKey val id: String,
     /**
      *  The display name of the user.
      */

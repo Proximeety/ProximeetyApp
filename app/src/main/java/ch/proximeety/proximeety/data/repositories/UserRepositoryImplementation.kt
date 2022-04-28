@@ -1,6 +1,8 @@
 package ch.proximeety.proximeety.data.repositories
 
+import android.content.Context
 import android.location.Location
+import android.net.ConnectivityManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
@@ -11,8 +13,12 @@ import ch.proximeety.proximeety.core.repositories.UserRepository
 import ch.proximeety.proximeety.data.sources.BluetoothService
 import ch.proximeety.proximeety.data.sources.FirebaseAccessObject
 import ch.proximeety.proximeety.data.sources.LocationService
+import ch.proximeety.proximeety.data.sources.cache.AuthenticatedUserCache
+import ch.proximeety.proximeety.data.sources.cache.FriendCacheDao
+import ch.proximeety.proximeety.data.sources.cache.PostCacheDao
 import ch.proximeety.proximeety.util.SyncActivity
 import ch.proximeety.proximeety.util.extensions.await
+import ch.proximeety.proximeety.util.extensions.isConnected
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -22,10 +28,17 @@ import kotlinx.coroutines.launch
  * @param firebaseAccessObject the object used to access firebase.
  */
 class UserRepositoryImplementation(
+    private val context: Context,
     private val firebaseAccessObject: FirebaseAccessObject,
     private val bluetoothService: BluetoothService,
-    private val locationService: LocationService
+    private val locationService: LocationService,
+    private val postCacheDao: PostCacheDao,
+    private val friendsCacheDao: FriendCacheDao,
+    private val authenticatedUserCache: AuthenticatedUserCache
 ) : UserRepository {
+
+    private val connectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     private lateinit var activity: SyncActivity
 
@@ -34,8 +47,32 @@ class UserRepositoryImplementation(
     }
 
     override fun getAuthenticatedUser(): LiveData<User?> {
-        return firebaseAccessObject.getAuthenticatedUser(activity)
+        val user = MutableLiveData<User?>(null)
+
+        val firebaseUser = firebaseAccessObject.getAuthenticatedUser(activity)
+        firebaseUser.observe(activity) {
+            if (connectivityManager.isConnected()) {
+                if (it != null) {
+                    authenticatedUserCache.user = it
+                    user.value = it
+                }
+            }
+        }
+
+        if (connectivityManager.isConnected()) {
+            user.value = firebaseUser.value
+        } else {
+            val cachedUser = authenticatedUserCache.user
+            if (cachedUser != null && firebaseUser.value?.id == cachedUser.id) {
+                user.value = cachedUser
+            } else {
+                user.value = firebaseUser.value
+            }
+        }
+
+        return user
     }
+
 
     override suspend fun authenticateWithGoogle(): User? {
         return firebaseAccessObject.authenticateWithGoogle(activity)
@@ -73,6 +110,21 @@ class UserRepositoryImplementation(
     }
 
     override fun fetchUserById(id: String): LiveData<User?> {
+        if (!connectivityManager.isConnected()) {
+            authenticatedUserCache.user?.also {
+                if (it.id == id) {
+                    return MutableLiveData(it)
+                }
+            }
+
+            val result = MutableLiveData<User?>()
+            activity.lifecycleScope.launch {
+                friendsCacheDao.getFriendById(id)?.also {
+                    result.postValue(it)
+                }
+            }
+            return result
+        }
         return firebaseAccessObject.fetchUserById(id, activity)
     }
 
@@ -81,15 +133,31 @@ class UserRepositoryImplementation(
     }
 
     override suspend fun getFriends(): List<User> {
-        return firebaseAccessObject.getFriends()
+        if (!connectivityManager.isConnected()) {
+            return friendsCacheDao.getFriends()
+        }
+
+        return firebaseAccessObject.getFriends().also {
+            friendsCacheDao.addFriends(it)
+        }
     }
 
     override suspend fun getPostsByUserId(id: String): List<Post> {
+        if (!connectivityManager.isConnected()) {
+            return postCacheDao.getPostByUserId(id)
+        }
+
         return firebaseAccessObject.getPostsByUserID(id)
     }
 
     override suspend fun downloadPost(post: Post): Post {
-        return firebaseAccessObject.downloadPost(post)
+        postCacheDao.getPostById(post.id)?.let {
+            return it
+        }
+
+        return firebaseAccessObject.downloadPost(post).also {
+            postCacheDao.addPost(it)
+        }
     }
 
     override suspend fun post(url: String) {
