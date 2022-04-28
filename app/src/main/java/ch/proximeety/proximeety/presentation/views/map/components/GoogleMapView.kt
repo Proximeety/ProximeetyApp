@@ -12,6 +12,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.core.graphics.drawable.toBitmap
 import ch.proximeety.proximeety.presentation.theme.spacing
+import ch.proximeety.proximeety.presentation.views.friends.FriendsEvent
+import ch.proximeety.proximeety.presentation.views.map.MapEvent
 import ch.proximeety.proximeety.presentation.views.map.MapViewModel
 import ch.proximeety.proximeety.util.SafeArea
 import ch.proximeety.proximeety.util.extensions.getRoundedCroppedBitmap
@@ -101,6 +103,7 @@ fun GoogleMapView(
                                 position = LatLng(position.second, position.third),
                                 title = user.displayName,
                                 icon = BitmapDescriptorFactory.fromBitmap(bitmap.value!!),
+                                onInfoWindowClick = { viewModel.onEvent(MapEvent.OnClick(user.id)) }
                             )
                         }
                     }

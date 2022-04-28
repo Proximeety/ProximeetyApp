@@ -102,6 +102,9 @@ class HomeViewModel @Inject constructor(
                 )
                 _posts.value = newList.toList()
             }
+            is HomeEvent.fetchUsersLiked -> {
+                val users : List<User>?
+            }
         }
     }
 

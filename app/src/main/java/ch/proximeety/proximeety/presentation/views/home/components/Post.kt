@@ -21,8 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import ch.proximeety.proximeety.core.entities.Post
+import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.presentation.theme.spacing
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
@@ -32,7 +34,10 @@ import com.google.accompanist.placeholder.material.placeholder
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-fun Post(post: Post, onLike: () -> Unit, onCommentClick: () -> Unit) {
+fun Post(post: Post, /*likedUsers: List<User>?,*/ onLike: () -> Unit, onCommentClick: () -> Unit) {
+
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .padding(MaterialTheme.spacing.medium)
@@ -90,6 +95,21 @@ fun Post(post: Post, onLike: () -> Unit, onCommentClick: () -> Unit) {
             }
         }
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (post.likes.toInt() == 0) {
+                Text(text = "Be the first one in your circle to like this post!", style = MaterialTheme.typography.h4) //context.getString(R.string.noLikesYet)
+//            } else {
+//                Icon(
+//                    painter = rememberImagePainter(likedUsers(0).profilePicture),
+//                    contentDescription = "firstLikedUserProfile"
+//                )
+//                Text(text = likeUsers(0).displayName + "and " + post.likes - 1 + "other friends liked the post", style = MaterialTheme.typography.h4)
+            }
+        }
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Start,

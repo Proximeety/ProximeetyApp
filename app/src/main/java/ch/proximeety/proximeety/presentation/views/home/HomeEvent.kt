@@ -18,4 +18,5 @@ sealed class HomeEvent {
     object Refresh : HomeEvent()
     object SignOut : HomeEvent()
     class TogglePostLike(val post: Post) : HomeEvent()
+    class fetchUsersLiked(val id: String) : HomeEvent()
 }

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
+import ch.proximeety.proximeety.presentation.navigation.graphs.MainNavigationCommands
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,6 +37,7 @@ class MapViewModel @Inject constructor(
     fun onEvent(event: MapEvent) {
         when (event) {
             MapEvent.MapLoaded -> _mapLoaded.value = true
+            is MapEvent.OnClick -> navigationManager.navigate(MainNavigationCommands.profileWithArgs(event.id))
         }
     }
 
