@@ -105,14 +105,12 @@ class ProfileViewModel @Inject constructor(
                     }
                 }
             }
+             is ProfileEvent.OnOpenDialogClicked -> {
+                _showDialog.value = true
+            }
+            is ProfileEvent.OnCloseDialog -> {
+                _showDialog.value = false
+            }
         }
-    }
-
-    fun onOpenDialogClicked() {
-        _showDialog.value = true
-    }
-
-    fun onCloseDialog() {
-        _showDialog.value = false
-    }
+    }  
 }

@@ -38,7 +38,6 @@ fun ProfileView(
                     .fillMaxWidth()
                     .height(50.dp), verticalAlignment = Alignment.CenterVertically
             ) {
-
                 IconButton(
                     onClick = { viewModel.onEvent(ProfileEvent.NavigateToSettings) })
                 {
