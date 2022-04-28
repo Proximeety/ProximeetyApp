@@ -16,7 +16,7 @@ import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.presentation.theme.spacing
 
 @Composable
-fun CommentPostComponent(user: User?, onPostClick: () -> Unit) {
+fun CommentPostComponent(user: User?, onPostClick: (String) -> Unit) {
     val placeHolder = "Type your comment..."
     val contentDescription = "Post Comment"
 
@@ -31,7 +31,7 @@ fun CommentPostComponent(user: User?, onPostClick: () -> Unit) {
             .padding(bottom = 40.dp)
             .clip(MaterialTheme.shapes.medium),
     ) {
-        CommentProfilePic(user?.profilePicture, user?.givenName)
+//        CommentProfilePic(user?.profilePicture, user?.givenName)
         Spacer(modifier = Modifier.padding(5.dp))
         TextField(
             value = text.value,
@@ -40,7 +40,10 @@ fun CommentPostComponent(user: User?, onPostClick: () -> Unit) {
             placeholder = { Text(text = placeHolder) },
             shape = RectangleShape
         )
-        IconButton(onClick = onPostClick) {
+        IconButton(onClick = {
+            onPostClick(text.value)
+            text.value = ""
+        }) {
             Icon(Icons.Outlined.Send, contentDescription = contentDescription)
         }
     }

@@ -1,15 +1,18 @@
 package ch.proximeety.proximeety.presentation.views.home
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ch.proximeety.proximeety.core.entities.Comment
 import ch.proximeety.proximeety.core.entities.Post
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
 import ch.proximeety.proximeety.presentation.navigation.graphs.AuthenticationNavigationCommands
 import ch.proximeety.proximeety.presentation.navigation.graphs.MainNavigationCommands
+import ch.proximeety.proximeety.presentation.views.upload.UploadEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -33,6 +36,11 @@ class HomeViewModel @Inject constructor(
     private val _posts = mutableStateOf<List<Post>>(listOf())
     var posts: State<List<Post>> = _posts
 
+    private var _commentSectionPostId : String? = null
+
+    private val _comments = mutableStateOf<List<Comment>>(listOf())
+    var comments: State<List<Comment>> = _comments
+
     private var refreshJob: Job? = null
     private var downloadJob: Job? = null
     private val _isRefreshing = mutableStateOf(false)
@@ -42,7 +50,7 @@ class HomeViewModel @Inject constructor(
         refresh()
     }
 
-    fun onEvent(event: HomeEvent) {
+     fun onEvent(event: HomeEvent) {
         when (event) {
             HomeEvent.NavigateToNearbyUsersViewModel -> {
                 navigationManager.navigate(MainNavigationCommands.nearbyUsers)
@@ -87,8 +95,23 @@ class HomeViewModel @Inject constructor(
                     }
                 }
             }
+            is HomeEvent.OnCommentSectionClick -> {
+                _commentSectionPostId = event.postId
+                viewModelScope.launch(Dispatchers.IO) {
+                    val comments = userInteractions.getComments(event.postId)
+                    viewModelScope.launch(Dispatchers.Main) {
+                        Log.d("COMMENTS", comments.toString())
+                        _comments.value = comments
+                    }
+                }
+            }
             is HomeEvent.OnStoryClick -> {
                 navigationManager.navigate(MainNavigationCommands.storiesWithArgs(event.id))
+            }
+            is HomeEvent.PostComment -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    _commentSectionPostId?.let { userInteractions.postComment(it, event.text) }
+                }
             }
             is HomeEvent.TogglePostLike -> {
                 viewModelScope.launch(Dispatchers.IO) {

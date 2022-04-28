@@ -72,6 +72,7 @@ class AppModule {
             deletePost = DeletePost(repository),
             togglePostLike = TogglePostLike(repository),
             isPostLiked = IsPostLiked(repository),
+            postComment = PostComment(repository),
             setActivity = SetActivity(repository),
             setAuthenticatedUserVisible = SetAuthenticatedUserVisible(repository),
             signOut = SignOut(repository),
@@ -81,6 +82,7 @@ class AppModule {
             downloadStory = DownloadStory(repository),
             startLiveLocation = StartLiveLocation(repository),
             getFriendsLocations = GetFriendsLocations(repository),
+            getComments = GetComments(repository)
         )
     }
 }

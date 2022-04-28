@@ -2,6 +2,7 @@ package ch.proximeety.proximeety.data.repositories
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import ch.proximeety.proximeety.core.entities.Comment
 import ch.proximeety.proximeety.core.entities.Post
 import ch.proximeety.proximeety.core.entities.Story
 import ch.proximeety.proximeety.core.entities.User
@@ -98,6 +99,9 @@ class UserRepositoryMockImplementation : UserRepository {
             )
         )
 
+    private var comments =
+        mutableListOf<Comment>(
+        )
 
     override fun setActivity(activity: SyncActivity) {}
 
@@ -208,6 +212,29 @@ class UserRepositoryMockImplementation : UserRepository {
 
     override suspend fun isPostLiked(post: Post): Boolean {
         return true
+    }
+
+    override suspend fun postComment(postId: String, comment: String) {
+        user?.id?.let {
+            Comment(
+                id = comment.hashCode().toString(),
+                postId = postId,
+                userDisplayName = "",
+                userProfilePicture = null,
+                timestamp = 0,
+                likes = 0,
+                posterId = it,
+                comment = comment
+            )
+        }?.let {
+            comments.add(
+                it
+            )
+        }
+    }
+
+    override suspend fun downloadComment(comment: Comment): Comment {
+        return comment
     }
 
     override suspend fun getStoriesByUserId(id: String): List<Story> {

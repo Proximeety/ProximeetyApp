@@ -4,6 +4,7 @@ import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
+import ch.proximeety.proximeety.core.entities.Comment
 import ch.proximeety.proximeety.core.entities.Post
 import ch.proximeety.proximeety.core.entities.Story
 import ch.proximeety.proximeety.core.entities.User
@@ -112,6 +113,10 @@ class UserRepositoryImplementation(
         return firebaseAccessObject.isPostLiked(post)
     }
 
+    override suspend fun postComment(postId: String, comment: String) {
+        firebaseAccessObject.postComment(postId, comment)
+    }
+
     override suspend fun getStoriesByUserId(id: String): List<Story> {
         return firebaseAccessObject.getStoriesByUserID(id)
     }
@@ -135,6 +140,10 @@ class UserRepositoryImplementation(
                 }
             }
         }
+    }
+
+    override suspend fun getComments(id: String): List<Comment> {
+        return firebaseAccessObject.getComments(id)
     }
 
     override fun getFriendsLocations(): LiveData<Map<String, Triple<Long, Double, Double>>> {

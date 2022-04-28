@@ -7,10 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -18,10 +15,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import ch.proximeety.proximeety.presentation.views.home.components.*
+import ch.proximeety.proximeety.presentation.views.home.components.comments.CommentSection
 import ch.proximeety.proximeety.util.SafeArea
 import ch.proximeety.proximeety.util.extensions.getActivity
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
@@ -35,7 +34,12 @@ fun HomeView(
     val context = LocalContext.current
     val friendsWithStories = viewModel.friendsWithStories.value
     val posts = viewModel.posts.value
+    val comments = viewModel.comments.value
     val user = viewModel.user.value
+
+    val commentPostID = remember {
+        mutableStateOf("")
+    }
 
     val scope = rememberCoroutineScope()
     val scaffoldState =
@@ -54,11 +58,17 @@ fun HomeView(
             sheetContent = {
                 CommentSection(
                     user = user,
-                    comments = listOf(),
+                    comments = comments,
                     onCloseClick = {
                         scope.launch {
                             if (scaffoldState.bottomSheetState.isExpanded)
                                 scaffoldState.bottomSheetState.collapse()
+                        }
+                    },
+                    onPostClick = {
+                        viewModel.viewModelScope.launch(Dispatchers.IO) {
+                            viewModel
+                                .onEvent(HomeEvent.PostComment(it))
                         }
                     }
                 )
@@ -99,6 +109,7 @@ fun HomeView(
                             onCommentClick = {
                                 scope.launch {
                                     scaffoldState.bottomSheetState.expand()
+                                    viewModel.onEvent(HomeEvent.OnCommentSectionClick(it.id))
                                 }
                             }
                         )

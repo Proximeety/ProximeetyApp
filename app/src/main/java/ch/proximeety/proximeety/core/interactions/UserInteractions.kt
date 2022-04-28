@@ -1,5 +1,7 @@
 package ch.proximeety.proximeety.core.interactions
 
+import ch.proximeety.proximeety.presentation.views.home.HomeEvent
+
 /**
  * Set of user interactions or uses cases.
  */
@@ -16,6 +18,8 @@ data class UserInteractions(
     val deletePost: DeletePost,
     val togglePostLike: TogglePostLike,
     val isPostLiked: IsPostLiked,
+    val postComment: PostComment,
+    val getComments: GetComments,
     val setActivity: SetActivity,
     val setAuthenticatedUserVisible: SetAuthenticatedUserVisible,
     val signOut: SignOut,

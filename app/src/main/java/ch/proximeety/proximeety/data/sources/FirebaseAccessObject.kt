@@ -9,6 +9,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
 import ch.proximeety.proximeety.R
+import ch.proximeety.proximeety.core.entities.Comment
 import ch.proximeety.proximeety.core.entities.Post
 import ch.proximeety.proximeety.core.entities.Story
 import ch.proximeety.proximeety.core.entities.User
@@ -20,6 +21,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -67,6 +69,15 @@ class FirebaseAccessObject(
         private const val POST_TIMESTAMP_KEY = "timestamp"
         private const val POST_URL_KEY = "postURL"
         private const val POST_LIKES_KEY = "likes"
+
+        private const val COMMENT_PATH = "comments"
+        private const val COMMENT_POST_ID_KEY = "postId"
+        private const val COMMENT_POSTER_ID_KEY = "posterId"
+        private const val COMMENT_USER_DISPLAY_NAME_KEY = "userDisplayName"
+        private const val COMMENT_USER_PROFILE_PICTURE_KEY = "userProfilePicture"
+        private const val COMMENT_TIMESTAMP_KEY = "timestamp"
+        private const val COMMENT_VALUE_KEY = "comment"
+        private const val COMMENT_LIKES_KEY = "likes"
 
         private const val STORY_PATH = "stories"
         private const val STORY_POSTER_ID_KEY = "posterId"
@@ -540,5 +551,66 @@ class FirebaseAccessObject(
         })
 
         return result
+    }
+
+    /**
+     * Leaves a comment under a post.
+     *
+     * @param postId the post's id
+     * @param comment the comment to leave
+     */
+    fun postComment(postId: String, comment: String) {
+        authenticatedUser?.value?.let { user ->
+            val ref = database.child(COMMENT_PATH).child(postId).push()
+            ref.key?.also {
+                try {
+                    ref.setValue(
+                        mapOf(
+                            COMMENT_POSTER_ID_KEY to user.id,
+                            COMMENT_VALUE_KEY to comment,
+                            COMMENT_USER_DISPLAY_NAME_KEY to user.displayName,
+                            COMMENT_USER_PROFILE_PICTURE_KEY to user.profilePicture,
+                            COMMENT_TIMESTAMP_KEY to Calendar.getInstance().timeInMillis
+                        )
+                    )
+                } catch (e: Exception) {
+                    Log.e(TAG, e.message.toString())
+                }
+            }
+        }
+    }
+
+    suspend fun getComments(id: String): List<Comment> {
+        Log.d("GETTING", id)
+        return database.child(COMMENT_PATH).child(id).get()
+            .await().children.mapNotNull { snapshot ->
+                if (snapshot.exists() && snapshot.key != null) {
+                    val postId = snapshot.child(COMMENT_POST_ID_KEY).value as String?
+                    val posterId = snapshot.child(COMMENT_POSTER_ID_KEY).value as String?
+                    val userDisplayName =
+                        snapshot.child(COMMENT_USER_DISPLAY_NAME_KEY).value as String?
+                    val userProfilePicture =
+                        snapshot.child(COMMENT_USER_PROFILE_PICTURE_KEY).value as String?
+                    val timestamp = snapshot.child(COMMENT_TIMESTAMP_KEY).value as Long?
+                    val comment = snapshot.child(
+                        COMMENT_VALUE_KEY
+                    ).value as String?
+
+                    if (postId != null && posterId != null && userDisplayName != null && userProfilePicture != null && timestamp != null && comment != null) {
+                        return@mapNotNull Comment(
+                            id = snapshot.key!!,
+                            postId = postId,
+                            posterId = posterId,
+                            userDisplayName = userDisplayName,
+                            userProfilePicture = userProfilePicture,
+                            timestamp = timestamp,
+                            comment = comment,
+                            likes = 0,
+                            isLiked = false
+                        )
+                    }
+                }
+                return@mapNotNull null
+            }
     }
 }

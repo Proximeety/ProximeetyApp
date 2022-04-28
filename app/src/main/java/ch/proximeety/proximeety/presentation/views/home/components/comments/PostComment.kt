@@ -41,8 +41,9 @@ fun CommentSection(
     user: User?,
     comments: List<Comment>,
     onCloseClick: () -> Unit,
-    onPostClick: () -> Unit
+    onPostClick: (String) -> Unit,
 ) {
+
     Column(
         modifier = Modifier.padding(30.dp)
     ) {

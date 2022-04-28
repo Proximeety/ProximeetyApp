@@ -7,7 +7,6 @@ import ch.proximeety.proximeety.core.entities.Post
  */
 sealed class HomeEvent {
     class DownloadPost(val post: Post) : HomeEvent()
-    class OnStoryClick(val id: String) : HomeEvent()
     object NavigateToMapView : HomeEvent()
     object NavigateToMessagingView : HomeEvent()
     object NavigateToNearbyUsersView : HomeEvent()
@@ -15,6 +14,9 @@ sealed class HomeEvent {
     object NavigateToProfileView : HomeEvent()
     object NavigateToUploadView : HomeEvent()
     object NavigateToFriendsView : HomeEvent()
+    class OnStoryClick(val id: String) : HomeEvent()
+    class OnCommentSectionClick(val postId: String): HomeEvent()
+    class PostComment(val text : String): HomeEvent()
     object Refresh : HomeEvent()
     object SignOut : HomeEvent()
     class TogglePostLike(val post: Post) : HomeEvent()
