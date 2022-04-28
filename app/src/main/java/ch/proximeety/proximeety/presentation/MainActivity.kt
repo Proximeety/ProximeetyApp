@@ -9,6 +9,7 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import ch.proximeety.proximeety.core.interactions.UserInteractions
+import ch.proximeety.proximeety.presentation.navigation.NavigationCommand
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
 import ch.proximeety.proximeety.presentation.navigation.graphs.AuthenticationNavigationCommands
 import ch.proximeety.proximeety.presentation.navigation.graphs.MainNavigationCommands
@@ -16,9 +17,11 @@ import ch.proximeety.proximeety.presentation.navigation.graphs.authenticationNav
 import ch.proximeety.proximeety.presentation.navigation.graphs.mainNavigationGraph
 import ch.proximeety.proximeety.presentation.theme.ProximeetyTheme
 import ch.proximeety.proximeety.util.SyncActivity
+import com.google.accompanist.pager.ExperimentalPagerApi
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@ExperimentalPagerApi
 @AndroidEntryPoint
 class MainActivity : SyncActivity() {
 
@@ -32,13 +35,18 @@ class MainActivity : SyncActivity() {
         super.onCreate(savedInstanceState)
 
         userInteractions.setActivity(this)
+        userInteractions.startLiveLocation()
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
             val navController = rememberNavController()
             navigationManager.command.collectAsState().value?.also { command ->
-                navController.navigate(command.route)
+                if (command == NavigationCommand.GoBack) {
+                    navController.popBackStack()
+                } else {
+                    navController.navigate(command.route)
+                }
                 navigationManager.clear()
             }
 

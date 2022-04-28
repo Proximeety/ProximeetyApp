@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import ch.proximeety.proximeety.R
 import ch.proximeety.proximeety.core.entities.Post
+import ch.proximeety.proximeety.core.entities.Story
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.util.SyncActivity
 import ch.proximeety.proximeety.util.extensions.await
@@ -55,17 +56,32 @@ class FirebaseAccessObject(
         private const val USER_FAMILY_NAME_KEY = "familyName"
         private const val USER_EMAIL_KEY = "email"
         private const val USER_PROFILE_PICTURE_KEY = "profilePicture"
+        private const val USER_HAS_STORY_KEY = "hasStory"
 
         private const val USER_FRIENDS_PATH = "usersFriends"
 
         private const val POSTS_PATH = "posts"
+        private const val POST_POSTER_ID_KEY = "posterId"
         private const val POST_USER_DISPLAY_NAME_KEY = "userDisplayName"
         private const val POST_USER_PROFILE_PICTURE_KEY = "userProfilePicture"
         private const val POST_TIMESTAMP_KEY = "timestamp"
         private const val POST_URL_KEY = "postURL"
         private const val POST_LIKES_KEY = "likes"
 
+        private const val STORY_PATH = "stories"
+        private const val STORY_POSTER_ID_KEY = "posterId"
+        private const val STORY_USER_DISPLAY_NAME_KEY = "userDisplayName"
+        private const val STORY_USER_PROFILE_PICTURE_KEY = "userProfilePicture"
+        private const val STORY_TIMESTAMP_KEY = "timestamp"
+        private const val STORY_URL_KEY = "storyURL"
+
+        private const val USER_LOCATION_PATH = "usersLocations"
+        private const val USER_LOCATION_LATITUDE_KEY = "latitude"
+        private const val USER_LOCATION_LONGITUDE_KEY = "longitude"
+        private const val USER_LOCATION_TIMESTAMP_KEY = "timestamp"
+
         private const val STORAGE_POST_PATH = "posts"
+        private const val STORAGE_STORY_PATH = "stories"
     }
 
     private var auth = Firebase.auth
@@ -145,7 +161,7 @@ class FirebaseAccessObject(
                                 USER_GIVEN_NAME_KEY to user.givenName,
                                 USER_FAMILY_NAME_KEY to user.familyName,
                                 USER_EMAIL_KEY to user.email,
-                                USER_PROFILE_PICTURE_KEY to user.profilePicture,
+                                USER_PROFILE_PICTURE_KEY to user.profilePicture
                             )
                         ).addOnSuccessListener {
                             Log.d(
@@ -190,6 +206,7 @@ class FirebaseAccessObject(
                             familyName = snapshot.child(USER_FAMILY_NAME_KEY).value as String?,
                             email = snapshot.child(USER_EMAIL_KEY).value as String?,
                             profilePicture = snapshot.child(USER_PROFILE_PICTURE_KEY).value as String?,
+                            hasStories = snapshot.child(USER_HAS_STORY_KEY).value as Boolean? == true,
                         )
                 }
                 if (owner == null) {
@@ -261,18 +278,23 @@ class FirebaseAccessObject(
         return database.child(POSTS_PATH).child(userId).get()
             .await().children.mapNotNull { snapshot ->
                 if (snapshot.exists() && snapshot.key != null) {
+                    val posterId =
+                        snapshot.child(POST_POSTER_ID_KEY).value as String?
                     val userDisplayName =
                         snapshot.child(POST_USER_DISPLAY_NAME_KEY).value as String?
                     val userProfilePicture =
                         snapshot.child(POST_USER_PROFILE_PICTURE_KEY).value as String?
                     val timestamp = snapshot.child(POST_TIMESTAMP_KEY).value as Long?
-                    val likes = snapshot.child(POST_LIKES_KEY).children.count()
-                    if (userDisplayName != null || userProfilePicture != null || timestamp != null || likes != null) {
+                    val likes =
+                        snapshot.child(POST_LIKES_KEY).children.mapNotNull { it.value as? Boolean }
+                            .filter { it }.count()
+                    if (posterId != null && userDisplayName != null && userProfilePicture != null && timestamp != null) {
                         return@mapNotNull Post(
                             snapshot.key!!,
-                            userDisplayName!!,
-                            userProfilePicture!!,
-                            timestamp!!,
+                            posterId,
+                            userDisplayName,
+                            userProfilePicture,
+                            timestamp,
                             null,
                             likes
                         )
@@ -283,41 +305,77 @@ class FirebaseAccessObject(
     }
 
     /**
+     * Gets all the stories of a users. This function does the download the stories images. You have to call [downloadStory] afterwards for each of them.
+     * @param userId the id of the user whose posts are downloaded.
+     */
+    suspend fun getStoriesByUserID(userId: String): List<Story> {
+        return database.child(STORY_PATH).child(userId).get()
+            .await().children.mapNotNull { snapshot ->
+                if (snapshot.exists() && snapshot.key != null) {
+                    val posterId =
+                        snapshot.child(POST_POSTER_ID_KEY).value as String?
+                    val userDisplayName =
+                        snapshot.child(POST_USER_DISPLAY_NAME_KEY).value as String?
+                    val userProfilePicture =
+                        snapshot.child(POST_USER_PROFILE_PICTURE_KEY).value as String?
+                    val timestamp = snapshot.child(POST_TIMESTAMP_KEY).value as Long?
+                    if (posterId != null && userDisplayName != null && userProfilePicture != null && timestamp != null) {
+                        return@mapNotNull Story(
+                            snapshot.key!!,
+                            posterId,
+                            userDisplayName,
+                            userProfilePicture,
+                            timestamp,
+                            null,
+                        )
+                    }
+                }
+                return@mapNotNull null
+            }
+    }
+
+    /**
+     * Gets the file at the URL and load it into a [ByteArray].
+     */
+    private fun urlToData(url: String): ByteArray? {
+        val uri = Uri.parse(url)
+        val orientation =
+            context.contentResolver.openFileDescriptor(uri, "r")?.fileDescriptor?.let {
+                ExifInterface(
+                    it
+                ).getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_UNDEFINED
+                )
+            } ?: ExifInterface.ORIENTATION_UNDEFINED
+        val bitmap = BitmapFactory.decodeStream(
+            BufferedInputStream(
+                context.contentResolver.openInputStream(uri)
+            )
+        ).rotate(orientation) ?: return null
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos)
+        return baos.toByteArray()
+    }
+
+    /**
      * Posts a new picture.
      *
      * @param url the url of the picture (local file).
      */
     suspend fun post(url: String) {
-        val uri = Uri.parse(url)
         authenticatedUser?.value?.let { user ->
             val ref = database.child(POSTS_PATH).child(user.id).push()
             ref.key?.also { key ->
-                val orientation =
-                    context.contentResolver.openFileDescriptor(uri, "r")?.fileDescriptor?.let {
-                        ExifInterface(
-                            it
-                        ).getAttributeInt(
-                            ExifInterface.TAG_ORIENTATION,
-                            ExifInterface.ORIENTATION_UNDEFINED
-                        )
-                    } ?: ExifInterface.ORIENTATION_UNDEFINED
-                val bitmap = BitmapFactory.decodeStream(
-                    BufferedInputStream(
-                        context.contentResolver.openInputStream(uri)
-                    )
-                ).rotate(orientation) ?: return
-                val baos = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos)
-                val data = baos.toByteArray()
-
+                val data = urlToData(url) ?: return
                 try {
                     storage.child(STORAGE_POST_PATH).child(key).putBytes(data).await()
                     ref.setValue(
                         mapOf(
+                            POST_POSTER_ID_KEY to user.id,
                             POST_USER_DISPLAY_NAME_KEY to user.displayName,
                             POST_USER_PROFILE_PICTURE_KEY to user.profilePicture,
-                            POST_TIMESTAMP_KEY to Calendar.getInstance().timeInMillis,
-                            POST_LIKES_KEY to 0
+                            POST_TIMESTAMP_KEY to Calendar.getInstance().timeInMillis
                         )
                     )
                 } catch (e: Exception) {
@@ -326,6 +384,19 @@ class FirebaseAccessObject(
             }
         }
     }
+
+    /**
+     * Delete a posts.
+     *
+     * @param postID the id of the picture (local file).
+     */
+    fun deletePost(postId: String) {
+        Log.d("UserRepositoryImplementaiton", "llega a deletePost")
+        authenticatedUser?.value?.also { user ->
+            database.child(POSTS_PATH).child(user.id).child(postId).removeValue()
+        }
+    }
+
 
     /**
      * Downloads the content of a post. This must be used [Post.postURL] is null.
@@ -342,5 +413,132 @@ class FirebaseAccessObject(
             Log.e(TAG, e.message.toString())
             post
         }
+    }
+
+    suspend fun isPostLiked(post: Post): Boolean {
+        authenticatedUser?.value?.also { user ->
+            val ref =
+                database.child(POSTS_PATH).child(post.posterId).child(post.id).child(POST_LIKES_KEY)
+                    .child(user.id)
+            (ref.get().await().value as? Boolean)?.also {
+                return it
+            }
+        }
+        return false
+    }
+
+    /**
+     * Like or unlike the post.
+     */
+    suspend fun togglePostLike(post: Post) {
+        authenticatedUser?.value?.also { user ->
+            val ref =
+                database.child(POSTS_PATH).child(post.posterId).child(post.id).child(POST_LIKES_KEY)
+                    .child(user.id)
+            (ref.get().await().value as? Boolean).also {
+                ref.setValue(if (it == null) true else !it)
+            }
+        }
+    }
+
+    /**
+     * Post a story.
+     */
+    suspend fun postStory(url: String) {
+        authenticatedUser?.value?.let { user ->
+            val ref = database.child(STORY_PATH).child(user.id).push()
+            ref.key?.also { key ->
+                val data = urlToData(url) ?: return
+                try {
+                    storage.child(STORAGE_STORY_PATH).child(key).putBytes(data).await()
+                    ref.setValue(
+                        mapOf(
+                            STORY_POSTER_ID_KEY to user.id,
+                            STORY_USER_DISPLAY_NAME_KEY to user.displayName,
+                            STORY_USER_PROFILE_PICTURE_KEY to user.profilePicture,
+                            STORY_TIMESTAMP_KEY to Calendar.getInstance().timeInMillis
+                        )
+                    )
+                    database.child(USER_PATH).child(user.id).child(USER_HAS_STORY_KEY)
+                        .setValue(true)
+                } catch (e: Exception) {
+                    Log.e(TAG, e.message.toString())
+                }
+            }
+        }
+    }
+
+    /**
+     * Downloads the content of a story.
+     *
+     * @param story the post to download.
+     * @return The same story with a non-null [Story.storyURL].
+     */
+    suspend fun downloadStory(story: Story): Story {
+        return try {
+            val localFile = File.createTempFile("images", "jpeg")
+            storage.child(STORY_PATH).child(story.id).getFile(localFile).await()
+            story.copy(storyURL = localFile.toURI().toString())
+        } catch (e: Exception) {
+            Log.e(TAG, e.message.toString())
+            story
+        }
+    }
+
+    /**
+     * Upload the location of the user.
+     */
+    fun uploadLocation(latitude: Double, longitude: Double) {
+        authenticatedUser?.value?.let { user ->
+            database.child(USER_LOCATION_PATH).child(user.id).setValue(
+                mapOf(
+                    USER_LOCATION_TIMESTAMP_KEY to Calendar.getInstance().timeInMillis,
+                    USER_LOCATION_LATITUDE_KEY to latitude,
+                    USER_LOCATION_LONGITUDE_KEY to longitude
+                )
+            )
+        }
+    }
+
+    /**
+     * Gets the locations of the friends.
+     */
+    fun getFriendsLocation(owner: LifecycleOwner?): LiveData<Map<String, Triple<Long, Double, Double>>> {
+        val result = MutableLiveData<Map<String, Triple<Long, Double, Double>>>(mapOf())
+        val ref = database.child(USER_LOCATION_PATH)
+        val listener = ref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val map = mutableMapOf<String, Pair<Int, Int>>()
+                snapshot.children.forEach { child ->
+                    child.key?.also {
+                        val newLocation = it to Triple(
+                            child.child(USER_LOCATION_TIMESTAMP_KEY).value as Long,
+                            child.child(USER_LOCATION_LATITUDE_KEY).value as Double,
+                            child.child(USER_LOCATION_LONGITUDE_KEY).value as Double,
+                        )
+                        result.value = result.value?.plus(newLocation) ?: mapOf(newLocation)
+                    }
+                }
+
+                if (owner == null) {
+                    ref.removeEventListener(this)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                if (owner == null) {
+                    ref.removeEventListener(this)
+                }
+            }
+        })
+
+        owner?.lifecycle?.addObserver(LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_DESTROY -> ref.removeEventListener(listener)
+                else -> {}
+            }
+        })
+
+        return result
     }
 }

@@ -8,4 +8,5 @@ import android.net.Uri
 sealed class UploadEvent {
     class SetPostURI(val uri: Uri) : UploadEvent()
     object Post : UploadEvent()
+    object PostStory : UploadEvent()
 }

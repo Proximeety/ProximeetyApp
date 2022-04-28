@@ -1,6 +1,0 @@
-<resources>
-    <!-- Test tags for Upload View-->
-    <string name="TT_UV_take_picture_button">TT_UV_take_picture_button</string>
-    <string name="TT_UV_post_button">TT_UV_post_button</string>
-    <string name="TT_UV_cancel_post_button">TT_UV_cancel_post_button</string>
-</resources>

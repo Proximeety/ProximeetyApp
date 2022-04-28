@@ -8,6 +8,8 @@ import ch.proximeety.proximeety.presentation.navigation.graphs.MainNavigationCom
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,6 +26,9 @@ class AuthenticationHomeViewModel @Inject constructor(
     private val _eventFlow = MutableSharedFlow<AuthenticationHomeUIEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
+    private val _currentPage = MutableStateFlow(0)
+    val currentPage: StateFlow<Int> get() = _currentPage
+
     fun onEvent(event: AuthenticationHomeEvent) {
         when (event) {
             is AuthenticationHomeEvent.AuthenticateWithGoogle -> {
@@ -34,5 +39,9 @@ class AuthenticationHomeViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun setCurrentPage(currentPage: Int) {
+        _currentPage.value = currentPage
     }
 }

@@ -1,16 +1,20 @@
 package ch.proximeety.proximeety.data.repositories
 
+import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import ch.proximeety.proximeety.core.entities.Post
+import ch.proximeety.proximeety.core.entities.Story
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.core.repositories.UserRepository
 import ch.proximeety.proximeety.data.sources.BluetoothService
 import ch.proximeety.proximeety.data.sources.FirebaseAccessObject
+import ch.proximeety.proximeety.data.sources.LocationService
 import ch.proximeety.proximeety.util.SyncActivity
 import ch.proximeety.proximeety.util.extensions.await
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
@@ -19,7 +23,8 @@ import kotlinx.coroutines.launch
  */
 class UserRepositoryImplementation(
     private val firebaseAccessObject: FirebaseAccessObject,
-    private val bluetoothService: BluetoothService
+    private val bluetoothService: BluetoothService,
+    private val locationService: LocationService
 ) : UserRepository {
 
     private lateinit var activity: SyncActivity
@@ -89,6 +94,51 @@ class UserRepositoryImplementation(
 
     override suspend fun post(url: String) {
         firebaseAccessObject.post(url)
+    }
+
+    override suspend fun deletePost(postId: String) {
+        firebaseAccessObject.deletePost(postId)
+    }
+
+    override suspend fun postStory(url: String) {
+        firebaseAccessObject.postStory(url)
+    }
+
+    override suspend fun togglePostLike(post: Post) {
+        firebaseAccessObject.togglePostLike(post)
+    }
+
+    override suspend fun isPostLiked(post: Post): Boolean {
+        return firebaseAccessObject.isPostLiked(post)
+    }
+
+    override suspend fun getStoriesByUserId(id: String): List<Story> {
+        return firebaseAccessObject.getStoriesByUserID(id)
+    }
+
+    override suspend fun downloadStory(story: Story): Story {
+        return firebaseAccessObject.downloadStory(story)
+    }
+
+    override fun startLiveLocation() {
+        activity.lifecycleScope.launch {
+            var liveLocation: LiveData<Location?>? = null
+
+            while (liveLocation == null) {
+                delay(1000)
+                liveLocation = locationService.getLiveLocation(activity)
+            }
+
+            liveLocation.observe(activity) {
+                if (it != null) {
+                    firebaseAccessObject.uploadLocation(it.latitude, it.longitude)
+                }
+            }
+        }
+    }
+
+    override fun getFriendsLocations(): LiveData<Map<String, Triple<Long, Double, Double>>> {
+        return firebaseAccessObject.getFriendsLocation(activity)
     }
 
 }

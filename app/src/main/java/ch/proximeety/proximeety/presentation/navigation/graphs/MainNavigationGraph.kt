@@ -6,10 +6,12 @@ import androidx.navigation.compose.navigation
 import ch.proximeety.proximeety.presentation.views.conversationList.ConversationListView
 import ch.proximeety.proximeety.presentation.views.friends.FriendsView
 import ch.proximeety.proximeety.presentation.views.home.HomeView
-import ch.proximeety.proximeety.presentation.views.mapView.MapView
+import ch.proximeety.proximeety.presentation.views.map.MapView
 import ch.proximeety.proximeety.presentation.views.messagesScreen.MessagesView
 import ch.proximeety.proximeety.presentation.views.nearbyUsers.NearbyUsersView
 import ch.proximeety.proximeety.presentation.views.profile.ProfileView
+import ch.proximeety.proximeety.presentation.views.settings.SettingsView
+import ch.proximeety.proximeety.presentation.views.stories.StoriesView
 import ch.proximeety.proximeety.presentation.views.upload.UploadView
 
 /**
@@ -51,7 +53,7 @@ fun NavGraphBuilder.mainNavigationGraph() {
         ) {
             MessagesView()
         }
-        
+
         composable(
             route = MainNavigationCommands.upload.route
         ) {
@@ -61,6 +63,17 @@ fun NavGraphBuilder.mainNavigationGraph() {
             route = MainNavigationCommands.friends.route
         ) {
             FriendsView()
+        }
+        composable(
+            route = MainNavigationCommands.settings.route
+        ) {
+            SettingsView()
+        }
+        composable(
+            route = MainNavigationCommands.stories.route,
+            arguments = MainNavigationCommands.stories.arguments
+        ) {
+            StoriesView()
         }
     }
 }

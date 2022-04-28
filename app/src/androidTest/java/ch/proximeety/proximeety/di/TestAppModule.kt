@@ -42,9 +42,18 @@ class TestAppModule {
             getFriends = GetFriends(repository),
             getNearbyUsers = GetNearbyUsers(repository),
             post = Post(repository),
+            deletePost = DeletePost(repository),
+            togglePostLike = TogglePostLike(repository),
+            isPostLiked = IsPostLiked(repository),
             setActivity = SetActivity(repository),
             setAuthenticatedUserVisible = SetAuthenticatedUserVisible(repository),
-            signOut = SignOut(repository)
+            signOut = SignOut(repository),
+            getPostUserId = GetPostUserId(repository),
+            downloadStory = DownloadStory(repository),
+            postStory = PostStory(repository),
+            getStoriesByUserId = GetStoriesByUserId(repository),
+            getFriendsLocations = GetFriendsLocations(repository),
+            startLiveLocation = StartLiveLocation(repository),
         )
     }
 }

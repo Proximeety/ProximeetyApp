@@ -11,10 +11,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ch.proximeety.proximeety.R
 import ch.proximeety.proximeety.core.entities.User
 import coil.compose.rememberImagePainter
 
@@ -24,7 +22,7 @@ fun UserCard(user: User, onUserClick: (String) -> Unit) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable{onUserClick(user.id)},
+                .clickable { onUserClick(user.id) },
             shape = MaterialTheme.shapes.medium,
             elevation = 3.dp
         ) {

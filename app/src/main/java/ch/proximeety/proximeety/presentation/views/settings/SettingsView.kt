@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import ch.proximeety.proximeety.presentation.views.settings.components.HomeTopBar
+import ch.proximeety.proximeety.util.SafeArea
 
 /**
  * The View for the Settings.
@@ -29,14 +29,18 @@ fun SettingsView(
 
     val context = LocalContext.current
 
-    Scaffold(topBar = {HomeTopBar()}) {
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(bottom = 15.dp)) {
-            SingleSettingSwitch()
-            SingleSettingSlider()
-            SingleSettingDropdown()
+    SafeArea {
+        Scaffold {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .padding(bottom = 15.dp)
+            ) {
+                SingleSettingSwitch()
+                SingleSettingSlider()
+                SingleSettingDropdown()
+            }
         }
     }
 
@@ -49,30 +53,42 @@ fun SingleSettingDropdown(/*TODO link setting*/) {
     var expanded by remember { mutableStateOf(false) }
     val items = listOf("A", "B", "C", "D")
     var selectedIndex by remember { mutableStateOf(0) }
-    Row(modifier = Modifier
-        .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(text = "Test with Dropdown Menu", fontSize = 20.sp,
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = "Test with Dropdown Menu", fontSize = 20.sp,
             modifier = Modifier
-                .padding(start = 15.dp))
-        Box(modifier = Modifier.fillMaxSize()
-            .padding(start =  20.dp, end = 5.dp)
-            .wrapContentSize(Alignment.TopStart)) {
-            Text(items[selectedIndex],
-                modifier = Modifier.fillMaxWidth()
+                .padding(start = 15.dp)
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = 20.dp, end = 5.dp)
+                .wrapContentSize(Alignment.TopStart)
+        ) {
+            Text(
+                items[selectedIndex],
+                modifier = Modifier
+                    .fillMaxWidth()
                     .clickable(onClick = { expanded = true })
                     .background(Color.White)
                     .border(color = Color.Black, width = 2.dp, shape = RoundedCornerShape(5.dp))
-                    .padding(all = 5.dp))
-            DropdownMenu(expanded = expanded,
+                    .padding(all = 5.dp)
+            )
+            DropdownMenu(
+                expanded = expanded,
                 onDismissRequest = { expanded = false },
                 modifier = Modifier
-                    .background(Color.LightGray)) {
+                    .background(Color.LightGray)
+            ) {
                 items.forEachIndexed { index, s ->
                     DropdownMenuItem(onClick = {
                         selectedIndex = index
                         expanded = false
-                    }) {Text(text = s)}
+                    }) { Text(text = s) }
                 }
             }
         }
@@ -82,21 +98,27 @@ fun SingleSettingDropdown(/*TODO link setting*/) {
 @Preview
 @Composable
 fun SingleSettingSwitch(/*TODO link setting*/) {
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .width(75.dp),
-        horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(text = "Test with switch", fontSize = 20.sp,
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .width(75.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = "Test with switch", fontSize = 20.sp,
             modifier = Modifier
                 .align(CenterVertically)
-                .padding(start = 15.dp))
-        val checkState = remember {mutableStateOf(true)}
-        Switch(checked = checkState.value,
-        onCheckedChange = { checkState.value = it},
-        colors = SwitchDefaults.colors(Color.Black),
-        modifier = Modifier
-            .align(CenterVertically)
-            .padding(end = 15.dp))
+                .padding(start = 15.dp)
+        )
+        val checkState = remember { mutableStateOf(true) }
+        Switch(
+            checked = checkState.value,
+            onCheckedChange = { checkState.value = it },
+            colors = SwitchDefaults.colors(Color.Black),
+            modifier = Modifier
+                .align(CenterVertically)
+                .padding(end = 15.dp)
+        )
     }
 }
 
@@ -104,16 +126,22 @@ fun SingleSettingSwitch(/*TODO link setting*/) {
 @Preview
 @Composable
 fun SingleSettingSlider(/*TODO link setting*/) {
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .width(75.dp),) {
-        Text(text = "Test with slider", fontSize = 20.sp,
-            modifier = Modifier.padding(start = 15.dp))
-        var sliderPosition by remember {mutableStateOf(0f)}
-        Slider(steps = 10, valueRange = 0f..100f,
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .width(75.dp),
+    ) {
+        Text(
+            text = "Test with slider", fontSize = 20.sp,
+            modifier = Modifier.padding(start = 15.dp)
+        )
+        var sliderPosition by remember { mutableStateOf(0f) }
+        Slider(
+            steps = 10, valueRange = 0f..100f,
             modifier = Modifier.padding(end = 25.dp, start = 25.dp),
             value = sliderPosition,
-            onValueChange = { sliderPosition = it},
-            colors = SliderDefaults.colors(Color.Black, activeTrackColor = Color.Black))
+            onValueChange = { sliderPosition = it },
+            colors = SliderDefaults.colors(Color.Black, activeTrackColor = Color.Black)
+        )
     }
 }

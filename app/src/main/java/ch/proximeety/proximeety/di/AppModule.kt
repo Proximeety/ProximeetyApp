@@ -6,6 +6,7 @@ import ch.proximeety.proximeety.core.repositories.UserRepository
 import ch.proximeety.proximeety.data.repositories.UserRepositoryImplementation
 import ch.proximeety.proximeety.data.sources.BluetoothService
 import ch.proximeety.proximeety.data.sources.FirebaseAccessObject
+import ch.proximeety.proximeety.data.sources.LocationService
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
 import dagger.Module
 import dagger.Provides
@@ -41,11 +42,18 @@ class AppModule {
 
     @Provides
     @Singleton
+    fun provideLocationService(@ApplicationContext context: Context): LocationService {
+        return LocationService(context)
+    }
+
+    @Provides
+    @Singleton
     fun provideUserRepository(
         firebaseAccessObject: FirebaseAccessObject,
-        bluetoothService: BluetoothService
+        bluetoothService: BluetoothService,
+        locationService: LocationService
     ): UserRepository {
-        return UserRepositoryImplementation(firebaseAccessObject, bluetoothService)
+        return UserRepositoryImplementation(firebaseAccessObject, bluetoothService, locationService)
     }
 
     @Provides
@@ -61,9 +69,18 @@ class AppModule {
             getFriends = GetFriends(repository),
             getNearbyUsers = GetNearbyUsers(repository),
             post = Post(repository),
+            deletePost = DeletePost(repository),
+            togglePostLike = TogglePostLike(repository),
+            isPostLiked = IsPostLiked(repository),
             setActivity = SetActivity(repository),
             setAuthenticatedUserVisible = SetAuthenticatedUserVisible(repository),
-            signOut = SignOut(repository)
+            signOut = SignOut(repository),
+            getPostUserId = GetPostUserId(repository),
+            postStory = PostStory(repository),
+            getStoriesByUserId = GetStoriesByUserId(repository),
+            downloadStory = DownloadStory(repository),
+            startLiveLocation = StartLiveLocation(repository),
+            getFriendsLocations = GetFriendsLocations(repository),
         )
     }
 }

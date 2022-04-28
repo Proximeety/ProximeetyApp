@@ -3,32 +3,33 @@ package ch.proximeety.proximeety.presentation.views.upload
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Cancel
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
-import ch.proximeety.proximeety.R
 import ch.proximeety.proximeety.presentation.theme.spacing
 import ch.proximeety.proximeety.presentation.views.upload.components.CameraCapture
-import ch.proximeety.proximeety.util.SafeArea
+import ch.proximeety.proximeety.presentation.views.upload.components.PostPreview
+import ch.proximeety.proximeety.presentation.views.upload.components.StoryPreview
+import ch.proximeety.proximeety.util.lerp
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.calculateCurrentOffsetForPage
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlin.math.absoluteValue
 
 private val PICTURE_BUTTON_SIZE = 120.dp
 val EMPTY_IMAGE_URI: Uri = Uri.parse("file://dev/null")
@@ -37,8 +38,8 @@ val EMPTY_IMAGE_URI: Uri = Uri.parse("file://dev/null")
  * The Upload View.
  */
 @OptIn(
-    ExperimentalPermissionsApi::class, kotlinx.coroutines.ExperimentalCoroutinesApi::class,
-    coil.annotation.ExperimentalCoilApi::class
+    ExperimentalPermissionsApi::class, ExperimentalCoroutinesApi::class,
+    ExperimentalCoilApi::class, ExperimentalPagerApi::class
 )
 @Composable
 fun UploadView(
@@ -47,46 +48,21 @@ fun UploadView(
     val imageUri = viewModel.imageUri.value
 
     if (imageUri != EMPTY_IMAGE_URI) {
-        SafeArea {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Column(modifier = Modifier.padding(MaterialTheme.spacing.medium)) {
-                    Image(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(1f)
-                            .clip(MaterialTheme.shapes.large),
-                        painter = rememberImagePainter(imageUri),
-                        contentScale = ContentScale.Crop,
-                        contentDescription = "Captured image"
-                    )
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+        HorizontalPager(count = 2) { page ->
+
+            val image = rememberImagePainter(imageUri)
+
+            Box(modifier = Modifier.graphicsLayer {
+                val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
+                lerp(0.85f, 1f, 1f - pageOffset.coerceIn(0f, 1f)).also { scale ->
+                    scaleX = scale
+                    scaleY = scale
                 }
-                Row {
-                    IconButton(
-                        onClick = { viewModel.onEvent(UploadEvent.SetPostURI(EMPTY_IMAGE_URI)) },
-                        modifier = Modifier.testTag(stringResource(id = R.string.TT_UV_cancel_post_button))
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Cancel,
-                            contentDescription = "Cancel",
-                            modifier = Modifier.size(48.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
-                    IconButton(
-                        onClick = { viewModel.onEvent(UploadEvent.Post) },
-                        modifier = Modifier.testTag(stringResource(id = R.string.TT_UV_post_button))
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Check,
-                            contentDescription = "Upload",
-                            modifier = Modifier.size(48.dp)
-                        )
-                    }
+                alpha = lerp(0.5f, 1f, 1f - pageOffset.coerceIn(0f, 1f))
+            }) {
+                when (page) {
+                    0 -> PostPreview(image = image, viewModel = viewModel)
+                    1 -> StoryPreview(image = image, viewModel = viewModel)
                 }
             }
         }
