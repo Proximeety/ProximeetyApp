@@ -43,8 +43,6 @@ class ProfileViewModel @Inject constructor(
     private val _showDialog = MutableStateFlow(false)
     val showDialog: StateFlow<Boolean> = _showDialog.asStateFlow()
 
-
-
     init {
         savedStateHandle.get<String>("userId")?.also {
             _user.value = userInteractions.fetchUserById(it)
@@ -94,16 +92,12 @@ class ProfileViewModel @Inject constructor(
                 }
                 _showDialog.value = false
             }
+            is ProfileEvent.OnOpenDialogClicked -> {
+                _showDialog.value = true
+            }
+            is ProfileEvent.OnCloseDialog -> {
+                _showDialog.value = false
+            }
         }
     }
-
-    fun onOpenDialogClicked() {
-        _showDialog.value = true
-    }
-
-
-    fun onCloseDialog() {
-        _showDialog.value = false
-    }
-
 }

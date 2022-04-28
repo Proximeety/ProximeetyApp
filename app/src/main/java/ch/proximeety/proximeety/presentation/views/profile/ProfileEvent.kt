@@ -11,4 +11,6 @@ sealed class ProfileEvent {
     object SignOut : ProfileEvent()
     object NavigateToSettings : ProfileEvent()
     class DeletePost(val post: Post) : ProfileEvent()
+    object OnOpenDialogClicked: ProfileEvent()
+    object OnCloseDialog: ProfileEvent()
 }
