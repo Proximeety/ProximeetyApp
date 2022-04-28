@@ -386,17 +386,26 @@ class FirebaseAccessObject(
     }
 
     /**
-     * Delete a posts.
+     * Delete a post.
      *
      * @param postID the id of the picture (local file).
      */
     fun deletePost(postId: String) {
-        Log.d("UserRepositoryImplementaiton", "llega a deletePost")
         authenticatedUser?.value?.also { user ->
             database.child(POSTS_PATH).child(user.id).child(postId).removeValue()
         }
     }
 
+    /**
+     * Delete a story.
+     *
+     * @param storyId the id of the story (local file).
+     */
+    fun deleteStory(storyId: String) {
+        authenticatedUser?.value?.also { user ->
+            database.child(STORY_PATH).child(user.id).child(storyId).removeValue()
+        }
+    }
 
     /**
      * Downloads the content of a post. This must be used [Post.postURL] is null.
