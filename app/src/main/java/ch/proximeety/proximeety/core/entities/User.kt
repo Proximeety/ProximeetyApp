@@ -1,13 +1,19 @@
 package ch.proximeety.proximeety.core.entities
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import kotlinx.serialization.Serializable
+
 /**
  * Immutable representation of an user.
  */
+@Entity(tableName = "users")
+@Serializable
 data class User(
     /**
      * The unique id representing the user.
      */
-    val id: String,
+    @PrimaryKey val id: String,
     /**
      *  The display name of the user.
      */

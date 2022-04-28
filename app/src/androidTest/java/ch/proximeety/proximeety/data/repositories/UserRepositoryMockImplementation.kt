@@ -14,7 +14,13 @@ import ch.proximeety.proximeety.util.SyncActivity
 class UserRepositoryMockImplementation : UserRepository {
 
     private var user: User? = null
-    private var friends = mutableListOf<User>()
+    private var friends = mutableListOf<User>(
+        User(
+            id = "friendWithStoryId",
+            displayName = "friendWithStory",
+            hasStories = true,
+        )
+    )
     private var posts =
         mutableListOf<Post>(
             Post(
@@ -132,6 +138,7 @@ class UserRepositoryMockImplementation : UserRepository {
             "testUserId1" -> MutableLiveData(User("testUserId1", "User1"))
             "testUserId2" -> MutableLiveData(User("testUserId2", "User2"))
             "testUserId3" -> MutableLiveData(User("testUserId3", "User3"))
+            "friendWithStoryId" -> MutableLiveData(User("friendWithStoryId", "friendWithStory", hasStories = true))
             else -> MutableLiveData()
         }
     }
@@ -179,8 +186,14 @@ class UserRepositoryMockImplementation : UserRepository {
                 posts.remove(post)
             }
         }
+    }
 
-
+    override suspend fun deleteStory(storyId: String) {
+        stories.forEach { story ->
+            if (story.id == storyId) {
+                stories.remove(story)
+            }
+        }
     }
 
     override suspend fun postStory(url: String) {

@@ -109,9 +109,13 @@ class HomeViewModel @Inject constructor(
         refreshJob?.cancel()
         _isRefreshing.value = true
         refreshJob = viewModelScope.launch(Dispatchers.IO) {
-            _friendsWithStories.value = userInteractions.getFriends().filter { it.hasStories }
-            _posts.value = userInteractions.getFeed()
-            _isRefreshing.value = false
+            val friendsWithStories = userInteractions.getFriends().filter { it.hasStories }
+            val feed = userInteractions.getFeed()
+            viewModelScope.launch(Dispatchers.Main) {
+                _friendsWithStories.value = friendsWithStories
+                _posts.value = feed
+                _isRefreshing.value = false
+            }
         }
     }
 }

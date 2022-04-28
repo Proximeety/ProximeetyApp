@@ -56,7 +56,6 @@ class FriendsViewTest {
     @Test
     fun friendListTest() {
         composeTestRule.onNodeWithText("Test User").assertExists()
-        composeTestRule.onNodeWithText("null").assertExists()
     }
 
     @Test
