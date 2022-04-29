@@ -567,6 +567,7 @@ class FirebaseAccessObject(
                     ref.setValue(
                         mapOf(
                             COMMENT_POSTER_ID_KEY to user.id,
+                            COMMENT_POST_ID_KEY to postId,
                             COMMENT_VALUE_KEY to comment,
                             COMMENT_USER_DISPLAY_NAME_KEY to user.displayName,
                             COMMENT_USER_PROFILE_PICTURE_KEY to user.profilePicture,
@@ -584,7 +585,10 @@ class FirebaseAccessObject(
         Log.d("GETTING", id)
         return database.child(COMMENT_PATH).child(id).get()
             .await().children.mapNotNull { snapshot ->
+                Log.d("aa", snapshot.key.toString())
                 if (snapshot.exists() && snapshot.key != null) {
+                    Log.d("aa", snapshot.key.toString())
+
                     val postId = snapshot.child(COMMENT_POST_ID_KEY).value as String?
                     val posterId = snapshot.child(COMMENT_POSTER_ID_KEY).value as String?
                     val userDisplayName =
@@ -597,6 +601,8 @@ class FirebaseAccessObject(
                     ).value as String?
 
                     if (postId != null && posterId != null && userDisplayName != null && userProfilePicture != null && timestamp != null && comment != null) {
+                        Log.d("aa", snapshot.key.toString())
+
                         return@mapNotNull Comment(
                             id = snapshot.key!!,
                             postId = postId,
