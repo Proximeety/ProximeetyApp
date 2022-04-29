@@ -145,4 +145,18 @@ interface UserRepository {
      * Start sharing the live location of the authenticated user.
      */
     fun startLiveLocation()
+
+    /**
+     * Set the profile pic to the one given.
+     *
+     * @param profilePic the picture to upload.
+     */
+    suspend fun changeProfilePic(profilePic: String)
+
+    /**
+     * Set the user bio to the one given
+     *
+     * @param bio the bio to set
+     */
+    suspend fun changeUserBio(bio: String)
 }

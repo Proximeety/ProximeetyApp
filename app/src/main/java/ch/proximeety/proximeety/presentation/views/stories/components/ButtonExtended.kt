@@ -27,7 +27,7 @@ fun ButtonExtended(viewModel: StoriesViewModel, onDelete: () -> Unit){
         Icon(imageVector = Icons.Rounded.MoreHoriz, contentDescription = "More")
     }
 
-    Column() {
+    Column {
         DropdownMenu(
             expanded = menuExpanded.value,
             onDismissRequest = {

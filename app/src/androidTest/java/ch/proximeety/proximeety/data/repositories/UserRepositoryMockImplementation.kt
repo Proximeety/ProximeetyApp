@@ -261,4 +261,10 @@ class UserRepositoryMockImplementation : UserRepository {
 
     override fun startLiveLocation() {
     }
+
+    override suspend fun changeProfilePic(profilePic: String) {
+    }
+
+    override suspend fun changeUserBio(bio: String) {
+    }
 }

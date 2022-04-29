@@ -213,4 +213,12 @@ class UserRepositoryImplementation(
         return firebaseAccessObject.getFriendsLocation(activity)
     }
 
+    override suspend fun changeProfilePic(profilePic: String) {
+        firebaseAccessObject.setProfilePic(profilePic)
+    }
+
+    override suspend fun changeUserBio(bio: String) {
+        firebaseAccessObject.setUserBio(bio)
+    }
+
 }

@@ -29,13 +29,11 @@ class SettingsViewTest {
 
     private lateinit var viewModel: SettingsViewModel
 
-
     @Inject
     lateinit var userInteractions: UserInteractions
 
     @Inject
     lateinit var navigationManager: NavigationManager
-
 
     @Before
     fun setup() {
@@ -45,7 +43,7 @@ class SettingsViewTest {
             userInteractions.authenticateWithGoogle()
         }
 
-        viewModel = SettingsViewModel(navigationManager)
+        viewModel = SettingsViewModel(navigationManager, userInteractions)
 
         composeTestRule.setContent {
             ProximeetyTheme {

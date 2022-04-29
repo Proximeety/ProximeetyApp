@@ -1,22 +1,38 @@
 package ch.proximeety.proximeety.presentation.views.settings
 
+import android.media.audiofx.Equalizer
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.Alignment.Companion.End
+import androidx.compose.ui.Alignment.Companion.Start
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import ch.proximeety.proximeety.presentation.views.profile.ProfileEvent
+import ch.proximeety.proximeety.presentation.views.upload.UploadEvent
 import ch.proximeety.proximeety.util.SafeArea
+
+val EMPTY_PROFILE_PIC: String = ""
+val EMPTY_BIO: String = ""
 
 /**
  * The View for the Settings.
@@ -37,15 +53,77 @@ fun SettingsView(
                     .fillMaxHeight()
                     .padding(bottom = 15.dp)
             ) {
-                SingleSettingSwitch()
-                SingleSettingSlider()
-                SingleSettingDropdown()
+                SetProfilePicture(viewModel,"Set A New Profile Picture")
+                SetUserBio(viewModel, "Set A New Bio")
             }
         }
     }
 
 
 }
+
+@Composable
+fun SetUserBio(viewModel: SettingsViewModel, setting: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .width(75.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = setting, fontSize = 20.sp,
+            modifier = Modifier
+                .align(CenterVertically)
+                .padding(start = 15.dp)
+        )
+
+        var bio by remember { mutableStateOf(TextFieldValue("")) }
+        OutlinedTextField(
+            value = bio,
+
+            modifier = Modifier.align(CenterVertically).padding(end = 10.dp).size(width = 220.dp, height = 70.dp),
+            label = { Text(text = "Write The Bio Here") },
+            onValueChange = {
+                bio = it
+                viewModel.onEvent(SettingsEvent.setBio(it.text))
+                viewModel.onEvent(SettingsEvent.ChangeBio)
+            }
+        )
+    }
+}
+
+@Composable
+fun SetProfilePicture(viewModel: SettingsViewModel, setting: String) {
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri: Uri? ->
+            uri?.also { viewModel.onEvent(SettingsEvent.setProfilePicLink(it.toString()))
+                viewModel.onEvent(SettingsEvent.ChangeProfilePic)}
+        }
+    )
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .width(75.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = setting, fontSize = 20.sp,
+            modifier = Modifier
+                .align(CenterVertically)
+                .padding(start = 15.dp)
+        )
+        IconButton(onClick = {launcher.launch("image/*")}) {
+            Icon(
+                imageVector = Icons.Default.ChevronRight,
+                contentDescription = setting,
+                modifier = Modifier
+                    .align(CenterVertically)
+            )
+        }
+    }
+}
+
 
 @Preview
 @Composable

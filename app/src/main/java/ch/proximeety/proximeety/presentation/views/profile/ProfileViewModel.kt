@@ -4,7 +4,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
 import ch.proximeety.proximeety.core.entities.Post
-import ch.proximeety.proximeety.core.entities.Story
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
@@ -13,9 +12,6 @@ import ch.proximeety.proximeety.presentation.navigation.graphs.MainNavigationCom
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -41,12 +37,6 @@ class ProfileViewModel @Inject constructor(
     private val _friends = mutableStateOf<List<User>>(listOf())
     val friends: State<List<User>> = _friends
 
-    private val _showDialog = MutableStateFlow(false)
-    val showDialog: StateFlow<Boolean> = _showDialog.asStateFlow()
-
-    private val _stories = mutableStateOf<List<Story>>(listOf())
-    val stories: State<List<Story>> = _stories
-
     init {
         savedStateHandle.get<String>("userId")?.also {
             _user.value = userInteractions.fetchUserById(it)
@@ -55,11 +45,9 @@ class ProfileViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 val posts = userInteractions.getPostUserId(it)
                 val friends = userInteractions.getFriends()
-                val stories = userInteractions.getStoriesByUserId(it)
                 viewModelScope.launch(Dispatchers.Main) {
                     _posts.value = posts
                     _friends.value = friends
-                    _stories.value = stories
                 }
             }
         }
@@ -92,25 +80,8 @@ class ProfileViewModel @Inject constructor(
                     }
                 }
             }
-            is ProfileEvent.DeletePost -> {
-                viewModelScope.launch(Dispatchers.IO) {
-                    userInteractions.deletePost(event.post.id)
-                }
-                _showDialog.value = false
-            }
-            is ProfileEvent.OnStoryClick -> {
-                if (stories.value.isNotEmpty()) {
-                    user.value.value?.id?.also {
-                        navigationManager.navigate(MainNavigationCommands.storiesWithArgs(it))
-                    }
-                }
-            }
-             is ProfileEvent.OnOpenDialogClicked -> {
-                _showDialog.value = true
-            }
-            is ProfileEvent.OnCloseDialog -> {
-                _showDialog.value = false
-            }
+
         }
-    }  
+    }
+
 }

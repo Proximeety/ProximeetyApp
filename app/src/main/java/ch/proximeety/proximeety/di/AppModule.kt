@@ -124,6 +124,8 @@ class AppModule {
             downloadStory = DownloadStory(repository),
             startLiveLocation = StartLiveLocation(repository),
             getFriendsLocations = GetFriendsLocations(repository),
+            changeProfilePic = ChangeProfilePic(repository),
+            changeUserBio = ChangeUserBio(repository)
         )
     }
 }

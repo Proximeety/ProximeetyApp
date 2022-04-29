@@ -58,6 +58,7 @@ class FirebaseAccessObject(
         private const val USER_GIVEN_NAME_KEY = "givenName"
         private const val USER_FAMILY_NAME_KEY = "familyName"
         private const val USER_EMAIL_KEY = "email"
+        private const val USER_BIO = "bio"
         private const val USER_PROFILE_PICTURE_KEY = "profilePicture"
         private const val USER_HAS_STORY_KEY = "hasStory"
 
@@ -213,6 +214,7 @@ class FirebaseAccessObject(
                             displayName = snapshot.child(USER_DISPLAY_NAME_KEY).value as String?
                                 ?: id,
                             givenName = snapshot.child(USER_GIVEN_NAME_KEY).value as String?,
+                            bio = snapshot.child(USER_BIO).value as String?,
                             familyName = snapshot.child(USER_FAMILY_NAME_KEY).value as String?,
                             email = snapshot.child(USER_EMAIL_KEY).value as String?,
                             profilePicture = snapshot.child(USER_PROFILE_PICTURE_KEY).value as String?,
@@ -560,4 +562,37 @@ class FirebaseAccessObject(
 
         return result
     }
+
+    /**
+     * Set the user profile pic
+     *
+     * @param profilePic the profile picture URL.
+     */
+    suspend fun setProfilePic(profilePic: String) {
+        authenticatedUser?.value?.let { user ->
+            val ref = database.child(USER_PATH).child(user.id).child(USER_PROFILE_PICTURE_KEY)
+            try {
+                ref.setValue(profilePic)
+            } catch (e: Exception) {
+                Log.e(TAG, e.message.toString())
+            }
+        }
+    }
+
+    /**
+     * Set the user profile bio
+     *
+     * @param bio the profile picture URL.
+     */
+    suspend fun setUserBio(bio: String) {
+        authenticatedUser?.value?.let { user ->
+            val ref = database.child(USER_PATH).child(user.id).child(USER_BIO)
+            try {
+                ref.setValue(bio)
+            } catch (e: Exception) {
+                Log.e(TAG, e.message.toString())
+            }
+        }
+    }
+
 }
