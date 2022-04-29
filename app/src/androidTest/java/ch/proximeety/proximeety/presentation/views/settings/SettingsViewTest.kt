@@ -54,8 +54,7 @@ class SettingsViewTest {
 
     @Test
     fun textIsDisplayed() {
-        composeTestRule.onNodeWithText(text = "Test with switch").assertExists()
-        composeTestRule.onNodeWithText(text = "Test with slider").assertExists()
-        composeTestRule.onNodeWithText(text = "Test with Dropdown Menu").assertExists()
+        composeTestRule.onNodeWithText(text = "Set A New Profile Picture").assertExists()
+        composeTestRule.onNodeWithText(text = "Set A New Bio").assertExists()
     }
 }
