@@ -96,7 +96,8 @@ fun StoriesView(
                     ).fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Row {
+
+                    Row() {
                         Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
                         Image(
                             painter = rememberImagePainter(user.value?.profilePicture),

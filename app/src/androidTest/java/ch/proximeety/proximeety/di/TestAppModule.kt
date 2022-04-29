@@ -57,6 +57,7 @@ class TestAppModule {
             startLiveLocation = StartLiveLocation(repository),
             changeProfilePic = ChangeProfilePic(repository),
             changeUserBio = ChangeUserBio(repository)
+
         )
     }
 }

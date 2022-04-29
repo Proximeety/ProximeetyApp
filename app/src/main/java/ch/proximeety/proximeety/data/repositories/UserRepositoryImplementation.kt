@@ -220,5 +220,4 @@ class UserRepositoryImplementation(
     override suspend fun changeUserBio(bio: String) {
         firebaseAccessObject.setUserBio(bio)
     }
-
 }

@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.proximeety.proximeety.core.entities.Post
 import ch.proximeety.proximeety.presentation.theme.spacing
+import ch.proximeety.proximeety.presentation.views.profile.components.*
 import ch.proximeety.proximeety.util.SafeArea
 import coil.compose.rememberImagePainter
 
@@ -60,13 +61,17 @@ fun ProfileView(
                     .padding(top = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                ProfilePic(user.value?.profilePicture, user.value?.givenName)
+                ProfilePic(
+                    picUrl = user.value?.profilePicture,
+                    displayName = user.value?.givenName,
+                    onStoryClick = { viewModel.onEvent(ProfileEvent.OnStoryClick) }
+                )
                 Text(
                     text = user.value?.displayName.toString(),
                     fontSize = 30.sp,
                     modifier = Modifier.padding(top = 15.dp)
                 )
-                user.value?.bio?.let { UserBio(Modifier.padding(top = 20.dp, bottom = 15.dp), it) }
+                user.value?.bio?.let { UserBio(Modifier.padding(bottom = 20.dp), it) }
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -84,6 +89,27 @@ fun ProfileView(
                 } else {
                     Button(onClick = { viewModel.onEvent(ProfileEvent.AddAsFriend) }) {
                         Text(text = "Add")
+                    }
+                }
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+                Box(modifier = Modifier.padding(horizontal = MaterialTheme.spacing.small)) {
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(100.dp),
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall),
+                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall)
+                    ) {
+                        items(viewModel.posts.value) {
+                            SideEffect {
+                                if (it.postURL == null) {
+                                    viewModel.onEvent(ProfileEvent.DownloadPost(it))
+                                }
+                            }
+                            SinglePost(
+                                post = it,
+                                viewModel = viewModel,
+                                onDelete = { viewModel.onEvent(ProfileEvent.DeletePost(it)) }
+                            )
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))

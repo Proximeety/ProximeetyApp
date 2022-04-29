@@ -22,6 +22,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
+
     private val navigationManager: NavigationManager,
     private val userInteractions: UserInteractions
 ) : ViewModel() {
@@ -54,3 +55,4 @@ class SettingsViewModel @Inject constructor(
         }
     }
 }
+

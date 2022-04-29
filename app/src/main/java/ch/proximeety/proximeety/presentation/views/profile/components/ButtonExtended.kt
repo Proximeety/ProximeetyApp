@@ -1,4 +1,4 @@
-package ch.proximeety.proximeety.presentation.views.stories.components
+package ch.proximeety.proximeety.presentation.views.profile.components
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
@@ -12,21 +12,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ch.proximeety.proximeety.presentation.views.stories.StoriesEvent
-import ch.proximeety.proximeety.presentation.views.stories.StoriesViewModel
+import ch.proximeety.proximeety.presentation.views.profile.ProfileEvent
+import ch.proximeety.proximeety.presentation.views.profile.ProfileViewModel
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun ButtonExtended(viewModel: StoriesViewModel, onDelete: () -> Unit){
+fun ButtonExtended(viewModel: ProfileViewModel, onDelete: () -> Unit){
     val menuExpanded = remember { mutableStateOf(false) }
     val showDialog = remember { mutableStateOf(false) }
-
-    val options = arrayOf("Delete Story", "More")
+    val options = arrayOf("Delete post", "More")
 
     IconButton( onClick = { menuExpanded.value = true }) {
         Icon(imageVector = Icons.Rounded.MoreHoriz, contentDescription = "More")
     }
-
     Column() {
         DropdownMenu(
             expanded = menuExpanded.value,
@@ -38,7 +36,7 @@ fun ButtonExtended(viewModel: StoriesViewModel, onDelete: () -> Unit){
             DropdownMenuItem(onClick = {
                 menuExpanded.value = false
                 showDialog.value = true
-                viewModel.onEvent(StoriesEvent.OnOpenDialogClicked)
+                viewModel.onEvent(ProfileEvent.OnOpenDialogClicked)
             }) {
                 Text(text = options[0])
             }
@@ -47,12 +45,11 @@ fun ButtonExtended(viewModel: StoriesViewModel, onDelete: () -> Unit){
             }
         }
     }
-
     if (showDialog.value) {
         val showDialogState = viewModel.showDialog.collectAsState()
         SimpleAlertDialog(
             show = showDialogState,
-            onDismiss = { viewModel.onEvent(StoriesEvent.OnCloseDialog) },
+            onDismiss = { viewModel.onEvent(ProfileEvent.OnCloseDialog) },
             onConfirm = onDelete
         )
     }
