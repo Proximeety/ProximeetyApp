@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ch.proximeety.proximeety.presentation.components.SimpleAlertDialog
 import ch.proximeety.proximeety.presentation.views.stories.StoriesEvent
 import ch.proximeety.proximeety.presentation.views.stories.StoriesViewModel
 
@@ -59,7 +60,9 @@ fun ButtonExtended(viewModel: StoriesViewModel, onDelete: () -> Unit){
         SimpleAlertDialog(
             show = showDialogState,
             onDismiss = { viewModel.onEvent(StoriesEvent.OnCloseDialog) },
-            onConfirm = onDelete
+            onConfirm = onDelete,
+            title = "Delete story",
+            question = "Do you want to continue?"
         )
     }
 }
