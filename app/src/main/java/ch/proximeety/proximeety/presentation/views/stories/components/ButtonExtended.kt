@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ch.proximeety.proximeety.presentation.views.stories.StoriesEvent
@@ -23,30 +24,35 @@ fun ButtonExtended(viewModel: StoriesViewModel, onDelete: () -> Unit){
 
     val options = arrayOf("Delete Story", "More")
 
-    IconButton( onClick = { menuExpanded.value = true }) {
-        Icon(imageVector = Icons.Rounded.MoreHoriz, contentDescription = "More")
-    }
+    Column(
+        horizontalAlignment = Alignment.End
+    ) {
+        IconButton( onClick = { menuExpanded.value = true }) {
+            Icon(imageVector = Icons.Rounded.MoreHoriz, contentDescription = "More")
+        }
 
-    Column() {
-        DropdownMenu(
-            expanded = menuExpanded.value,
-            onDismissRequest = {
-                menuExpanded.value = false
-            },
-            modifier = Modifier.width(200.dp)
-        ) {
-            DropdownMenuItem(onClick = {
-                menuExpanded.value = false
-                showDialog.value = true
-                viewModel.onEvent(StoriesEvent.OnOpenDialogClicked)
-            }) {
-                Text(text = options[0])
-            }
-            DropdownMenuItem(onClick = {  }) {
-                Text(text = options[1])
+        Column() {
+            DropdownMenu(
+                expanded = menuExpanded.value,
+                onDismissRequest = {
+                    menuExpanded.value = false
+                },
+                modifier = Modifier.width(200.dp)
+            ) {
+                DropdownMenuItem(onClick = {
+                    menuExpanded.value = false
+                    showDialog.value = true
+                    viewModel.onEvent(StoriesEvent.OnOpenDialogClicked)
+                }) {
+                    Text(text = options[0])
+                }
+                DropdownMenuItem(onClick = {  }) {
+                    Text(text = options[1])
+                }
             }
         }
     }
+
 
     if (showDialog.value) {
         val showDialogState = viewModel.showDialog.collectAsState()
