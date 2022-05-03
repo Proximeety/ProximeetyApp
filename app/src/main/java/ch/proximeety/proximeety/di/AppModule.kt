@@ -106,6 +106,7 @@ class AppModule {
             authenticateWithGoogle = AuthenticateWithGoogle(repository),
             downloadPost = DownloadPost(repository),
             fetchUserById = FetchUserById(repository),
+            fetchUsersLikedByPostId = FetchUsersLikedByPostId(repository),
             getAuthenticatedUser = GetAuthenticatedUser(repository),
             getFeed = GetFeed(repository),
             getFriends = GetFriends(repository),

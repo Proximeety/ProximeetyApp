@@ -128,6 +128,14 @@ class UserRepositoryImplementation(
         return firebaseAccessObject.fetchUserById(id, activity)
     }
 
+    override fun fetchUsersLikedByPostId(userId: String, id: String): LiveData<List<User>> {
+        if (!connectivityManager.isConnected()) {
+            //return friendsCacheDao.getFriendsLikedPost(id) // TODO: implement this caching fun
+        }
+
+        return firebaseAccessObject.fetchUsersLikedPost(userId, id)
+    }
+
     override suspend fun addFriend(id: String) {
         firebaseAccessObject.addFriend(id)
     }

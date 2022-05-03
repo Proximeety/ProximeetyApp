@@ -242,6 +242,28 @@ class FirebaseAccessObject(
         return user
     }
 
+    fun fetchUsersLikedPost(userId: String, id: String): LiveData<List<User>> {
+        val users = MutableLiveData(listOf<User>())
+        val ref = database.child(POSTS_PATH).child(userId).child(id)
+        val listener = ref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    for (likedUserId in snapshot.child(POST_LIKES_KEY).children.mapNotNull{it.key as String}) {
+                        val user = fetchUserById(likedUserId, null)
+                        if (user != null) {
+                            users.value = users.value!!.plus(user.value!!)
+                        }
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e(TAG, error.message)
+            }
+        })
+        return users
+    }
+
     /**
      * Adds a friend to the authenticated user.
      * @param id the id of the friend.

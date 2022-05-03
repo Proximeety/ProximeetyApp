@@ -8,6 +8,7 @@ data class UserInteractions(
     val authenticateWithGoogle: AuthenticateWithGoogle,
     val downloadPost: DownloadPost,
     val fetchUserById: FetchUserById,
+    val fetchUsersLikedByPostId: FetchUsersLikedByPostId,
     val getAuthenticatedUser: GetAuthenticatedUser,
     val getFeed: GetFeed,
     val getFriends: GetFriends,

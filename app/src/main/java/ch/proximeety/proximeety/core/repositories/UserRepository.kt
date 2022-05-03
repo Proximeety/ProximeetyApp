@@ -51,6 +51,14 @@ interface UserRepository {
     fun fetchUserById(id: String): LiveData<User?>
 
     /**
+     * Get a list of users who liked a post
+     *
+     * @param id is the posterId
+     * @return the user as a LiveData list
+     */
+    fun fetchUsersLikedByPostId(userId: String, id: String): LiveData<List<User>>
+
+    /**
      * Add user as friend.
      *
      * @param id the id of the user to add as friend.

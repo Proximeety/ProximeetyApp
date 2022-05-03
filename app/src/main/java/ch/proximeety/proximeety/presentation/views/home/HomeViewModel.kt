@@ -2,6 +2,7 @@ package ch.proximeety.proximeety.presentation.views.home
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.proximeety.proximeety.core.entities.Post
@@ -32,6 +33,9 @@ class HomeViewModel @Inject constructor(
 
     private val _posts = mutableStateOf<List<Post>>(listOf())
     var posts: State<List<Post>> = _posts
+
+    private val _usersLikedPosts = mutableStateOf<Map<String, List<User>>>(mapOf())
+    val usersLikedPosts: State<Map<String, List<User>>> = _usersLikedPosts
 
     private var refreshJob: Job? = null
     private var downloadJob: Job? = null
@@ -102,8 +106,12 @@ class HomeViewModel @Inject constructor(
                 )
                 _posts.value = newList.toList()
             }
-            is HomeEvent.fetchUsersLiked -> {
-                val users : List<User>?
+            is HomeEvent.FetchUsersLiked -> {
+                if (!_usersLikedPosts.value.containsKey(event.post.id)) {
+                    val map = _usersLikedPosts.value.toMutableMap()
+                    map[event.post.id] = userInteractions.fetchUsersLikedByPostId(event.post.posterId, event.post.id).value!!
+                    _usersLikedPosts.value = map.toMap()
+                }
             }
         }
     }
@@ -114,9 +122,14 @@ class HomeViewModel @Inject constructor(
         refreshJob = viewModelScope.launch(Dispatchers.IO) {
             val friendsWithStories = userInteractions.getFriends().filter { it.hasStories }
             val feed = userInteractions.getFeed()
+            val initUsersLikedPost = _usersLikedPosts.value.toMutableMap()
+            for (post in feed) {
+                initUsersLikedPost[post.id] = userInteractions.fetchUsersLikedByPostId(post.posterId, post.id).value!!
+            }
             viewModelScope.launch(Dispatchers.Main) {
                 _friendsWithStories.value = friendsWithStories
                 _posts.value = feed
+                _usersLikedPosts.value = initUsersLikedPost
                 _isRefreshing.value = false
             }
         }

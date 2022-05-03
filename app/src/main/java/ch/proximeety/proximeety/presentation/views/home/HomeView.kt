@@ -36,6 +36,7 @@ fun HomeView(
     val friendsWithStories = viewModel.friendsWithStories.value
     val posts = viewModel.posts.value
     val user = viewModel.user.value
+    val usersLikedPosts = viewModel.usersLikedPosts.value
 
     val scope = rememberCoroutineScope()
     val scaffoldState =
@@ -89,10 +90,12 @@ fun HomeView(
                         SideEffect {
                             if (it.postURL == null) {
                                 viewModel.onEvent(HomeEvent.DownloadPost(it))
+                                viewModel.onEvent(HomeEvent.FetchUsersLiked(it))
                             }
                         }
                         Post(
                             post = it,
+                            likedUsers = usersLikedPosts[it.id],
                             onLike = {
                                 viewModel.onEvent(HomeEvent.TogglePostLike(it))
                             },
