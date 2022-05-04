@@ -22,42 +22,40 @@ import javax.inject.Inject
 @UninstallModules(AppModule::class)
 class MapViewTest {
 
-//    @get:Rule(order = 0)
-//    val hiltRule = HiltAndroidRule(this)
-//
-//    @get:Rule(order = 1)
-//    val composeTestRule = createAndroidComposeRule<MainActivity>()
-//
-//    @Inject
-//    lateinit var navigationManager: NavigationManager
-//
-//    @Inject
-//    lateinit var userInteractions: UserInteractions
-//
-//    private lateinit var viewModel: MapViewModel
-//
-//
-//    @Before
-//    fun setup() {
-//        hiltRule.inject()
-//
-//        runBlocking {
-//            userInteractions.authenticateWithGoogle()
-//        }
-//
-//        viewModel = MapViewModel(navigationManager, userInteractions)
-//
-//        composeTestRule.setContent {
-//            ProximeetyTheme {
-//                MapView(viewModel)
-//            }
-//        }
-//
-//        composeTestRule.waitForIdle()
-//    }
-//
-//    @Test
-//    fun mapIsLoading() {
-//        composeTestRule.onNodeWithTag("Map Loading Indicator").assertExists()
-//    }
+    @get:Rule(order = 0)
+    val hiltRule = HiltAndroidRule(this)
+
+    @get:Rule(order = 1)
+    val composeTestRule = createAndroidComposeRule<MainActivity>()
+
+    @Inject
+    lateinit var navigationManager: NavigationManager
+
+    @Inject
+    lateinit var userInteractions: UserInteractions
+
+    private lateinit var viewModel: MapViewModel
+
+
+    @Before
+    fun setup() {
+        hiltRule.inject()
+
+        runBlocking {
+            userInteractions.authenticateWithGoogle()
+        }
+
+        viewModel = MapViewModel(navigationManager, userInteractions)
+
+        composeTestRule.setContent {
+            ProximeetyTheme {
+                MapView(viewModel)
+            }
+        }
+    }
+
+    @Test
+    fun mapIsLoading() {
+        composeTestRule.onNodeWithTag("Map Loading Indicator")
+    }
 }
