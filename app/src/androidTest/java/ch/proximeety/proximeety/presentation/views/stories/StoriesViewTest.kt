@@ -76,7 +76,7 @@ class StoriesViewTest {
         composeTestRule.waitUntil(1000) { viewModel.currentStory.value?.storyURL != null}
         val first = viewModel.currentStory.value?.storyURL
         composeTestRule.mainClock.autoAdvance = true
-        composeTestRule.waitUntil (10000) {  viewModel.currentStory.value?.storyURL != first}
+        composeTestRule.waitUntil (100000) {  viewModel.currentStory.value?.storyURL != first}
         composeTestRule.mainClock.autoAdvance = false
         val after = viewModel.currentStory.value?.storyURL
         composeTestRule.onNodeWithContentDescription("Story of ${viewModel.currentStory.value?.userDisplayName}").assertExists()
@@ -108,5 +108,54 @@ class StoriesViewTest {
         assertNotNull(firstAgain)
         assertNotEquals(firstAgain!!, after)
         assertEquals(firstAgain, first)
+    }
+
+    @Test
+    fun extendedButtonAndAlertDialogForDeletingStories() {
+        var storyId = viewModel.currentStory.value?.id
+
+        composeTestRule.waitUntil(1000) { viewModel.currentStory.value != null}
+        composeTestRule.waitUntil(1000) { viewModel.currentStory.value?.storyURL != null}
+        composeTestRule.mainClock.advanceTimeBy(1000)
+        composeTestRule.onNodeWithContentDescription("Story of ${viewModel.currentStory.value?.userDisplayName}").assertExists()
+        // More button
+        composeTestRule.onNodeWithContentDescription("More $storyId").performClick()
+        composeTestRule.mainClock.advanceTimeBy(1000)
+        // Extended button
+        composeTestRule.onNodeWithText("More").assertExists()
+        composeTestRule.onNodeWithText("Delete Story").performClick()
+        composeTestRule.mainClock.advanceTimeBy(1000)
+        // Alert dialog
+        composeTestRule.onNodeWithText("Delete story").assertExists()
+        composeTestRule.onNodeWithText("Confirm").assertHasClickAction()
+        composeTestRule.onNodeWithText("Dismiss").assertHasClickAction()
+    }
+
+    @Test
+    fun deleteStories() {
+        var storyId = viewModel.currentStory.value?.id
+        var userId = "testUserId"
+
+        // The story exists
+        runBlocking {
+            val stories = userInteractions.getStoriesByUserId(userId)
+            assertTrue(stories.filter { it.id == storyId }.size == 1)
+        }
+        // Delete story
+        composeTestRule.waitUntil(1000) { viewModel.currentStory.value != null}
+        composeTestRule.waitUntil(1000) { viewModel.currentStory.value?.storyURL != null}
+        composeTestRule.mainClock.advanceTimeBy(1000)
+        //composeTestRule.onNodeWithContentDescription("Story of ${viewModel.currentStory.value?.userDisplayName}").assertExists()
+        composeTestRule.onNodeWithContentDescription("More $storyId").performClick()
+        composeTestRule.mainClock.advanceTimeBy(1000)
+        composeTestRule.onNodeWithText("Delete Story").performClick()
+        composeTestRule.mainClock.advanceTimeBy(1000)
+        composeTestRule.onNodeWithText("Confirm").performClick()
+
+        // The post doesn't exist anymore
+        runBlocking {
+            val stories = userInteractions.getStoriesByUserId(userId)
+            assertTrue(stories.none { it.id == storyId })
+        }
     }
 }

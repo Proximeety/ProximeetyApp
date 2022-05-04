@@ -85,21 +85,21 @@ class UserRepositoryMockImplementation : UserRepository {
                 id = "-MzKNArXlI8iMmVkVeXP",
                 userDisplayName = "Yanis De Busschere",
                 userProfilePicture = null,
-                timestamp = 1648552363683,
-                posterId = "testUserId",
+                timestamp = 1648537528500,
+                posterId = "testUserId"
             ),
             Story(
                 id = "-MzJUlMmW-UnG1MnuC7o",
                 userDisplayName = "Yanis De Busschere",
                 userProfilePicture = null,
-                timestamp = 1648537574380,
+                timestamp = 1648537528605,
                 posterId = "testUserId"
             ),
             Story(
                 id = "-MzJUaBgPuPH8EHhw0yQ",
                 userDisplayName = "Yanis De Busschere",
                 userProfilePicture = null,
-                timestamp = 1648537528605,
+                timestamp = 1648537528800,
                 posterId = "testUserId"
             )
         )

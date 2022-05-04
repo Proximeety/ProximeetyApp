@@ -119,10 +119,13 @@ fun StoriesView(
                         }
                     }
                     if (isAuthenticatedUserProfile) {
-                        ButtonExtended(
-                            viewModel = viewModel,
-                            onDelete = { viewModel.onEvent(StoriesEvent.DeleteStory(currentStory)) }
-                        )
+                        if (currentStory != null) {
+                            ButtonExtended(
+                                viewModel = viewModel,
+                                onDelete = { viewModel.onEvent(StoriesEvent.DeleteStory(currentStory)) },
+                                storyId = currentStory.id
+                            )
+                        }
                     }
                 }
             }

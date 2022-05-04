@@ -17,16 +17,14 @@ import ch.proximeety.proximeety.presentation.views.stories.StoriesViewModel
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun ButtonExtended(viewModel: StoriesViewModel, onDelete: () -> Unit){
+fun ButtonExtended(viewModel: StoriesViewModel, onDelete: () -> Unit, storyId: String){
     val menuExpanded = remember { mutableStateOf(false) }
     val showDialog = remember { mutableStateOf(false) }
-
     val options = arrayOf("Delete Story", "More")
 
     IconButton( onClick = { menuExpanded.value = true }) {
-        Icon(imageVector = Icons.Rounded.MoreHoriz, contentDescription = "More")
+        Icon(imageVector = Icons.Rounded.MoreHoriz, contentDescription = "More $storyId")
     }
-
     Column() {
         DropdownMenu(
             expanded = menuExpanded.value,
@@ -47,7 +45,6 @@ fun ButtonExtended(viewModel: StoriesViewModel, onDelete: () -> Unit){
             }
         }
     }
-
     if (showDialog.value) {
         val showDialogState = viewModel.showDialog.collectAsState()
         SimpleAlertDialog(

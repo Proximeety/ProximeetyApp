@@ -119,7 +119,7 @@ class ProfileViewTest {
         // Delete the post
         composeTestRule.onNodeWithContentDescription("More $postId").performClick()
         composeTestRule.onNodeWithText("Delete post").performClick()
-         composeTestRule.onNodeWithText("Confirm").performClick()
+        composeTestRule.onNodeWithText("Confirm").performClick()
         // The post doesn't exist anymore
         runBlocking {
             val posts = userInteractions.getPostsByUserId(userId)
