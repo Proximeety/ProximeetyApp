@@ -38,12 +38,6 @@ class MainActivity : SyncActivity() {
         userInteractions.startLiveLocation()
         userInteractions.enableNfc()
 
-        userInteractions.getNfcTag().observe(this) {
-            if (it != null) {
-//                navigationManager.navigate(MainNavigationCommands.nfc)
-            }
-        }
-
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
@@ -56,6 +50,12 @@ class MainActivity : SyncActivity() {
                     navController.navigate(command.route)
                 }
                 navigationManager.clear()
+            }
+
+            userInteractions.getNfcTag().observe(this) {
+                if (it != null) {
+                    navigationManager.navigate(MainNavigationCommands.nfc)
+                }
             }
 
             ProximeetyTheme {

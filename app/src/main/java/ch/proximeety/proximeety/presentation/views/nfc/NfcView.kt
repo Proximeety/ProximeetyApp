@@ -40,7 +40,7 @@ fun NfcView(viewModel: NfcViewModel = hiltViewModel()) {
             ) {
                 SectionHeader(tag.value, modifier = Modifier.width(width.dp))
                 SectionPictures(tag = tag.value, width = width, height = height)
-                SectionMap(tag = tag.value, width = width)
+                SectionMap(tag = tag, width = width)
                 SectionVisitors(tag = tag.value, viewModel = viewModel)
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
             }

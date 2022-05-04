@@ -3,6 +3,8 @@ package ch.proximeety.proximeety.presentation.views.nfc
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import ch.proximeety.proximeety.core.interactions.UserInteractions
+import ch.proximeety.proximeety.core.repositories.UserRepository
+import ch.proximeety.proximeety.data.repositories.UserRepositoryMockImplementation
 import ch.proximeety.proximeety.di.AppModule
 import ch.proximeety.proximeety.presentation.MainActivity
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
@@ -29,6 +31,9 @@ class NfcViewTest {
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
+    lateinit var repository: UserRepository
+
+    @Inject
     lateinit var navigationManager: NavigationManager
 
     @Inject
@@ -44,6 +49,7 @@ class NfcViewTest {
             userInteractions.authenticateWithGoogle()
         }
 
+
         viewModel = NfcViewModel(navigationManager, userInteractions)
 
         composeTestRule.setContent {
@@ -51,6 +57,8 @@ class NfcViewTest {
                 NfcView(viewModel)
             }
         }
+
+        (repository as UserRepositoryMockImplementation).setTag()
     }
 
     @Test

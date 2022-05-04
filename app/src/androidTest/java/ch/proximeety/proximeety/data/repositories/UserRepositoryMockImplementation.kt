@@ -266,16 +266,21 @@ class UserRepositoryMockImplementation : UserRepository {
     override fun enableNfc() {
     }
 
+    private val tag = MutableLiveData<Tag?>(null)
+
     override fun getNfcTag(): LiveData<Tag?> {
-        return MutableLiveData(
-            Tag(
-                "00:00:00:00:00:00",
-                "testTag",
-                47.0,
-                47.0,
-                listOf(Pair(1651653481L, User("testUserVisitorOd", "testUserVisitor"))),
-                User("testUserId", "testUser")
-            )
-        )
+        return tag
+    }
+
+    fun setTag() {
+
+        tag.postValue(Tag(
+            "00:00:00:00:00:00",
+            "testTag",
+            47.0,
+            47.0,
+            listOf(Pair(1651653481L, User("testUserVisitorId", "testUserVisitor"))),
+            User("testUserId", "testUser")
+        ))
     }
 }
