@@ -111,18 +111,18 @@ class ProfileViewTest {
         var userId = "testUserId"
         setup(userId)
 
-        // The posts exists
         runBlocking {
-            val posts = userInteractions.getPostsByUserId(userId)
+            // The posts exists
+            var posts = userInteractions.getPostsByUserId(userId)
             assertTrue(posts.filter { it.id == postId }.size == 1)
-        }
-        // Delete the post
-        composeTestRule.onNodeWithContentDescription("More $postId").performClick()
-        composeTestRule.onNodeWithText("Delete post").performClick()
-        composeTestRule.onNodeWithText("Confirm").performClick()
-        // The post doesn't exist anymore
-        runBlocking {
-            val posts = userInteractions.getPostsByUserId(userId)
+
+            // Delete the post
+            composeTestRule.onNodeWithContentDescription("More $postId").performClick()
+            composeTestRule.onNodeWithText("Delete post").performClick()
+            composeTestRule.onNodeWithText("Confirm").performClick()
+
+            // The post doesn't exist anymore
+            posts = userInteractions.getPostsByUserId(userId)
             assertTrue(posts.none { it.id == postId })
         }
     }
