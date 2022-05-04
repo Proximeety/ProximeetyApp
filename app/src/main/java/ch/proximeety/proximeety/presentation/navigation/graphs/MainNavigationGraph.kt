@@ -9,6 +9,7 @@ import ch.proximeety.proximeety.presentation.views.home.HomeView
 import ch.proximeety.proximeety.presentation.views.map.MapView
 import ch.proximeety.proximeety.presentation.views.messagesScreen.MessagesView
 import ch.proximeety.proximeety.presentation.views.nearbyUsers.NearbyUsersView
+import ch.proximeety.proximeety.presentation.views.nfc.NfcView
 import ch.proximeety.proximeety.presentation.views.profile.ProfileView
 import ch.proximeety.proximeety.presentation.views.settings.SettingsView
 import ch.proximeety.proximeety.presentation.views.stories.StoriesView
@@ -74,6 +75,11 @@ fun NavGraphBuilder.mainNavigationGraph() {
             arguments = MainNavigationCommands.stories.arguments
         ) {
             StoriesView()
+        }
+        composable(
+            route = MainNavigationCommands.nfc.route
+        ) {
+            NfcView()
         }
     }
 }
