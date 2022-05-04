@@ -52,6 +52,7 @@ class TestAppModule {
             getPostUserId = GetPostUserId(repository),
             downloadStory = DownloadStory(repository),
             postStory = PostStory(repository),
+            getPostsByUserId = GetPostsByUserId(repository),
             getStoriesByUserId = GetStoriesByUserId(repository),
             getFriendsLocations = GetFriendsLocations(repository),
             startLiveLocation = StartLiveLocation(repository),

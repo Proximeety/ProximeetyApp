@@ -120,6 +120,7 @@ class AppModule {
             signOut = SignOut(repository),
             getPostUserId = GetPostUserId(repository),
             postStory = PostStory(repository),
+            getPostsByUserId = GetPostsByUserId(repository),
             getStoriesByUserId = GetStoriesByUserId(repository),
             downloadStory = DownloadStory(repository),
             startLiveLocation = StartLiveLocation(repository),

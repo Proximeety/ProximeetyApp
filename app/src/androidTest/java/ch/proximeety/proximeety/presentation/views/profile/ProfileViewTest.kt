@@ -92,4 +92,38 @@ class ProfileViewTest {
         composeTestRule.onNodeWithText("Add").assertDoesNotExist()
     }
 
+    @Test
+    fun extendedButtonAndAlertDialogForDeletingPosts() {
+        var postId = "-MzLEU_55gpq5ZQgAOAp"
+        setup("testUserId")
+        composeTestRule.onNodeWithContentDescription("More $postId").assertExists()
+        composeTestRule.onNodeWithContentDescription("More $postId").performClick()
+        composeTestRule.onNodeWithText("More").assertExists()
+        composeTestRule.onNodeWithText("Delete post").performClick()
+        composeTestRule.onNodeWithText("Delete post").assertExists()
+        composeTestRule.onNodeWithText("Confirm").assertHasClickAction()
+        composeTestRule.onNodeWithText("Dismiss").assertHasClickAction()
+    }
+
+    @Test
+    fun deletePosts() {
+        var postId = "-MzLEU_55gpq5ZQgAOAp"
+        var userId = "testUserId"
+        setup(userId)
+
+        // The posts exists
+        runBlocking {
+            val posts = userInteractions.getPostsByUserId(userId)
+            assertTrue(posts.filter { it.id == postId }.size == 1)
+        }
+        // Delete the post
+        composeTestRule.onNodeWithContentDescription("More $postId").performClick()
+        composeTestRule.onNodeWithText("Delete post").performClick()
+         composeTestRule.onNodeWithText("Confirm").performClick()
+        // The post doesn't exist anymore
+        runBlocking {
+            val posts = userInteractions.getPostsByUserId(userId)
+            assertTrue(posts.none { it.id == postId })
+        }
+    }
 }

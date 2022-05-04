@@ -17,13 +17,13 @@ import ch.proximeety.proximeety.presentation.views.profile.ProfileViewModel
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun ButtonExtended(viewModel: ProfileViewModel, onDelete: () -> Unit){
+fun ButtonExtended(viewModel: ProfileViewModel, onDelete: () -> Unit, postId: String){
     val menuExpanded = remember { mutableStateOf(false) }
     val showDialog = remember { mutableStateOf(false) }
     val options = arrayOf("Delete post", "More")
 
     IconButton( onClick = { menuExpanded.value = true }) {
-        Icon(imageVector = Icons.Rounded.MoreHoriz, contentDescription = "More")
+        Icon(imageVector = Icons.Rounded.MoreHoriz, contentDescription = "More $postId")
     }
     Column() {
         DropdownMenu(

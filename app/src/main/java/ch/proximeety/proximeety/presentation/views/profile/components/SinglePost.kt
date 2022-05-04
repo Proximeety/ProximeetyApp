@@ -40,7 +40,7 @@ fun SinglePost(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
             ){
-                ButtonExtended(viewModel, onDelete)
+                ButtonExtended(viewModel, onDelete, post.id)
             }
         }
     }
