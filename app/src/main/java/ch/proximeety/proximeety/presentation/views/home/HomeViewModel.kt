@@ -12,7 +12,6 @@ import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
 import ch.proximeety.proximeety.presentation.navigation.graphs.AuthenticationNavigationCommands
 import ch.proximeety.proximeety.presentation.navigation.graphs.MainNavigationCommands
-import ch.proximeety.proximeety.presentation.views.upload.UploadEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -31,15 +30,18 @@ class HomeViewModel @Inject constructor(
     val user = userInteractions.getAuthenticatedUser()
 
     private val _friendsWithStories = mutableStateOf<List<User>>(listOf())
-    var friendsWithStories: State<List<User>> = _friendsWithStories
+    val friendsWithStories: State<List<User>> = _friendsWithStories
 
     private val _posts = mutableStateOf<List<Post>>(listOf())
-    var posts: State<List<Post>> = _posts
+    val posts: State<List<Post>> = _posts
 
-    private var _commentSectionPostId : String? = null
+    private var _commentSectionPostId: String? = null
 
-    private val _comments = mutableStateOf<List<Comment>>(listOf())
-    var comments: State<List<Comment>> = _comments
+    private var _comments = mutableStateOf<List<Comment>>(listOf())
+    val comments: State<List<Comment>> = _comments
+
+    private var _commentCount = mutableStateOf<Map<String, Int>>(mapOf())
+    val commentCount: State<Map<String, Int>> = _commentCount
 
     private var refreshJob: Job? = null
     private var downloadJob: Job? = null
@@ -50,7 +52,7 @@ class HomeViewModel @Inject constructor(
         refresh()
     }
 
-     fun onEvent(event: HomeEvent) {
+    fun onEvent(event: HomeEvent) {
         when (event) {
             HomeEvent.NavigateToNearbyUsersViewModel -> {
                 navigationManager.navigate(MainNavigationCommands.nearbyUsers)
@@ -82,6 +84,9 @@ class HomeViewModel @Inject constructor(
             HomeEvent.Refresh -> {
                 refresh()
             }
+            HomeEvent.RefreshComments -> {
+                refreshComments()
+            }
             is HomeEvent.DownloadPost -> {
                 if (downloadJob == null) {
                     downloadJob = viewModelScope.launch(Dispatchers.IO) {
@@ -92,16 +97,20 @@ class HomeViewModel @Inject constructor(
                         )
                         _posts.value = newList.toList()
                         downloadJob = null
+                        _commentCount.value = _commentCount.value.plus(
+                            event.post.id to userInteractions.getComments(event.post.id).size
+                        )
                     }
                 }
             }
             is HomeEvent.OnCommentSectionClick -> {
+                _comments.value = listOf()
                 _commentSectionPostId = event.postId
                 viewModelScope.launch(Dispatchers.IO) {
                     val comments = userInteractions.getComments(event.postId)
                     viewModelScope.launch(Dispatchers.Main) {
                         Log.d("COMMENTS", comments.toString())
-                        _comments.value = comments
+                        _comments.value = comments.reversed()
                     }
                 }
             }
@@ -111,6 +120,9 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.PostComment -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     _commentSectionPostId?.let { userInteractions.postComment(it, event.text) }
+                }
+                if (_commentSectionPostId != null) {
+                    _commentCount.value = _commentCount.value.plus(_commentSectionPostId!! to ((_commentCount.value[_commentSectionPostId] ?: 0) + 1))
                 }
             }
             is HomeEvent.TogglePostLike -> {
@@ -128,12 +140,22 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+
     private fun refresh() {
         refreshJob?.cancel()
         _isRefreshing.value = true
         refreshJob = viewModelScope.launch(Dispatchers.IO) {
             _friendsWithStories.value = userInteractions.getFriends().filter { it.hasStories }
             _posts.value = userInteractions.getFeed()
+            _isRefreshing.value = false
+        }
+    }
+
+    private fun refreshComments() {
+        refreshJob?.cancel()
+        _isRefreshing.value = true
+        refreshJob = viewModelScope.launch(Dispatchers.IO) {
+            _comments.value = _commentSectionPostId?.let { userInteractions.getComments(it) }!!
             _isRefreshing.value = false
         }
     }

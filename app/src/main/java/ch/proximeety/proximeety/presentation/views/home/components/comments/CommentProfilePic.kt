@@ -25,7 +25,7 @@ fun CommentProfilePic(
         contentDescription = "Profile picture of $displayName",
         contentScale = ContentScale.Crop,
         modifier = Modifier
-            .size(60.dp)
+            .size(40.dp)
             .border(
                 width = 1.dp,
                 color = Color.LightGray,

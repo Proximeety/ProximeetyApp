@@ -18,6 +18,7 @@ sealed class HomeEvent {
     class OnCommentSectionClick(val postId: String): HomeEvent()
     class PostComment(val text : String): HomeEvent()
     object Refresh : HomeEvent()
+    object RefreshComments: HomeEvent()
     object SignOut : HomeEvent()
     class TogglePostLike(val post: Post) : HomeEvent()
 }

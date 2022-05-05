@@ -23,16 +23,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import ch.proximeety.proximeety.core.entities.Post
+import ch.proximeety.proximeety.core.interactions.GetComments
 import ch.proximeety.proximeety.presentation.theme.spacing
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
+import okhttp3.internal.Internal
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-fun Post(post: Post, onLike: () -> Unit, onCommentClick: () -> Unit) {
+fun Post(
+    post: Post,
+    onLike: () -> Unit,
+    onCommentClick: () -> Unit,
+    numComments: Int
+) {
     Column(
         modifier = Modifier
             .padding(MaterialTheme.spacing.medium)
@@ -113,7 +120,7 @@ fun Post(post: Post, onLike: () -> Unit, onCommentClick: () -> Unit) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable { }) {
+            ) {
                 IconButton(onClick = onCommentClick) {
                     Icon(
                         imageVector = Icons.Rounded.Message,
@@ -121,7 +128,7 @@ fun Post(post: Post, onLike: () -> Unit, onCommentClick: () -> Unit) {
                     )
                 }
                 Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
-                Text(text = "0", style = MaterialTheme.typography.h4)
+                Text(text = "$numComments", style = MaterialTheme.typography.h4)
             }
         }
     }

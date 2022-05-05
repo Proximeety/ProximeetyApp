@@ -6,15 +6,21 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.BottomSheetScaffold
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.rememberBottomSheetScaffoldState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
-import ch.proximeety.proximeety.presentation.views.home.components.*
+import ch.proximeety.proximeety.presentation.views.home.components.HomeTopBar
+import ch.proximeety.proximeety.presentation.views.home.components.Post
+import ch.proximeety.proximeety.presentation.views.home.components.Stories
 import ch.proximeety.proximeety.presentation.views.home.components.comments.CommentSection
 import ch.proximeety.proximeety.util.SafeArea
 import ch.proximeety.proximeety.util.extensions.getActivity
@@ -34,18 +40,13 @@ fun HomeView(
     val context = LocalContext.current
     val friendsWithStories = viewModel.friendsWithStories.value
     val posts = viewModel.posts.value
-    val comments = viewModel.comments.value
+    var comments = viewModel.comments.value
+    val commentLikes = viewModel.commentCount.value
     val user = viewModel.user.value
 
-    val commentPostID = remember {
-        mutableStateOf("")
-    }
-
     val scope = rememberCoroutineScope()
-    val scaffoldState =
-        rememberBottomSheetScaffoldState(
-            bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
-        )
+    val scaffoldState = rememberBottomSheetScaffoldState()
+
 
     BackHandler {
         context.getActivity()?.finish()
@@ -63,18 +64,19 @@ fun HomeView(
                         scope.launch {
                             if (scaffoldState.bottomSheetState.isExpanded)
                                 scaffoldState.bottomSheetState.collapse()
-                        }
-                    },
-                    onPostClick = {
-                        viewModel.viewModelScope.launch(Dispatchers.IO) {
-                            viewModel
-                                .onEvent(HomeEvent.PostComment(it))
+                            comments = listOf()
                         }
                     }
-                )
+                ) {
+                    viewModel.viewModelScope.launch(Dispatchers.IO) {
+                        viewModel
+                            .onEvent(HomeEvent.PostComment(it))
+                        viewModel.onEvent(HomeEvent.RefreshComments)
+                    }
+                }
             },
             scaffoldState = scaffoldState,
-            sheetPeekHeight = 0.dp, sheetElevation = 0.dp
+            sheetPeekHeight = 0.dp, sheetElevation = 0.dp,
         ) {
             SwipeRefresh(
                 state = rememberSwipeRefreshState(isRefreshing = viewModel.isRefreshing.value),
@@ -101,18 +103,21 @@ fun HomeView(
                                 viewModel.onEvent(HomeEvent.DownloadPost(it))
                             }
                         }
-                        Post(
-                            post = it,
-                            onLike = {
-                                viewModel.onEvent(HomeEvent.TogglePostLike(it))
-                            },
-                            onCommentClick = {
-                                scope.launch {
-                                    scaffoldState.bottomSheetState.expand()
+                        commentLikes[it.id]?.let { it1 ->
+                            Post(
+                                post = it,
+                                onLike = {
+                                    viewModel.onEvent(HomeEvent.TogglePostLike(it))
+                                },
+                                onCommentClick = {
                                     viewModel.onEvent(HomeEvent.OnCommentSectionClick(it.id))
-                                }
-                            }
-                        )
+                                    scope.launch {
+                                        scaffoldState.bottomSheetState.expand()
+                                    }
+                                },
+                                numComments = it1
+                            )
+                        }
                     }
                 }
             }
