@@ -98,8 +98,10 @@ class ProfileViewTest {
         setup("testUserId")
         composeTestRule.onNodeWithContentDescription("More $postId").assertExists()
         composeTestRule.onNodeWithContentDescription("More $postId").performClick()
+        composeTestRule.waitForIdle()
         composeTestRule.onNodeWithText("More").assertExists()
         composeTestRule.onNodeWithText("Delete post").performClick()
+        composeTestRule.waitForIdle()
         composeTestRule.onNodeWithText("Delete post").assertExists()
         composeTestRule.onNodeWithText("Confirm").assertHasClickAction()
         composeTestRule.onNodeWithText("Dismiss").assertHasClickAction()
@@ -118,8 +120,11 @@ class ProfileViewTest {
 
             // Delete the post
             composeTestRule.onNodeWithContentDescription("More $postId").performClick()
+            composeTestRule.waitForIdle()
             composeTestRule.onNodeWithText("Delete post").performClick()
+            composeTestRule.waitForIdle()
             composeTestRule.onNodeWithText("Confirm").performClick()
+            composeTestRule.waitForIdle()
 
             // The post doesn't exist anymore
             posts = userInteractions.getPostsByUserId(userId)
