@@ -76,7 +76,7 @@ fun HomeView(
                 }
             },
             scaffoldState = scaffoldState,
-            sheetPeekHeight = 0.dp, sheetElevation = 0.dp,
+            sheetPeekHeight = 0.dp,
         ) {
             SwipeRefresh(
                 state = rememberSwipeRefreshState(isRefreshing = viewModel.isRefreshing.value),
