@@ -11,6 +11,7 @@ import androidx.lifecycle.*
 import ch.proximeety.proximeety.R
 import ch.proximeety.proximeety.core.entities.Post
 import ch.proximeety.proximeety.core.entities.Story
+import ch.proximeety.proximeety.core.entities.Tag
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.util.SyncActivity
 import ch.proximeety.proximeety.util.extensions.await
@@ -85,6 +86,17 @@ class FirebaseAccessObject(
 
         private const val STORAGE_POST_PATH = "posts"
         private const val STORAGE_STORY_PATH = "stories"
+
+        private const val TAG_PATH = "tags"
+        private const val TAG_ID_KEY = "id"
+        private const val TAG_NAME_KEY = "name"
+        private const val TAG_LATITUDE_KEY = "latitude"
+        private const val TAG_LONGITUDE_KEY = "longitude"
+        private const val TAG_VISITORS_KEY = "visitors"
+        private const val TAG_VISITORS_TIMESTAMP_KEY = "timestamp"
+        private const val TAG_OWNER_KEY = "owner"
+
+
     }
 
     private var auth: FirebaseAuth
@@ -527,7 +539,6 @@ class FirebaseAccessObject(
         val ref = database.child(USER_LOCATION_PATH)
         val listener = ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val map = mutableMapOf<String, Pair<Int, Int>>()
                 snapshot.children.forEach { child ->
                     child.key?.also {
                         val newLocation = it to Triple(
@@ -559,5 +570,68 @@ class FirebaseAccessObject(
         })
 
         return result
+    }
+
+    /**
+     * Gets the tag by id.
+     */
+    suspend fun getTagById(id: String): Tag? {
+        val snapshot = database.child(TAG_PATH).child(id).get().await()
+
+        if (snapshot.exists() && snapshot.key != null) {
+            val name = snapshot.child(TAG_NAME_KEY).value as String?
+            val longitude = snapshot.child(TAG_LONGITUDE_KEY).value as Double?
+            val latitude = snapshot.child(TAG_LATITUDE_KEY).value as Double?
+            val visitors = snapshot.child(TAG_VISITORS_KEY).children.mapNotNull {
+                val name = it.child(USER_DISPLAY_NAME_KEY).value as String?
+                val profilePicture = it.child(USER_PROFILE_PICTURE_KEY).value as String?
+                val timestamp = it.child(TAG_VISITORS_TIMESTAMP_KEY).value as Long?
+                if (name != null && profilePicture != null && timestamp != null) {
+                    return@mapNotNull Pair(
+                        timestamp, User(
+                            id = it.key!!,
+                            displayName = name,
+                            profilePicture = profilePicture
+                        )
+                    )
+                }
+                return@mapNotNull null
+            }
+
+            val owner = snapshot.child(TAG_OWNER_KEY).let {
+                if (it.exists() && it.key != null) {
+                    val name = it.child(USER_DISPLAY_NAME_KEY).value as String?
+                    val profilePicture = it.child(USER_PROFILE_PICTURE_KEY).value as String?
+                    if (name != null && profilePicture != null) {
+                        return@let User(
+                            id = it.key!!,
+                            displayName = name,
+                            profilePicture = profilePicture
+                        )
+                    }
+                }
+                return@let null
+            }
+
+            if (name != null && longitude != null && latitude != null && owner != null) {
+                return Tag(id, name, longitude, latitude, visitors, owner)
+            }
+        }
+        return null
+    }
+
+    /**
+     * Set the ahthenticated user as a visitor of the tag.
+     */
+    suspend fun visitTag(tagId: String) {
+        authenticatedUser?.value?.also { user ->
+            database.child(TAG_PATH).child(tagId).child(TAG_VISITORS_KEY).child(user.id).setValue(
+                mapOf(
+                    TAG_VISITORS_TIMESTAMP_KEY to Calendar.getInstance().timeInMillis,
+                    USER_DISPLAY_NAME_KEY to user.displayName,
+                    USER_PROFILE_PICTURE_KEY to user.profilePicture
+                )
+            )
+        }
     }
 }

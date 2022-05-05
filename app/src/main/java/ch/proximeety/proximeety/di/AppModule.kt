@@ -8,6 +8,7 @@ import ch.proximeety.proximeety.data.repositories.UserRepositoryImplementation
 import ch.proximeety.proximeety.data.sources.BluetoothService
 import ch.proximeety.proximeety.data.sources.FirebaseAccessObject
 import ch.proximeety.proximeety.data.sources.LocationService
+import ch.proximeety.proximeety.data.sources.NfcService
 import ch.proximeety.proximeety.data.sources.cache.AuthenticatedUserCache
 import ch.proximeety.proximeety.data.sources.cache.FriendCacheDB
 import ch.proximeety.proximeety.data.sources.cache.PostCacheDB
@@ -78,6 +79,12 @@ class AppModule {
 
     @Provides
     @Singleton
+    fun provideNfcService(@ApplicationContext context: Context): NfcService {
+        return NfcService(context)
+    }
+
+    @Provides
+    @Singleton
     fun provideUserRepository(
         @ApplicationContext context: Context,
         firebaseAccessObject: FirebaseAccessObject,
@@ -85,7 +92,8 @@ class AppModule {
         locationService: LocationService,
         postCacheDB: PostCacheDB,
         friendCacheDB: FriendCacheDB,
-        authenticatedUserCache: AuthenticatedUserCache
+        authenticatedUserCache: AuthenticatedUserCache,
+        nfcService: NfcService
     ): UserRepository {
         return UserRepositoryImplementation(
             context,
@@ -94,7 +102,8 @@ class AppModule {
             locationService,
             postCacheDB.dao,
             friendCacheDB.dao,
-            authenticatedUserCache
+            authenticatedUserCache,
+            nfcService
         )
     }
 
@@ -124,6 +133,8 @@ class AppModule {
             downloadStory = DownloadStory(repository),
             startLiveLocation = StartLiveLocation(repository),
             getFriendsLocations = GetFriendsLocations(repository),
+            enableNfc = EnableNfc(repository),
+            getNfcTag = GetNfcTag(repository),
         )
     }
 }
