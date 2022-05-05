@@ -1,6 +1,7 @@
 package ch.proximeety.proximeety.core.repositories
 
 import androidx.lifecycle.LiveData
+import ch.proximeety.proximeety.core.entities.Comment
 import ch.proximeety.proximeety.core.entities.Post
 import ch.proximeety.proximeety.core.entities.Story
 import ch.proximeety.proximeety.core.entities.Tag
@@ -124,6 +125,14 @@ interface UserRepository {
     suspend fun isPostLiked(post: Post): Boolean
 
     /**
+     * Leave a comment under a post
+     *
+     * @param postId id of the post under which to comment
+     * @param comment the comment to post
+     */
+    suspend fun postComment(postId: String, comment: String)
+
+    /**
      * Get the stories of an user.
      */
     suspend fun getStoriesByUserId(id: String): List<Story>
@@ -146,6 +155,12 @@ interface UserRepository {
      * Start sharing the live location of the authenticated user.
      */
     fun startLiveLocation()
+
+    /**
+
+     * Get comments for a post.
+     */
+    suspend fun getComments(id: String): List<Comment>
 
     /**
      * Enable NFC.

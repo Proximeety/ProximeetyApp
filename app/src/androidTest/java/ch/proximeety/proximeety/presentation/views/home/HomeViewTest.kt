@@ -57,4 +57,21 @@ class HomeViewTest {
         composeTestRule.waitUntil(10000) { viewModel.posts.value.isNotEmpty() }
         composeTestRule.onAllNodesWithText("Yanis De Busschere").onFirst().assertExists()
     }
+
+    @Test
+    fun commentsSectionDrawerWorksProperly() {
+        composeTestRule.waitUntil(10000) { viewModel.posts.value.isNotEmpty() }
+        composeTestRule
+            .onAllNodesWithContentDescription("Comments")
+            .onFirst()
+            .assertHasClickAction()
+            .performClick()
+        composeTestRule
+            .onNodeWithText("Comments", substring = true)
+            .assertExists()
+        composeTestRule
+            .onNodeWithContentDescription("Close Comment Section")
+            .assertHasClickAction()
+            .performClick()
+    }
 }
