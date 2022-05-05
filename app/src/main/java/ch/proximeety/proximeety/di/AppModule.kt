@@ -134,7 +134,7 @@ class AppModule {
             downloadStory = DownloadStory(repository),
             startLiveLocation = StartLiveLocation(repository),
             getFriendsLocations = GetFriendsLocations(repository),
-            getComments = GetComments(repository)
+            getComments = GetComments(repository),
             enableNfc = EnableNfc(repository),
             getNfcTag = GetNfcTag(repository)
         )
