@@ -649,7 +649,8 @@ class FirebaseAccessObject(
                 return@mapNotNull null
             }
     }
-    
+
+    /**
      * Gets the tag by id.
      */
     suspend fun getTagById(id: String): Tag? {

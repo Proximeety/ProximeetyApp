@@ -162,6 +162,7 @@ interface UserRepository {
      */
     suspend fun getComments(id: String): List<Comment>
 
+    /**
      * Enable NFC.
      */
     fun enableNfc()
