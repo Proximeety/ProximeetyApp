@@ -1,4 +1,4 @@
-package ch.proximeety.proximeety.presentation.views.profile.components
+package ch.proximeety.proximeety.presentation.components
 
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Text
@@ -10,10 +10,10 @@ import androidx.compose.runtime.State
 fun SimpleAlertDialog(
     show: State<Boolean>,
     onDismiss: () -> Unit,
-    onConfirm: () -> Unit
+    onConfirm: () -> Unit,
+    title: String,
+    question: String
 ) {
-    val title = "Delete post"
-    val question = "Do you want to continue?"
     val confirm = "Confirm"
     val dismiss = "Dismiss"
 

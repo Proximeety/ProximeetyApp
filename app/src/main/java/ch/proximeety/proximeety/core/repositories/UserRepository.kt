@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import ch.proximeety.proximeety.core.entities.Comment
 import ch.proximeety.proximeety.core.entities.Post
 import ch.proximeety.proximeety.core.entities.Story
+import ch.proximeety.proximeety.core.entities.Tag
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.util.SyncActivity
 
@@ -156,7 +157,17 @@ interface UserRepository {
     fun startLiveLocation()
 
     /**
+
      * Get comments for a post.
      */
     suspend fun getComments(id: String): List<Comment>
+
+     * Enable NFC.
+     */
+    fun enableNfc()
+
+    /**
+     * Get NFC tag.
+     */
+    fun getNfcTag(): LiveData<Tag?>
 }
