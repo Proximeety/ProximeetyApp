@@ -74,6 +74,42 @@ class UserRepositoryMockImplementation : UserRepository {
             )
         )
 
+    private var comments = mutableListOf(
+        Comment(
+            id = "-MzJUaBgPuPH8EHhw0yQ",
+            postId = "-MzLEU_55gpq5ZQgAOAp",
+            posterId = "testUserId2",
+            userDisplayName = "Hamza LAAROUS",
+            userProfilePicture = null,
+            timestamp = 1648537528605,
+            comment = "test1",
+            likes = 0,
+            isLiked = true
+        ),
+        Comment(
+            id = "-MzJUaBgPuPH8EHhw0yQ",
+            postId = "-MzLEU_55gpq5ZQgAOAp",
+            posterId = "testUserId2",
+            userDisplayName = "Hamza LAAROUS",
+            userProfilePicture = null,
+            timestamp = 1648537528605,
+            comment = "test2",
+            likes = 0,
+            isLiked = true
+        ),
+        Comment(
+            id = "-MzJUaBgPuPH8EHhw0yQ",
+            postId = "-MzLEU_55gpq5ZQgAOAp",
+            posterId = "testUserId2",
+            userDisplayName = "Hamza LAAROUS",
+            userProfilePicture = null,
+            timestamp = 1648537528605,
+            comment = "test3",
+            likes = 0,
+            isLiked = true
+        )
+    )
+
     private var stories =
         mutableListOf<Story>(
             Story(
@@ -97,10 +133,6 @@ class UserRepositoryMockImplementation : UserRepository {
                 timestamp = 1648537528605,
                 posterId = "testUserId"
             )
-        )
-
-    private var comments =
-        mutableListOf<Comment>(
         )
 
     override fun setActivity(activity: SyncActivity) {}
@@ -233,10 +265,6 @@ class UserRepositoryMockImplementation : UserRepository {
         }
     }
 
-    override suspend fun downloadComment(comment: Comment): Comment {
-        return comment
-    }
-
     override suspend fun getStoriesByUserId(id: String): List<Story> {
         return when (id) {
             user?.id -> {
@@ -274,5 +302,15 @@ class UserRepositoryMockImplementation : UserRepository {
     }
 
     override fun startLiveLocation() {
+    }
+
+    override suspend fun getComments(id: String): List<Comment> {
+        when (id) {
+            user?.id -> {
+                return comments.toList()
+            }
+        }
+
+        return listOf()
     }
 }

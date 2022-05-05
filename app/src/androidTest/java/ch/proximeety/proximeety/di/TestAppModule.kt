@@ -42,6 +42,8 @@ class TestAppModule {
             getFriends = GetFriends(repository),
             getNearbyUsers = GetNearbyUsers(repository),
             post = Post(repository),
+            postComment = PostComment(repository),
+            getComments = GetComments(repository),
             deletePost = DeletePost(repository),
             togglePostLike = TogglePostLike(repository),
             isPostLiked = IsPostLiked(repository),
