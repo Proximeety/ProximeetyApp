@@ -16,6 +16,7 @@ data class UserInteractions(
     val getNearbyUsers: GetNearbyUsers,
     val post: Post,
     val deletePost: DeletePost,
+    val deleteStory: DeleteStory,
     val togglePostLike: TogglePostLike,
     val isPostLiked: IsPostLiked,
     val postComment: PostComment,

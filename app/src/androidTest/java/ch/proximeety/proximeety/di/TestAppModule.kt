@@ -45,6 +45,7 @@ class TestAppModule {
             postComment = PostComment(repository),
             getComments = GetComments(repository),
             deletePost = DeletePost(repository),
+            deleteStory = DeleteStory(repository),
             togglePostLike = TogglePostLike(repository),
             isPostLiked = IsPostLiked(repository),
             setActivity = SetActivity(repository),

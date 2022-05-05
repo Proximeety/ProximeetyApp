@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
 import ch.proximeety.proximeety.core.entities.Post
+import ch.proximeety.proximeety.core.entities.Story
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
@@ -43,7 +44,8 @@ class ProfileViewModel @Inject constructor(
     private val _showDialog = MutableStateFlow(false)
     val showDialog: StateFlow<Boolean> = _showDialog.asStateFlow()
 
-
+    private val _stories = mutableStateOf<List<Story>>(listOf())
+    val stories: State<List<Story>> = _stories
 
     init {
         savedStateHandle.get<String>("userId")?.also {
@@ -53,9 +55,11 @@ class ProfileViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 val posts = userInteractions.getPostUserId(it)
                 val friends = userInteractions.getFriends()
+                val stories = userInteractions.getStoriesByUserId(it)
                 viewModelScope.launch(Dispatchers.Main) {
                     _posts.value = posts
                     _friends.value = friends
+                    _stories.value = stories
                 }
             }
         }
@@ -94,16 +98,19 @@ class ProfileViewModel @Inject constructor(
                 }
                 _showDialog.value = false
             }
+            is ProfileEvent.OnStoryClick -> {
+                if (stories.value.isNotEmpty()) {
+                    user.value.value?.id?.also {
+                        navigationManager.navigate(MainNavigationCommands.storiesWithArgs(it))
+                    }
+                }
+            }
+             is ProfileEvent.OnOpenDialogClicked -> {
+                _showDialog.value = true
+            }
+            is ProfileEvent.OnCloseDialog -> {
+                _showDialog.value = false
+            }
         }
-    }
-
-    fun onOpenDialogClicked() {
-        _showDialog.value = true
-    }
-
-
-    fun onCloseDialog() {
-        _showDialog.value = false
-    }
-
+    }  
 }

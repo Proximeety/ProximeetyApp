@@ -38,7 +38,6 @@ fun ProfileView(
                     .fillMaxWidth()
                     .height(50.dp), verticalAlignment = Alignment.CenterVertically
             ) {
-
                 IconButton(
                     onClick = { viewModel.onEvent(ProfileEvent.NavigateToSettings) })
                 {
@@ -51,7 +50,11 @@ fun ProfileView(
                     .padding(top = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                ProfilePic(user.value?.profilePicture, user.value?.givenName)
+                ProfilePic(
+                    picUrl = user.value?.profilePicture,
+                    displayName = user.value?.givenName,
+                    onStoryClick = { viewModel.onEvent(ProfileEvent.OnStoryClick) }
+                )
                 Text(
                     text = user.value?.displayName.toString(),
                     fontSize = 30.sp,
@@ -97,7 +100,6 @@ fun ProfileView(
                             )
                         }
                     }
-
                 }
             }
         }
