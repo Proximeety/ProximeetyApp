@@ -7,10 +7,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
@@ -23,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.proximeety.proximeety.presentation.theme.spacing
+import ch.proximeety.proximeety.presentation.views.stories.components.ButtonExtended
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 
@@ -41,6 +39,7 @@ fun StoriesView(
     val nextStory = viewModel.nextStory.value
     val currentStoryIndex = viewModel.currentStoryIndex.value
     val currentUserStoryCount = viewModel.storyCount.value
+    val isAuthenticatedUserProfile = viewModel.isAuthenticatedUserProfile
 
     val progress = viewModel.progress.value
 
@@ -94,30 +93,39 @@ fun StoriesView(
                     modifier = Modifier.padding(
                         vertical = MaterialTheme.spacing.extraSmall,
                         horizontal = MaterialTheme.spacing.small
-                    )
+                    ).fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Image(
-                        painter = rememberImagePainter(user.value?.profilePicture),
-                        contentDescription = "Profile picture of ${user.value?.displayName}",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(32.dp)
-                            .clip(CircleShape)
-                            .aspectRatio(1f)
-                            .background(Color.Gray)
-                            .clickable { viewModel.onEvent(StoriesEvent.OnClickOnUserPicture) }
-                    )
-                    Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
-                    Column {
-                        Text(
-                            text = user.value?.displayName.toString(),
-                            style = MaterialTheme.typography.h4
+                    Row() {
+                        Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
+                        Image(
+                            painter = rememberImagePainter(user.value?.profilePicture),
+                            contentDescription = "Profile picture of ${user.value?.displayName}",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(32.dp)
+                                .clip(CircleShape)
+                                .aspectRatio(1f)
+                                .background(Color.Gray)
+                                .clickable { viewModel.onEvent(StoriesEvent.OnClickOnUserPicture) }
                         )
-                        Text(text = "Lausanne", style = MaterialTheme.typography.h6)
+                        Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
+                        Column {
+                            Text(
+                                text = user.value?.displayName.toString(),
+                                style = MaterialTheme.typography.h4
+                            )
+                            Text(text = "Lausanne", style = MaterialTheme.typography.h6)
+                        }
+                    }
+                    if (isAuthenticatedUserProfile) {
+                        ButtonExtended(
+                            viewModel = viewModel,
+                            onDelete = { viewModel.onEvent(StoriesEvent.DeleteStory(currentStory)) }
+                        )
                     }
                 }
             }
         }
     }
 }
-

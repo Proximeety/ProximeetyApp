@@ -24,7 +24,6 @@ fun SinglePost(
 ) {
     val isAuthenticatedUserProfile = viewModel.isAuthenticatedUserProfile
 
-
     Column(){
         Image(
             painter = rememberImagePainter(post.postURL),
@@ -42,75 +41,7 @@ fun SinglePost(
                 horizontalArrangement = Arrangement.End
             ){
                 ButtonExtended(viewModel, onDelete)
-
             }
         }
-
-    }
-}
-
-@SuppressLint("StateFlowValueCalledInComposition")
-@Composable
-fun ButtonExtended(viewModel: ProfileViewModel, onDelete: () -> Unit){
-    val menuExpanded = remember { mutableStateOf(false) }
-    val showDialog = remember { mutableStateOf(false) }
-
-    IconButton( onClick = { menuExpanded.value = true }) {
-        Icon(imageVector = Icons.Rounded.MoreHoriz, contentDescription = "More")
-    }
-
-    Column() {
-        DropdownMenu(
-            expanded = menuExpanded.value,
-            onDismissRequest = {
-                menuExpanded.value = false
-            },
-            modifier = Modifier.width(200.dp)
-        ) {
-            DropdownMenuItem(onClick = {
-                menuExpanded.value = false
-                showDialog.value = true
-                viewModel.onOpenDialogClicked()
-            }) {
-                Text(text = "Delete post")
-            }
-
-            DropdownMenuItem(onClick = {  }) {
-                Text(text = "More")
-            }
-        }
-    }
-
-    if (showDialog.value) {
-        val showDialogState = viewModel.showDialog.collectAsState()
-        SimpleAlertDialog(
-            show = showDialogState,
-            onDismiss = { viewModel.onCloseDialog() },
-            onConfirm = onDelete
-        )
-    }
-}
-
-
-@Composable
-fun SimpleAlertDialog(
-    show: State<Boolean>,
-    onDismiss: () -> Unit,
-    onConfirm: () -> Unit
-) {
-    if (show.value) {
-        AlertDialog(
-            onDismissRequest = onDismiss,
-            confirmButton = {
-                TextButton(onClick = onConfirm)
-                { Text(text = "Confirm") }
-            },
-            dismissButton = {
-                TextButton(onClick = onDismiss)
-                { Text(text = "Cancel") }
-            },
-            title = { Text(text = "Delete post") },
-            text = { Text(text = "Do you want to continue?") }
-        )
     }
 }
