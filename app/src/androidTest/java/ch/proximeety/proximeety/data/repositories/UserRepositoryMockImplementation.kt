@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import ch.proximeety.proximeety.core.entities.Post
 import ch.proximeety.proximeety.core.entities.Story
+import ch.proximeety.proximeety.core.entities.Tag
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.core.repositories.UserRepository
 import ch.proximeety.proximeety.util.SyncActivity
@@ -260,5 +261,26 @@ class UserRepositoryMockImplementation : UserRepository {
     }
 
     override fun startLiveLocation() {
+    }
+
+    override fun enableNfc() {
+    }
+
+    private val tag = MutableLiveData<Tag?>(null)
+
+    override fun getNfcTag(): LiveData<Tag?> {
+        return tag
+    }
+
+    fun setTag() {
+
+        tag.postValue(Tag(
+            "00:00:00:00:00:00",
+            "testTag",
+            47.0,
+            47.0,
+            listOf(Pair(1651653481L, User("testUserVisitorId", "testUserVisitor"))),
+            User("testUserId", "testUser")
+        ))
     }
 }

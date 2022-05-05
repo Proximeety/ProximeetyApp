@@ -3,6 +3,7 @@ package ch.proximeety.proximeety.core.repositories
 import androidx.lifecycle.LiveData
 import ch.proximeety.proximeety.core.entities.Post
 import ch.proximeety.proximeety.core.entities.Story
+import ch.proximeety.proximeety.core.entities.Tag
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.util.SyncActivity
 
@@ -145,4 +146,14 @@ interface UserRepository {
      * Start sharing the live location of the authenticated user.
      */
     fun startLiveLocation()
+
+    /**
+     * Enable NFC.
+     */
+    fun enableNfc()
+
+    /**
+     * Get NFC tag.
+     */
+    fun getNfcTag(): LiveData<Tag?>
 }

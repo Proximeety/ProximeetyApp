@@ -71,4 +71,9 @@ object MainNavigationCommands {
         override val arguments: List<NamedNavArgument> = stories.arguments
         override val route: String = "stories/$userId"
     }
+
+    val nfc = object : NavigationCommand {
+        override val arguments = emptyList<NamedNavArgument>()
+        override val route = "nfc_view"
+    }
 }

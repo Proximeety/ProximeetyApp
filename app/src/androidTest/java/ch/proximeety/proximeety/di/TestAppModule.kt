@@ -55,6 +55,8 @@ class TestAppModule {
             getStoriesByUserId = GetStoriesByUserId(repository),
             getFriendsLocations = GetFriendsLocations(repository),
             startLiveLocation = StartLiveLocation(repository),
+            getNfcTag = GetNfcTag(repository),
+            enableNfc = EnableNfc(repository)
         )
     }
 }
