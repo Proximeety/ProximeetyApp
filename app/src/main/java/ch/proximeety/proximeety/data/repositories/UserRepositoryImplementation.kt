@@ -9,11 +9,13 @@ import androidx.lifecycle.lifecycleScope
 import ch.proximeety.proximeety.core.entities.Comment
 import ch.proximeety.proximeety.core.entities.Post
 import ch.proximeety.proximeety.core.entities.Story
+import ch.proximeety.proximeety.core.entities.Tag
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.core.repositories.UserRepository
 import ch.proximeety.proximeety.data.sources.BluetoothService
 import ch.proximeety.proximeety.data.sources.FirebaseAccessObject
 import ch.proximeety.proximeety.data.sources.LocationService
+import ch.proximeety.proximeety.data.sources.NfcService
 import ch.proximeety.proximeety.data.sources.cache.AuthenticatedUserCache
 import ch.proximeety.proximeety.data.sources.cache.FriendCacheDao
 import ch.proximeety.proximeety.data.sources.cache.PostCacheDao
@@ -35,7 +37,8 @@ class UserRepositoryImplementation(
     private val locationService: LocationService,
     private val postCacheDao: PostCacheDao,
     private val friendsCacheDao: FriendCacheDao,
-    private val authenticatedUserCache: AuthenticatedUserCache
+    private val authenticatedUserCache: AuthenticatedUserCache,
+    private val nfcService: NfcService
 ) : UserRepository {
 
     private val connectivityManager =
@@ -214,12 +217,32 @@ class UserRepositoryImplementation(
         }
     }
 
+
     override suspend fun getComments(id: String): List<Comment> {
         return firebaseAccessObject.getComments(id)
+    }
+    
+    override fun enableNfc() {
+        nfcService.enable(activity)
+    }
+
+    override fun getNfcTag(): LiveData<Tag?> {
+        val liveData = MutableLiveData<Tag?>()
+        nfcService.getTag().observe(activity) { id ->
+            activity.lifecycleScope.launch(Dispatchers.IO) {
+                if (id != null) {
+                    val tag = firebaseAccessObject.getTagById(id)
+                    if (tag != null) {
+                        liveData.postValue(tag)
+                        firebaseAccessObject.visitTag(tag.id)
+                    }
+                }
+            }
+        }
+        return liveData
     }
 
     override fun getFriendsLocations(): LiveData<Map<String, Triple<Long, Double, Double>>> {
         return firebaseAccessObject.getFriendsLocation(activity)
     }
-
 }

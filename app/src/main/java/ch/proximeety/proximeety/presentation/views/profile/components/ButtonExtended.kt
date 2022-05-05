@@ -12,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ch.proximeety.proximeety.presentation.components.SimpleAlertDialog
 import ch.proximeety.proximeety.presentation.views.profile.ProfileEvent
 import ch.proximeety.proximeety.presentation.views.profile.ProfileViewModel
 
@@ -50,7 +51,9 @@ fun ButtonExtended(viewModel: ProfileViewModel, onDelete: () -> Unit){
         SimpleAlertDialog(
             show = showDialogState,
             onDismiss = { viewModel.onEvent(ProfileEvent.OnCloseDialog) },
-            onConfirm = onDelete
+            onConfirm = onDelete,
+            title = "Delete post",
+            question = "Do you want to continue?"
         )
     }
 }
