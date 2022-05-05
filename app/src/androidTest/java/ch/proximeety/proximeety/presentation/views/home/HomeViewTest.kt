@@ -58,7 +58,7 @@ class HomeViewTest {
     }
 
     @Test
-    fun commentsSectionDrawerWorksProperly(){
+    fun commentsSectionDrawerWorksProperly() {
         composeTestRule.waitUntil(10000) { viewModel.posts.value.isNotEmpty() }
         composeTestRule
             .onAllNodesWithContentDescription("Comments")
@@ -72,20 +72,5 @@ class HomeViewTest {
             .onNodeWithContentDescription("Close Comment Section")
             .assertHasClickAction()
             .performClick()
-    }
-
-    @Test
-    fun commentsAreDisplayed(){
-        composeTestRule.waitUntil(10000) { viewModel.posts.value.isNotEmpty() }
-        composeTestRule
-            .onAllNodesWithContentDescription("Comments")
-            .onFirst()
-            .assertHasClickAction()
-            .performClick()
-        composeTestRule
-            .onNodeWithText("Comments", substring = true)
-            .onChildren()
-            .onFirst()
-            .assertTextContains("test1")
     }
 }
