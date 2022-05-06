@@ -347,4 +347,10 @@ class UserRepositoryMockImplementation : UserRepository {
             User("testUserId", "testUser")
         ))
     }
+    
+    override suspend fun isCommentLiked(comment: Comment) {
+    }
+    
+    override suspend fun toggleCommentLike(comment: Comment) {
+    }
 }
