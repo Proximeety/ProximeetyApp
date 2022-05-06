@@ -19,11 +19,13 @@ class NfcViewModel @Inject constructor(
     private val userInteractions: UserInteractions,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _isNewTag = mutableStateOf<Boolean?>(null)
-    val isNewTag : State<Boolean?> = _isNewTag
 
-    private val _nfcTag = mutableStateOf< Tag?>(null)
-    val nfcTag : State<Tag?> = _nfcTag
+
+    private val _isNewTag = mutableStateOf<Boolean?>(null)
+    val isNewTag: State<Boolean?> = _isNewTag
+
+    private val _nfcTag = mutableStateOf<Tag?>(null)
+    val nfcTag: State<Tag?> = _nfcTag
 
     init {
         savedStateHandle.get<String>("tagId").also { id ->
@@ -52,6 +54,14 @@ class NfcViewModel @Inject constructor(
             }
             NfcEvent.GoBack -> {
                 navigationManager.goBack()
+            }
+            is NfcEvent.OnNameChange -> {
+                _nfcTag.value = nfcTag.value?.copy(name = event.name)
+                viewModelScope.launch {
+                    if (nfcTag.value != null) {
+                        userInteractions.writeNfcTag(nfcTag.value!!)
+                    }
+                }
             }
         }
     }

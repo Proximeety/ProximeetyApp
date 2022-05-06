@@ -139,8 +139,8 @@ class AppModule {
             getLiveNfcTagId = GetLiveNfcTagId(repository),
             createNewNfcTag = CreateNewNfcTag(repository),
             getAllNfcTags = GetAllNfcTags(repository),
-            getNfcTagById = GetNfcTagById(repository)
-
+            getNfcTagById = GetNfcTagById(repository),
+            writeNfcTag = WriteNfcTag(repository),
         )
     }
 }

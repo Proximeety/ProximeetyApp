@@ -180,4 +180,6 @@ interface UserRepository {
     suspend fun createNewNfcTag(): Tag?
 
     suspend fun getNfcTagById(id: String): Tag?
+
+    suspend fun writeNfcTag(tag: Tag)
 }

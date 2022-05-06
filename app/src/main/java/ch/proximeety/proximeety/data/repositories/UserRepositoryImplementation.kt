@@ -231,6 +231,10 @@ class UserRepositoryImplementation(
         return firebaseAccessObject.getTagById(id)
     }
 
+    override suspend fun writeNfcTag(tag : Tag) {
+        firebaseAccessObject.writeTag(tag)
+    }
+
     override fun getLiveNfcTagId(): LiveData<String?> {
         val liveData = MutableLiveData<String?>()
         nfcService.getTag().observe(activity) { id ->

@@ -65,7 +65,7 @@ fun NfcView(viewModel: NfcViewModel = hiltViewModel()) {
                     Modifier.verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
                 ) {
-                    SectionHeader(tag.value, modifier = Modifier.width(width.dp))
+                    SectionHeader(tag.value, viewModel = viewModel, modifier = Modifier.width(width.dp))
                     SectionPictures(tag = tag.value, width = width, height = height)
                     SectionMap(tag = tag, width = width)
                     SectionVisitors(tag = tag.value, viewModel = viewModel)

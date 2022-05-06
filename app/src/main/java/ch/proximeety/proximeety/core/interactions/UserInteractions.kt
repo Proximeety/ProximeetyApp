@@ -34,5 +34,6 @@ data class UserInteractions(
     val enableNfc: EnableNfc,
     val getLiveNfcTagId: GetLiveNfcTagId,
     val getNfcTagById: GetNfcTagById,
-    val createNewNfcTag: CreateNewNfcTag
+    val createNewNfcTag: CreateNewNfcTag,
+    val writeNfcTag : WriteNfcTag
 )
