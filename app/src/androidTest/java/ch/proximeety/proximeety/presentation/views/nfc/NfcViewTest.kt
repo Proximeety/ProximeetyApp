@@ -52,7 +52,7 @@ class NfcViewTest {
 
         val savedStateHandle = SavedStateHandle(
             mapOf(
-                "tagId" to "testTagId"
+                "tagId" to "00:00:00:00:00:00"
             )
         )
 
