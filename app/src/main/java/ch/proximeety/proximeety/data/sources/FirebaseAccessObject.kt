@@ -692,7 +692,7 @@ class FirebaseAccessObject(
             }
 
             if (name != null && longitude != null && latitude != null && owner != null) {
-                return Tag(id, name, longitude, latitude, visitors, owner)
+                return Tag(id, name, latitude, longitude, visitors, owner)
             }
         }
         return null
