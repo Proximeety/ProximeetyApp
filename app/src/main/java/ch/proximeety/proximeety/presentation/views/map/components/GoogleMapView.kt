@@ -12,6 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.core.graphics.drawable.toBitmap
 import ch.proximeety.proximeety.presentation.theme.spacing
+import ch.proximeety.proximeety.presentation.views.map.MapEvent
 import ch.proximeety.proximeety.presentation.views.map.MapViewModel
 import ch.proximeety.proximeety.util.SafeArea
 import ch.proximeety.proximeety.util.extensions.getRoundedCroppedBitmap
@@ -48,13 +49,14 @@ fun GoogleMapView(
 
     val friendsPosition = viewModel.friendsPosition.observeAsState(mapOf())
     val friends = viewModel.friends
+    val tags = viewModel.nfcs
 
     val scaffoldState = rememberScaffoldState()
     Scaffold(
         scaffoldState = scaffoldState,
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                val nextFriendId = friends.value.get(Random.nextInt(0, friends.value.size)).id
+                val nextFriendId = friends.value[Random.nextInt(0, friends.value.size)].id
                 val nextFriendPosition = friendsPosition.value[nextFriendId]
                 if (nextFriendPosition != null) {
                     cameraPositionState.move(CameraUpdateFactory.newLatLng(LatLng(nextFriendPosition.second, nextFriendPosition.third)))
@@ -76,37 +78,52 @@ fun GoogleMapView(
             uiSettings = uiSettings,
             contentPadding = WindowInsets.safeDrawing.asPaddingValues(),
             onMapLoaded = onMapLoaded,
-        ) {
-            if (friends.value.isNotEmpty()) {
-                friendsPosition.value.forEach { (id, position) ->
-                    val bitmap = remember { mutableStateOf<Bitmap?>(null) }
-                    val user = remember { friends.value.firstOrNull { it.id == id } }
+            /*onMapLongClick = {
+                viewModel.onEvent(MapEvent.CreateNfcTag(it))
+            }*/) {
+                if (friends.value.isNotEmpty()) {
+                    friendsPosition.value.forEach { (id, position) ->
+                        val bitmap = remember { mutableStateOf<Bitmap?>(null) }
+                        val user = remember { friends.value.firstOrNull { it.id == id } }
 
-                    if (user != null) {
-                        LaunchedEffect(Unit) {
-                            val request = ImageRequest.Builder(context)
-                                .data(user.profilePicture)
-                                .target { drawable ->
-                                    bitmap.value =
-                                        drawable.toBitmap().copy(Bitmap.Config.ARGB_8888, false)
-                                            .getRoundedCroppedBitmap()
-                                }
-                                .build()
+                        if (user != null) {
+                            LaunchedEffect(Unit) {
+                                val request = ImageRequest.Builder(context)
+                                    .data(user.profilePicture)
+                                    .target { drawable ->
+                                        bitmap.value =
+                                            drawable.toBitmap().copy(Bitmap.Config.ARGB_8888, false)
+                                                .getRoundedCroppedBitmap()
+                                    }
+                                    .build()
 
-                            imageLoader.enqueue(request)
-                        }
+                                imageLoader.enqueue(request)
+                            }
 
-                        if (bitmap.value != null) {
-                            Marker(
-                                position = LatLng(position.second, position.third),
-                                title = user.displayName,
-                                icon = BitmapDescriptorFactory.fromBitmap(bitmap.value!!),
-                            )
+                            if (bitmap.value != null) {
+                                Marker(
+                                    position = LatLng(position.second, position.third),
+                                    title = user.displayName,
+                                    icon = BitmapDescriptorFactory.fromBitmap(bitmap.value!!),
+                                )
+                            }
                         }
                     }
                 }
+
+                if (tags.value.isNotEmpty()) {
+                    tags.value.forEach {
+                        Marker(
+                            position = LatLng(it.latitude, it.longitude),
+                            title = it.name,
+                            onClick = { _ ->
+                                viewModel.onEvent(MapEvent.OnClickNfcTag(it.id))
+                                return@Marker false
+                            }
+                        )
+                    }
+                }
             }
-        }
     }
 
     SafeArea {

@@ -10,12 +10,15 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.location.LocationManagerCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import ch.proximeety.proximeety.util.SyncActivity
+import ch.proximeety.proximeety.util.extensions.executor
 import kotlinx.coroutines.delay
+import java.util.function.Consumer
 
 
 /**
@@ -58,6 +61,14 @@ class LocationService(
             gpsLocationListener
         )
         return location
+    }
+
+    /**
+     * Returns the current location of the user.
+     */
+    @SuppressLint("MissingPermission")
+     fun getLastLocation(syncActivity: SyncActivity): Location? {
+        return locationManger.getLastKnownLocation(LocationManager.FUSED_PROVIDER)
     }
 
 

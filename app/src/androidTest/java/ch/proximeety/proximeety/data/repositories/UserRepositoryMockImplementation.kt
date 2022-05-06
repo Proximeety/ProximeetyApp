@@ -268,7 +268,7 @@ class UserRepositoryMockImplementation : UserRepository {
 
     private val tag = MutableLiveData<Tag?>(null)
 
-    override fun getNfcTag(): LiveData<Tag?> {
+    override fun getLiveNfcTagId(): LiveData<Tag?> {
         return tag
     }
 

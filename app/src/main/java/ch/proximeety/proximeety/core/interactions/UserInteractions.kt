@@ -8,6 +8,7 @@ data class UserInteractions(
     val authenticateWithGoogle: AuthenticateWithGoogle,
     val downloadPost: DownloadPost,
     val fetchUserById: FetchUserById,
+    val getAllNfcTags: GetAllNfcTags,
     val getAuthenticatedUser: GetAuthenticatedUser,
     val getFeed: GetFeed,
     val getFriends: GetFriends,
@@ -27,5 +28,7 @@ data class UserInteractions(
     val getFriendsLocations: GetFriendsLocations,
     val startLiveLocation: StartLiveLocation,
     val enableNfc: EnableNfc,
-    val getNfcTag: GetNfcTag
+    val getLiveNfcTagId: GetLiveNfcTagId,
+    val getNfcTagById: GetNfcTagById,
+    val createNewNfcTag: CreateNewNfcTag
 )

@@ -621,9 +621,9 @@ class FirebaseAccessObject(
     }
 
     /**
-     * Set the ahthenticated user as a visitor of the tag.
+     * Set the authenticated user as a visitor of the tag.
      */
-    suspend fun visitTag(tagId: String) {
+    fun visitTag(tagId: String) {
         authenticatedUser?.value?.also { user ->
             database.child(TAG_PATH).child(tagId).child(TAG_VISITORS_KEY).child(user.id).setValue(
                 mapOf(
@@ -633,5 +633,31 @@ class FirebaseAccessObject(
                 )
             )
         }
+    }
+
+    /**
+     *  Retrieve all existing NFC tags
+     */
+    suspend fun getAllNfcs(): List<Tag> {
+        authenticatedUser?.value?.also {
+            val tags = database.child(TAG_PATH).get().await().children.mapNotNull { it.key }
+            return tags.mapNotNull { id -> getTagById(id) }
+        }
+        return listOf()
+    }
+
+    suspend fun writeTag(tag: Tag) {
+        database.child(TAG_PATH).child(tag.id).setValue(
+            mapOf(
+                TAG_NAME_KEY to tag.name,
+                TAG_LONGITUDE_KEY to tag.longitude,
+                TAG_LATITUDE_KEY to tag.latitude,
+                TAG_OWNER_KEY to mapOf(
+                    USER_DISPLAY_NAME_KEY to tag.owner.displayName,
+                    USER_PROFILE_PICTURE_KEY to tag.owner.profilePicture
+                )
+            )
+        ).await()
+        visitTag(tag.id)
     }
 }

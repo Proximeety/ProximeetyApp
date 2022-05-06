@@ -49,8 +49,8 @@ class ProfileViewModel @Inject constructor(
 
     init {
         savedStateHandle.get<String>("userId")?.also {
-            _user.value = userInteractions.fetchUserById(it)
-            isAuthenticatedUserProfile = userInteractions.getAuthenticatedUser().value?.id == it
+                _user.value = userInteractions.fetchUserById(it)
+                isAuthenticatedUserProfile = userInteractions.getAuthenticatedUser().value?.id == it
 
             viewModelScope.launch(Dispatchers.IO) {
                 val posts = userInteractions.getPostUserId(it)

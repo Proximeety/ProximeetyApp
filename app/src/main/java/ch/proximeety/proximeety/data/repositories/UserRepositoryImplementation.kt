@@ -24,6 +24,7 @@ import ch.proximeety.proximeety.util.extensions.isConnected
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.*
 
 /**
  * Implementation of the user repository user Firebase.
@@ -216,20 +217,49 @@ class UserRepositoryImplementation(
         nfcService.enable(activity)
     }
 
-    override fun getNfcTag(): LiveData<Tag?> {
-        val liveData = MutableLiveData<Tag?>()
+    override suspend fun getNfcTagById(id : String): Tag? {
+        return firebaseAccessObject.getTagById(id)
+    }
+
+    override fun getLiveNfcTagId(): LiveData<String?> {
+        val liveData = MutableLiveData<String?>()
         nfcService.getTag().observe(activity) { id ->
             activity.lifecycleScope.launch(Dispatchers.IO) {
                 if (id != null) {
                     val tag = firebaseAccessObject.getTagById(id)
                     if (tag != null) {
-                        liveData.postValue(tag)
                         firebaseAccessObject.visitTag(tag.id)
                     }
+                    liveData.postValue(id)
                 }
             }
         }
         return liveData
+    }
+
+    override suspend fun getAllNfcs(): List<Tag> {
+        return firebaseAccessObject.getAllNfcs()
+    }
+
+    override suspend fun createNewNfcTag(): Tag? {
+        val location = locationService.getLastLocation(activity)
+        val owner = getAuthenticatedUser().value
+        val id = nfcService.getTag().value
+        if (location != null && owner != null && id != null) {
+            val tag = Tag(
+                id = id,
+                name = "New Tag",
+                latitude = location.latitude,
+                longitude = location.longitude,
+                owner = owner,
+                visitors = listOf(
+                    Pair(Calendar.getInstance().timeInMillis, owner)
+                )
+            )
+            firebaseAccessObject.writeTag(tag)
+            return tag
+        }
+        return null
     }
 
     override fun getFriendsLocations(): LiveData<Map<String, Triple<Long, Double, Double>>> {

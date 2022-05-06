@@ -52,9 +52,9 @@ class MainActivity : SyncActivity() {
                 navigationManager.clear()
             }
 
-            userInteractions.getNfcTag().observe(this) {
+            userInteractions.getLiveNfcTagId().observe(this) {
                 if (it != null) {
-                    navigationManager.navigate(MainNavigationCommands.nfc)
+                    navigationManager.navigate(MainNavigationCommands.nfcWithArgs(it))
                 }
             }
 
