@@ -23,6 +23,12 @@ class UserRepositoryMockImplementation : UserRepository {
             hasStories = true,
         )
     )
+    private var nonNullUser: User =
+        User (
+            id = "-MzJUaBgPuPH8EHhw0yQ",
+            displayName = "Proximeety",
+            profilePicture = null
+        )
     private var posts =
         mutableListOf<Post>(
             Post(
@@ -333,8 +339,23 @@ class UserRepositoryMockImplementation : UserRepository {
 
     private val tag = MutableLiveData<Tag?>(null)
 
-    override fun getLiveNfcTagId(): LiveData<Tag?> {
-        return tag
+    override fun getLiveNfcTagId(): LiveData<String?> {
+        return MutableLiveData(tag.value?.id)
+    }
+
+    override suspend fun getAllNfcs(): List<Tag> {
+        return listOf(tag.value!!)
+    }
+
+    override suspend fun createNewNfcTag(): Tag? {
+        return Tag("-MzJUaBgPuPH8EHhw0yQ","test", 0.0, 0.0, emptyList(), nonNullUser)
+    }
+
+    override suspend fun getNfcTagById(id: String): Tag? {
+        return null
+    }
+
+    override suspend fun writeNfcTag(tag: Tag) {
     }
 
     fun setTag() {
