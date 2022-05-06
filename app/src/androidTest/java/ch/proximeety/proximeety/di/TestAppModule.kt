@@ -58,7 +58,9 @@ class TestAppModule {
             getFriendsLocations = GetFriendsLocations(repository),
             startLiveLocation = StartLiveLocation(repository),
             getNfcTag = GetNfcTag(repository),
-            enableNfc = EnableNfc(repository)
+            enableNfc = EnableNfc(repository),
+            isCommentLiked = IsCommentLiked(repository),
+            toggleCommentLike = ToggleCommentLike(repository)
         )
     }
 }
