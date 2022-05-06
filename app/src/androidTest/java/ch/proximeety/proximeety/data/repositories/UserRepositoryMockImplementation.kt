@@ -344,7 +344,7 @@ class UserRepositoryMockImplementation : UserRepository {
     }
 
     override suspend fun getAllNfcs(): List<Tag> {
-        return listOf(tag.value!!)
+        return emptyList()
     }
 
     override suspend fun createNewNfcTag(): Tag? {
