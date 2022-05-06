@@ -136,7 +136,11 @@ class AppModule {
             getFriendsLocations = GetFriendsLocations(repository),
             getComments = GetComments(repository),
             enableNfc = EnableNfc(repository),
-            getNfcTag = GetNfcTag(repository)
+            getLiveNfcTagId = GetLiveNfcTagId(repository),
+            createNewNfcTag = CreateNewNfcTag(repository),
+            getAllNfcTags = GetAllNfcTags(repository),
+            getNfcTagById = GetNfcTagById(repository)
+
         )
     }
 }
