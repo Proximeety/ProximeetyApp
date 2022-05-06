@@ -66,14 +66,18 @@ fun HomeView(
                                 scaffoldState.bottomSheetState.collapse()
                             comments = listOf()
                         }
+                    },
+                    onCommentLike = { comment ->
+                        viewModel.onEvent(HomeEvent.ToggleCommentLike(comment))
+                    },
+                    onPostClick = {
+                        viewModel.viewModelScope.launch(Dispatchers.IO) {
+                            viewModel
+                                .onEvent(HomeEvent.PostComment(it))
+                            viewModel.onEvent(HomeEvent.RefreshComments)
+                        }
                     }
-                ) {
-                    viewModel.viewModelScope.launch(Dispatchers.IO) {
-                        viewModel
-                            .onEvent(HomeEvent.PostComment(it))
-                        viewModel.onEvent(HomeEvent.RefreshComments)
-                    }
-                }
+                )
             },
             scaffoldState = scaffoldState,
             sheetPeekHeight = 0.dp,
