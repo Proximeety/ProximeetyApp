@@ -2,6 +2,7 @@ package ch.proximeety.proximeety.presentation.views.nfc
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.lifecycle.SavedStateHandle
 import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.core.repositories.UserRepository
 import ch.proximeety.proximeety.data.repositories.UserRepositoryMockImplementation
@@ -49,8 +50,13 @@ class NfcViewTest {
             userInteractions.authenticateWithGoogle()
         }
 
+        val savedStateHandle = SavedStateHandle(
+            mapOf(
+                "tagId" to "testTagId"
+            )
+        )
 
-        viewModel = NfcViewModel(navigationManager, userInteractions)
+        viewModel = NfcViewModel(navigationManager, userInteractions, savedStateHandle)
 
         composeTestRule.setContent {
             ProximeetyTheme {
