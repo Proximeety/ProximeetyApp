@@ -94,9 +94,12 @@ fun StoriesView(
                         vertical = MaterialTheme.spacing.extraSmall,
                         horizontal = MaterialTheme.spacing.small
                     ).fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row() {
+                    Row(
+
+                    ) {
                         Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
                         Image(
                             painter = rememberImagePainter(user.value?.profilePicture),

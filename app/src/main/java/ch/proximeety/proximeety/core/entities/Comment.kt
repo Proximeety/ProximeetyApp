@@ -13,7 +13,7 @@ data class Comment(
      */
     val postId: String,
     /**
-     *  The display name of the user.
+     *  The unique id of the user.
      */
     val posterId: String,
     /**
@@ -29,7 +29,15 @@ data class Comment(
      */
     val timestamp: Long,
     /**
-     * The URL of the post image.
+     * The comment's content.
      */
     val comment: String,
+    /**
+     * The number of likes.
+     */
+    val likes: Int,
+    /**
+     * Is Comment liked by the authenticated user
+     */
+    val isLiked: Boolean = false
 )

@@ -2,6 +2,7 @@ package ch.proximeety.proximeety.data.repositories
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import ch.proximeety.proximeety.core.entities.Comment
 import ch.proximeety.proximeety.core.entities.Post
 import ch.proximeety.proximeety.core.entities.Story
 import ch.proximeety.proximeety.core.entities.Tag
@@ -80,6 +81,42 @@ class UserRepositoryMockImplementation : UserRepository {
             )
         )
 
+    private var comments = mutableListOf(
+        Comment(
+            id = "-MzJUaBgPuPH8EHhw0yQ",
+            postId = "-MzLEU_55gpq5ZQgAOAp",
+            posterId = "testUserId2",
+            userDisplayName = "Hamza LAAROUS",
+            userProfilePicture = null,
+            timestamp = 1648537528605,
+            comment = "test1",
+            likes = 0,
+            isLiked = true
+        ),
+        Comment(
+            id = "-MzJUaBgPuPH8EHhw0yQ",
+            postId = "-MzLEU_55gpq5ZQgAOAp",
+            posterId = "testUserId2",
+            userDisplayName = "Hamza LAAROUS",
+            userProfilePicture = null,
+            timestamp = 1648537528605,
+            comment = "test2",
+            likes = 0,
+            isLiked = true
+        ),
+        Comment(
+            id = "-MzJUaBgPuPH8EHhw0yQ",
+            postId = "-MzLEU_55gpq5ZQgAOAp",
+            posterId = "testUserId2",
+            userDisplayName = "Hamza LAAROUS",
+            userProfilePicture = null,
+            timestamp = 1648537528605,
+            comment = "test3",
+            likes = 0,
+            isLiked = true
+        )
+    )
+
     private var stories =
         mutableListOf<Story>(
             Story(
@@ -104,7 +141,6 @@ class UserRepositoryMockImplementation : UserRepository {
                 posterId = "testUserId"
             )
         )
-
 
     override fun setActivity(activity: SyncActivity) {}
 
@@ -224,6 +260,25 @@ class UserRepositoryMockImplementation : UserRepository {
         return true
     }
 
+    override suspend fun postComment(postId: String, comment: String) {
+        user?.id?.let {
+            Comment(
+                id = comment.hashCode().toString(),
+                postId = postId,
+                userDisplayName = "",
+                userProfilePicture = null,
+                timestamp = 0,
+                likes = 0,
+                posterId = it,
+                comment = comment
+            )
+        }?.let {
+            comments.add(
+                it
+            )
+        }
+    }
+
     override suspend fun getStoriesByUserId(id: String): List<Story> {
         return when (id) {
             user?.id -> {
@@ -263,6 +318,16 @@ class UserRepositoryMockImplementation : UserRepository {
     override fun startLiveLocation() {
     }
 
+    override suspend fun getComments(id: String): List<Comment> {
+        when (id) {
+            user?.id -> {
+                return comments.toList()
+            }
+        }
+
+        return listOf()
+    }
+    
     override fun enableNfc() {
     }
 
@@ -273,7 +338,6 @@ class UserRepositoryMockImplementation : UserRepository {
     }
 
     fun setTag() {
-
         tag.postValue(Tag(
             "00:00:00:00:00:00",
             "testTag",

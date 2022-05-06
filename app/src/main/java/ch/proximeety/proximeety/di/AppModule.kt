@@ -124,6 +124,7 @@ class AppModule {
             deleteStory = DeleteStory(repository),
             togglePostLike = TogglePostLike(repository),
             isPostLiked = IsPostLiked(repository),
+            postComment = PostComment(repository),
             setActivity = SetActivity(repository),
             setAuthenticatedUserVisible = SetAuthenticatedUserVisible(repository),
             signOut = SignOut(repository),
@@ -133,11 +134,9 @@ class AppModule {
             downloadStory = DownloadStory(repository),
             startLiveLocation = StartLiveLocation(repository),
             getFriendsLocations = GetFriendsLocations(repository),
+            getComments = GetComments(repository),
             enableNfc = EnableNfc(repository),
-            getLiveNfcTagId = GetLiveNfcTagId(repository),
-            createNewNfcTag = CreateNewNfcTag(repository),
-            getAllNfcTags = GetAllNfcTags(repository),
-            getNfcTagById = GetNfcTagById(repository)
+            getNfcTag = GetNfcTag(repository)
         )
     }
 }
