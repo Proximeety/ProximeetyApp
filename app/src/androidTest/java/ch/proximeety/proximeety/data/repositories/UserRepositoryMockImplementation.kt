@@ -349,6 +349,7 @@ class UserRepositoryMockImplementation : UserRepository {
     }
     
     override suspend fun isCommentLiked(comment: Comment): Boolean {
+        return true
     }
     
     override suspend fun toggleCommentLike(comment: Comment) {
