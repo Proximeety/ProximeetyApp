@@ -28,7 +28,7 @@ class NfcViewModel @Inject constructor(
     val nfcTag: State<Tag?> = _nfcTag
 
     init {
-        savedStateHandle.get<String>("tagId").also { id ->
+        savedStateHandle.get<String>("id").also { id ->
             viewModelScope.launch {
                 if (id == null) {
                     navigationManager.goBack()

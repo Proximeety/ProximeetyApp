@@ -52,7 +52,7 @@ class NfcViewTest {
 
         val savedStateHandle = SavedStateHandle(
             mapOf(
-                "tagId" to "00:00:00:00:00:00"
+                "id" to "00:00:00:00:00:00"
             )
         )
 
@@ -64,7 +64,7 @@ class NfcViewTest {
             }
         }
 
-        (repository as UserRepositoryMockImplementation).setTag()
+        //(repository as UserRepositoryMockImplementation).setTag()
     }
 
     @Test

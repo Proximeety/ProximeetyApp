@@ -337,7 +337,15 @@ class UserRepositoryMockImplementation : UserRepository {
     override fun enableNfc() {
     }
 
-    private val tag = MutableLiveData<Tag?>(null)
+    private val tag = MutableLiveData<Tag?>(Tag(
+        "00:00:00:00:00:00",
+        "testTag",
+        47.0,
+        47.0,
+        listOf(Pair(1651653481L, User("testUserVisitorId", "testUserVisitor"))),
+        User("testUserId", "testUser")
+    ))
+
     private val tags = mutableListOf<Tag>(
         Tag(
             "00:00:00:00:00:00",
@@ -358,7 +366,8 @@ class UserRepositoryMockImplementation : UserRepository {
     }
 
     override suspend fun createNewNfcTag(): Tag? {
-        return Tag("-MzJUaBgPuPH8EHhw0yQ","test", 0.0, 0.0, emptyList(), nonNullUser)
+        return null
+        //return Tag("-MzJUaBgPuPH8EHhw0yQ","test", 0.0, 0.0, emptyList(), nonNullUser)
     }
 
     override suspend fun getNfcTagById(id: String): Tag? {
@@ -373,14 +382,14 @@ class UserRepositoryMockImplementation : UserRepository {
     override suspend fun writeNfcTag(tag: Tag) {
     }
 
-    fun setTag() {
-        tag.postValue(Tag(
-            "00:00:00:00:00:00",
-            "testTag",
-            47.0,
-            47.0,
-            listOf(Pair(1651653481L, User("testUserVisitorId", "testUserVisitor"))),
-            User("testUserId", "testUser")
-        ))
-    }
+//    fun setTag() {
+//        tag.postValue(Tag(
+//            "00:00:00:00:00:00",
+//            "testTag",
+//            47.0,
+//            47.0,
+//            listOf(Pair(1651653481L, User("testUserVisitorId", "testUserVisitor"))),
+//            User("testUserId", "testUser")
+//        ))
+//    }
 }
