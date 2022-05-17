@@ -35,9 +35,9 @@ data class Post(
     /**
      * The number of likes.
      */
-    val likes: Int,
+    var likes: Int,
     /**
      * True if the post is liked by the authenticated user.
      */
-    val isLiked: Boolean = false
+    var isLiked: Boolean = false
 )
