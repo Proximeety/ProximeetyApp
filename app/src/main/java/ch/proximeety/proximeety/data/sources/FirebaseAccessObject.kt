@@ -26,6 +26,8 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.auth.ktx.userProfileChangeRequest
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
@@ -293,9 +295,9 @@ class FirebaseAccessObject(
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     user.value =
-                        User(
-                            id = id,
-                            displayName = snapshot.child(USER_DISPLAY_NAME_KEY).value as String?
+                            User(
+                                id = id,
+                                displayName = snapshot.child(USER_DISPLAY_NAME_KEY).value as String?
                                 ?: id,
                             givenName = snapshot.child(USER_GIVEN_NAME_KEY).value as String?,
                             familyName = snapshot.child(USER_FAMILY_NAME_KEY).value as String?,
@@ -336,6 +338,21 @@ class FirebaseAccessObject(
             database.child(USER_FRIENDS_PATH).child(it.id).child(id).setValue(true).await()
         }
     }
+
+    fun writeNewUser(userId: String, name: String, email: String) {
+        val user = User(name, email)
+
+        database.child("users").child(userId).setValue(user)
+    }
+
+    fun readAllMessages(userId: String, name: String, email: String) {
+        database.child("messages").child(userId).get().addOnSuccessListener {
+            Log.i("firebase", "Got value ${it.value}")
+        }.addOnFailureListener {
+            Log.i("firebase", "Error getting data", it)
+        }
+    }
+
 
     /**
      * Gets the friends of a users.
@@ -636,7 +653,7 @@ class FirebaseAccessObject(
      * @param postId the post's id
      * @param comment the comment to leave
      */
-    suspend fun postComment(postId: String, comment: String) {
+    fun postComment(postId: String, comment: String) {
         authenticatedUser?.value?.let { user ->
             val ref = database.child(COMMENT_PATH).child(postId).push()
             ref.key?.also {
@@ -659,9 +676,13 @@ class FirebaseAccessObject(
     }
 
     suspend fun getComments(id: String): List<Comment> {
+        Log.d("GETTING", id)
         return database.child(COMMENT_PATH).child(id).get()
             .await().children.mapNotNull { snapshot ->
+                Log.d("aa", snapshot.key.toString())
                 if (snapshot.exists() && snapshot.key != null) {
+                    Log.d("aa", snapshot.key.toString())
+
                     val postId = snapshot.child(COMMENT_POST_ID_KEY).value as String?
                     val posterId = snapshot.child(COMMENT_POSTER_ID_KEY).value as String?
                     val userDisplayName =
@@ -675,9 +696,8 @@ class FirebaseAccessObject(
                     val likes =
                         snapshot.child(COMMENT_LIKES_KEY).children.mapNotNull { it.value as? Boolean }
                             .filter { it }.count()
-                            
+
                     if (postId != null && posterId != null && userDisplayName != null && timestamp != null && comment != null) {
-                        Log.d("aa", snapshot.key.toString())
                         return@mapNotNull Comment(
                             id = snapshot.key!!,
                             postId = postId,
@@ -790,6 +810,36 @@ class FirebaseAccessObject(
                 )
             ).await()
         }
+    }
+
+    /**
+     * Get a certain post from a user.
+     * @param userId the id of the poster.
+     * @param postId the id of the post
+     */
+    suspend fun getPostByIds(userId: String, postId: String): LiveData<Post?> {
+        var post = MutableLiveData<Post>(null)
+        val ref = database.child(POSTS_PATH).child(userId).child(postId)
+        ref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    post.value =
+                        Post(
+                            id = postId,
+                            posterId = userId,
+                            userDisplayName = snapshot.child(POST_USER_DISPLAY_NAME_KEY).value as String,
+                            userProfilePicture = snapshot.child(POST_USER_PROFILE_PICTURE_KEY).value as String?,
+                            timestamp = snapshot.child(POST_TIMESTAMP_KEY).value as Long,
+                            likes = snapshot.child(POST_LIKES_KEY).children.mapNotNull { it.value as? Boolean }
+                                .filter { it }.count()
+                        )
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Log.e(TAG, error.message)
+            }
+        })
+        return post
     }
 
     suspend fun writeTag(tag: Tag) {

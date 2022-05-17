@@ -14,4 +14,6 @@ sealed class ProfileEvent {
     object OnStoryClick : ProfileEvent()
     object OnOpenDialogClicked: ProfileEvent()
     object OnCloseDialog: ProfileEvent()
+    class OnPostClick(val postId: String) : ProfileEvent()
+
 }
