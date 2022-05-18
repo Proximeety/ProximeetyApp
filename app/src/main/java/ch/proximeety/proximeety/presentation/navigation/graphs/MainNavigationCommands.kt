@@ -79,8 +79,8 @@ object MainNavigationCommands {
         override val route = "nfc_view/{tagId}"
     }
 
-    fun nfcWithArgs(id: String) = object : NavigationCommand {
+    fun nfcWithArgs(tagId: String) = object : NavigationCommand {
         override val arguments: List<NamedNavArgument> = nfc.arguments
-        override val route: String = "nfc_view/$id"
+        override val route: String = "nfc_view/$tagId"
     }
 }

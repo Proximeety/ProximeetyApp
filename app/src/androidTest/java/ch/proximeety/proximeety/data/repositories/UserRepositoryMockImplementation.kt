@@ -366,7 +366,14 @@ class UserRepositoryMockImplementation : UserRepository {
     }
 
     override suspend fun createNewNfcTag(): Tag? {
-        return Tag("10:00:00:00:00:00","test", 0.0, 0.0, emptyList(), nonNullUser)
+        return Tag(
+            "00:00:00:00:00:00",
+            "testTag",
+            47.0,
+            47.0,
+            listOf(Pair(1651653481L, User("testUserVisitorId", "testUserVisitor"))),
+            User("testUserId", "testUser")
+        )
     }
 
     override suspend fun getNfcTagById(id: String): Tag? {

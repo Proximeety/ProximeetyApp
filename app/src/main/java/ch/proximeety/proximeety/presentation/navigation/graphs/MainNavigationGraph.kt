@@ -77,7 +77,8 @@ fun NavGraphBuilder.mainNavigationGraph() {
             StoriesView()
         }
         composable(
-            route = MainNavigationCommands.nfc.route
+            route = MainNavigationCommands.nfc.route,
+            arguments = MainNavigationCommands.nfc.arguments
         ) {
             NfcView()
         }
