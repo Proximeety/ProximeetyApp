@@ -1,11 +1,7 @@
 package ch.proximeety.proximeety.core.repositories
 
 import androidx.lifecycle.LiveData
-import ch.proximeety.proximeety.core.entities.Comment
-import ch.proximeety.proximeety.core.entities.Post
-import ch.proximeety.proximeety.core.entities.Story
-import ch.proximeety.proximeety.core.entities.Tag
-import ch.proximeety.proximeety.core.entities.User
+import ch.proximeety.proximeety.core.entities.*
 import ch.proximeety.proximeety.util.SyncActivity
 
 /**
@@ -211,4 +207,19 @@ interface UserRepository {
      * @param postId the id of the post
      */
     suspend fun getPostByIds(userId: String, postId: String): Post?
+
+    fun getNfcTag(): LiveData<Tag?>
+
+    /**
+     * Reply to a Comment
+     *
+     * @param commentId id of the comment to reply to
+     * @param comment the reply
+     */
+    suspend fun replyToComment(commentId: String, comment: String)
+
+    /**
+     * Get a comment's replies
+     */
+    suspend fun getCommentReplies(commentId: String): List<CommentReply>
 }

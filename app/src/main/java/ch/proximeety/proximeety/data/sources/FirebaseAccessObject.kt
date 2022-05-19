@@ -83,6 +83,14 @@ class FirebaseAccessObject(
         private const val COMMENT_VALUE_KEY = "comment"
         private const val COMMENT_LIKES_KEY = "likes"
 
+        private const val REPLY_PATH = "replies"
+        private const val REPLY_COMMENT_ID_KEY = "commentId"
+        private const val REPLY_POSTER_KEY = "posterId"
+        private const val REPLY_USER_DISPLAY_NAME_KEY = "userDisplayName"
+        private const val REPLY_USER_PROFILE_PICTURE_KEY = "userProfilePicture"
+        private const val REPLY_TIMESTAMP_KEY = "userProfilePicture"
+        private const val REPLY_VALUE_KEY = "commentReply"
+
         private const val STORY_PATH = "stories"
         private const val STORY_POSTER_ID_KEY = "posterId"
         private const val STORY_USER_DISPLAY_NAME_KEY = "userDisplayName"
@@ -865,6 +873,66 @@ class FirebaseAccessObject(
             )
         ).await()
         visitTag(tag.id)
+    }
+
+    suspend fun replyToComment(commentId: String, comment: String) {
+        authenticatedUser?.value?.let { user ->
+            val ref = database.child(REPLY_PATH).child(commentId).push()
+            ref.key?.also {
+                try {
+                    ref.setValue(
+                        mapOf(
+                            REPLY_POSTER_KEY to user.id,
+                            REPLY_COMMENT_ID_KEY to commentId,
+                            REPLY_VALUE_KEY to comment,
+                            REPLY_USER_DISPLAY_NAME_KEY to user.displayName,
+                            REPLY_TIMESTAMP_KEY to Calendar.getInstance().timeInMillis
+                        )
+                    )
+                } catch (e: Exception) {
+                    Log.e(TAG, e.message.toString())
+                }
+            }
+        }
+    }
+
+    suspend fun getCommentReplies(replyId: String): List<CommentReply> {
+        Log.d("GETTING", replyId)
+        return database.child(REPLY_PATH).child(replyId).get()
+            .await().children.mapNotNull { snapshot ->
+                Log.d("aa", snapshot.key.toString())
+                if (snapshot.exists() && snapshot.key != null) {
+                    Log.d("aa", snapshot.key.toString())
+
+                    val commentId = snapshot.child(REPLY_COMMENT_ID_KEY).value as String?
+                    val posterId = snapshot.child(REPLY_POSTER_KEY).value as String?
+                    val userDisplayName =
+                        snapshot.child(REPLY_USER_DISPLAY_NAME_KEY).value as String?
+                    val userProfilePicture =
+                        snapshot.child(REPLY_USER_PROFILE_PICTURE_KEY).value as String?
+                    val timestamp = snapshot.child(REPLY_TIMESTAMP_KEY).value as Long?
+                    val reply = snapshot.child(
+                        REPLY_VALUE_KEY
+                    ).value as String?
+
+                    if (commentId != null && posterId != null && userDisplayName != null
+                        && userProfilePicture != null && timestamp != null && reply != null
+                    ) {
+                        Log.d("aa", snapshot.key.toString())
+
+                        return@mapNotNull CommentReply(
+                            id = snapshot.key!!,
+                            commentId = commentId,
+                            posterId = posterId,
+                            userDisplayName = userDisplayName,
+                            userProfilePicture = userProfilePicture,
+                            timestamp = timestamp,
+                            commentReply = reply
+                        )
+                    }
+                }
+                return@mapNotNull null
+            }
     }
 }
 

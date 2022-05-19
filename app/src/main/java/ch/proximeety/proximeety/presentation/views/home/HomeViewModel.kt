@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.proximeety.proximeety.core.entities.Comment
+import ch.proximeety.proximeety.core.entities.CommentReply
 import ch.proximeety.proximeety.core.entities.Post
 import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.core.interactions.UserInteractions
@@ -36,6 +37,10 @@ class HomeViewModel @Inject constructor(
     val posts: State<List<Post>> = _posts
 
     private var _commentSectionPostId: String? = null
+    private var _commentId: String? = null
+
+    private var _replies = mutableStateOf<List<CommentReply>>(listOf())
+    val replies: State<List<CommentReply>> = _replies
 
     private var _comments = mutableStateOf<List<Comment>>(listOf())
     val comments: State<List<Comment>> = _comments
@@ -54,6 +59,9 @@ class HomeViewModel @Inject constructor(
 
     fun onEvent(event: HomeEvent) {
         when (event) {
+            HomeEvent.NavigateToNearbyUsersViewModel -> {
+                navigationManager.navigate(MainNavigationCommands.nearbyUsers)
+            }
             HomeEvent.SignOut -> {
                 userInteractions.signOut()
                 navigationManager.navigate(AuthenticationNavigationCommands.default)
@@ -121,9 +129,25 @@ class HomeViewModel @Inject constructor(
                     _commentSectionPostId?.let { userInteractions.postComment(it, event.text) }
                 }
                 if (_commentSectionPostId != null) {
-                    _commentCount.value = _commentCount.value.plus(_commentSectionPostId!! to ((_commentCount.value[_commentSectionPostId] ?: 0) + 1))
+                    _commentCount.value = _commentCount.value.plus(
+                        _commentSectionPostId!! to ((_commentCount.value[_commentSectionPostId]
+                            ?: 0) + 1)
+                    )
                 }
             }
+
+            is HomeEvent.ReplyToComment -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    _commentId?.let { userInteractions.replyToComment(it, event.commentReply) }
+                }
+//                if (_commentId != null) {
+//                    _replyCount.value = _replyCount.value.plus(
+//                        _commentId!! to ((_replyCount.value[_commentId]
+//                            ?: 0) + 1)
+//                    )
+//                }
+            }
+
             is HomeEvent.TogglePostLike -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     userInteractions.togglePostLike(event.post)
