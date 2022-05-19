@@ -19,6 +19,7 @@ fun SectionPictures(tag: Tag?, modifier: Modifier = Modifier, width: Float, heig
             .fillMaxWidth()
     ) {
         Picture(width.dp * 2f / 3f - MaterialTheme.spacing.large * 1f / 3f)
+        Icon
         Spacer(modifier = Modifier.width(MaterialTheme.spacing.large))
         Column {
             Picture((height.dp - MaterialTheme.spacing.large) * 0.5f)

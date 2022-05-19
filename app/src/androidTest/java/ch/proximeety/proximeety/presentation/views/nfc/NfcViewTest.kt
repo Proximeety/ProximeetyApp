@@ -65,7 +65,7 @@ class NfcViewTest {
             }
         }
 
-        //(repository as UserRepositoryMockImplementation).setTag()
+        (repository as UserRepositoryMockImplementation).setTag()
     }
 
     @Test
