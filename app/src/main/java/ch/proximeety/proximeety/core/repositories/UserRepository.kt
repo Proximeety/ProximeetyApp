@@ -133,6 +133,20 @@ interface UserRepository {
     suspend fun postComment(postId: String, comment: String)
 
     /**
+     * Toggle likes on a Comment
+     *
+     * @param comment the comment
+     */
+    suspend fun toggleCommentLike(comment: Comment)
+
+    /**
+     * is a Comment liked
+     *
+     * @param comment the comment
+     */
+    suspend fun isCommentLiked(comment: Comment): Boolean
+
+    /**
      * Get the stories of an user.
      */
     suspend fun getStoriesByUserId(id: String): List<Story>
@@ -170,16 +184,5 @@ interface UserRepository {
     /**
      * Get NFC tag.
      */
-    fun getLiveNfcTagId(): LiveData<String?>
-
-    /**
-     * Get all existing NFC tags.
-     */
-    suspend fun getAllNfcs(): List<Tag>
-
-    suspend fun createNewNfcTag(): Tag?
-
-    suspend fun getNfcTagById(id: String): Tag?
-
-    suspend fun writeNfcTag(tag: Tag)
+    fun getNfcTag(): LiveData<Tag?>
 }

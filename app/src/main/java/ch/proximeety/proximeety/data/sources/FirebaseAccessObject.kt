@@ -630,6 +630,10 @@ class FirebaseAccessObject(
                         COMMENT_VALUE_KEY
                     ).value as String?
 
+                    val likes =
+                        snapshot.child(COMMENT_LIKES_KEY).children.mapNotNull { it.value as? Boolean }
+                            .filter { it }.count()
+
                     if (postId != null && posterId != null && userDisplayName != null && userProfilePicture != null && timestamp != null && comment != null) {
                         Log.d("aa", snapshot.key.toString())
 
@@ -641,13 +645,46 @@ class FirebaseAccessObject(
                             userProfilePicture = userProfilePicture,
                             timestamp = timestamp,
                             comment = comment,
-                            likes = 0,
+                            likes = likes,
                             isLiked = false
                         )
                     }
                 }
                 return@mapNotNull null
             }
+    }
+
+    suspend fun isCommentLiked(comment: Comment): Boolean {
+        authenticatedUser?.value?.also { user ->
+            val ref =
+                database
+                    .child(COMMENT_PATH)
+                    .child(comment.postId)
+                    .child(comment.id)
+                    .child(COMMENT_LIKES_KEY)
+                    .child(user.id)
+            (ref.get().await().value as? Boolean)?.also {
+                return it
+            }
+        }
+        return false
+    }
+
+    /**
+     * Like or unlike the comment.
+     */
+    suspend fun toggleCommentLike(comment: Comment) {
+        authenticatedUser?.value?.also { user ->
+            val ref =
+                database.child(COMMENT_PATH)
+                    .child(comment.postId)
+                    .child(comment.id)
+                    .child(COMMENT_LIKES_KEY)
+                    .child(user.id)
+            (ref.get().await().value as? Boolean).also {
+                ref.setValue(if (it == null) true else !it)
+            }
+        }
     }
 
     /**
