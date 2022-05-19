@@ -29,7 +29,7 @@ fun SectionVisitors(tag: Tag?, viewModel: NfcViewModel) {
         "Last visitors",
         style = MaterialTheme.typography.h3,
     )
-    Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
+    Column(verticalArrangement = Arrangement.spacedBy(spacing.small)) {
         tag?.visitors?.map { (timestamp, visitor) ->
             Row(
                 modifier = Modifier
@@ -43,7 +43,7 @@ fun SectionVisitors(tag: Tag?, viewModel: NfcViewModel) {
                             )
                         )
                     }
-                    .padding(MaterialTheme.spacing.small),
+                    .padding(spacing.small),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
@@ -56,14 +56,14 @@ fun SectionVisitors(tag: Tag?, viewModel: NfcViewModel) {
                         .aspectRatio(1f)
                         .background(Color.Gray)
                 )
-                Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
+                Spacer(modifier = Modifier.width(spacing.small))
                 Column {
                     Text(
                         text = visitor.displayName,
                         style = MaterialTheme.typography.h4
                     )
                     Text(
-                        text = SimpleDateFormat("EEE, MMM d, yyyy").format(
+                        text = SimpleDateFormat("EEE, MMM d, yyyy", Locale.FRANCE).format(
                             Date(
                                 timestamp
                             )

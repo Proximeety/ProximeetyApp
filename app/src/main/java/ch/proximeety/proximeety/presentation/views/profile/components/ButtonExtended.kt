@@ -26,7 +26,7 @@ fun ButtonExtended(viewModel: ProfileViewModel, onDelete: () -> Unit){
     IconButton( onClick = { menuExpanded.value = true }) {
         Icon(imageVector = Icons.Rounded.MoreHoriz, contentDescription = "More")
     }
-    Column() {
+    Column {
         DropdownMenu(
             expanded = menuExpanded.value,
             onDismissRequest = {

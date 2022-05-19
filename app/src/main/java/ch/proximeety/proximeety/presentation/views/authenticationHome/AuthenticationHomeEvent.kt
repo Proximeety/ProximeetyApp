@@ -5,4 +5,5 @@ package ch.proximeety.proximeety.presentation.views.authenticationHome
  */
 sealed class AuthenticationHomeEvent {
     object AuthenticateWithGoogle : AuthenticationHomeEvent()
+    class SetCurrentPage(val page: Int) : AuthenticationHomeEvent()
 }

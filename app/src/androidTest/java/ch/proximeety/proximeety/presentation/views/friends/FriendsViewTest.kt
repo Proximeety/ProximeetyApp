@@ -7,8 +7,6 @@ import ch.proximeety.proximeety.di.AppModule
 import ch.proximeety.proximeety.presentation.MainActivity
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
 import ch.proximeety.proximeety.presentation.theme.ProximeetyTheme
-import ch.proximeety.proximeety.presentation.views.home.HomeView
-import ch.proximeety.proximeety.presentation.views.home.HomeViewModel
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -34,8 +32,6 @@ class FriendsViewTest {
     @Inject
     lateinit var userInteractions: UserInteractions
 
-    private lateinit var viewModel: FriendsViewModel
-
     @Before
     fun setup() {
         hiltRule.inject()
@@ -44,11 +40,9 @@ class FriendsViewTest {
             userInteractions.authenticateWithGoogle()
         }
 
-        viewModel = FriendsViewModel(navigationManager, userInteractions)
-
         composeTestRule.setContent {
             ProximeetyTheme {
-                FriendsView(viewModel)
+                FriendsView()
             }
         }
     }
@@ -63,6 +57,19 @@ class FriendsViewTest {
         composeTestRule.onNodeWithTag("textField").performClick().performTextInput("test")
         composeTestRule.onNodeWithTag("button").performClick()
         composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText("Test User").assertExists()
+    }
+
+    @Test
+    fun searchBarTestEmpty() {
+        composeTestRule.onNodeWithTag("textField").performClick().performTextInput("")
+        composeTestRule.onNodeWithTag("button").performClick()
+        composeTestRule.onNodeWithText("Test User").assertExists()
+    }
+
+    @Test
+    fun searchBarTestEmptyIME() {
+        composeTestRule.onNodeWithTag("textField").performImeAction()
         composeTestRule.onNodeWithText("Test User").assertExists()
     }
 

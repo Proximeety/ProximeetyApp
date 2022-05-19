@@ -19,9 +19,11 @@ data class Spacing(
     val extraLarge: Dp = 32.dp,
 )
 
-internal val LocalSpacing = compositionLocalOf { Spacing() }
+internal val LocalSpacing = compositionLocalOf {
+    Spacing()
+}
 
-val MaterialTheme.spacing: Spacing
+val spacing: Spacing
     @Composable
     @ReadOnlyComposable
     get() = LocalSpacing.current

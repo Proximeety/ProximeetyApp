@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -25,7 +24,6 @@ import ch.proximeety.proximeety.R
 import ch.proximeety.proximeety.util.SafeArea
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 /**
@@ -35,13 +33,6 @@ import kotlinx.coroutines.launch
 fun AuthenticationHomeView(
     viewModel: AuthenticationHomeViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(true) {
-        viewModel.eventFlow.collectLatest { event ->
-            when (event) {
-            }
-        }
-    }
-
     SafeArea {
         AuthenticationHomeScreen(viewModel)
     }
@@ -162,7 +153,11 @@ fun AuthenticationHomeScreen(viewModel: AuthenticationHomeViewModel) {
                                 color = Color.White,
                                 modifier = Modifier
                                     .clickable {
-                                        authenticationHomeViewModel.setCurrentPage(pagerState.currentPage - 1)
+                                        authenticationHomeViewModel.onEvent(
+                                            AuthenticationHomeEvent.SetCurrentPage(
+                                                pagerState.currentPage - 1
+                                            )
+                                        )
                                         scope.launch {
                                             pagerState.animateScrollToPage(
                                                 page = currentPage.value
@@ -181,7 +176,11 @@ fun AuthenticationHomeScreen(viewModel: AuthenticationHomeViewModel) {
                                 color = Color.White,
                                 modifier = Modifier
                                     .clickable {
-                                        authenticationHomeViewModel.setCurrentPage(pagerState.currentPage + 1)
+                                        authenticationHomeViewModel.onEvent(
+                                            AuthenticationHomeEvent.SetCurrentPage(
+                                                pagerState.currentPage + 1
+                                            )
+                                        )
                                         scope.launch {
                                             pagerState.animateScrollToPage(
                                                 page = currentPage.value

@@ -1,9 +1,7 @@
 package ch.proximeety.proximeety.presentation.views.nfc
 
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
-import androidx.lifecycle.SavedStateHandle
 import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.core.repositories.UserRepository
 import ch.proximeety.proximeety.data.repositories.UserRepositoryMockImplementation
@@ -14,7 +12,6 @@ import ch.proximeety.proximeety.presentation.theme.ProximeetyTheme
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -52,13 +49,8 @@ class NfcViewTest {
             userInteractions.authenticateWithGoogle()
         }
 
-        val savedStateHandle = SavedStateHandle(
-            mapOf(
-                "tagId" to "00:00:00:00:00:00"
-            )
-        )
 
-        viewModel = NfcViewModel(navigationManager, userInteractions, savedStateHandle)
+        viewModel = NfcViewModel(navigationManager, userInteractions)
 
         composeTestRule.setContent {
             ProximeetyTheme {
@@ -66,26 +58,41 @@ class NfcViewTest {
             }
         }
 
-        //(repository as UserRepositoryMockImplementation).setTag()
+        (repository as UserRepositoryMockImplementation).setTag()
     }
 
     @Test
-    fun createNewNfcSuccess() {
-        composeTestRule.waitUntil (1000) { viewModel.isNewTag.value == true}
-        composeTestRule.onNodeWithText("Yes").assertExists()
-        composeTestRule.onNodeWithText("Yes").performClick()
+    fun nfcViewShouldDisplayTagName() {
         composeTestRule.onNodeWithText("testTag").assertExists()
+    }
+
+    @Test
+    fun nfcViewShouldDisplayOwnerName() {
         composeTestRule.onNodeWithText("By testUser").assertExists()
+    }
+
+    @Test
+    fun nfcViewShouldDisplayVisitorName() {
         composeTestRule.onNodeWithText("testUserVisitor").assertExists()
+    }
+
+    @Test
+    fun nfcViewShouldDisplayMap() {
+        composeTestRule.waitUntil(10000) { viewModel.mapReady.value }
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag("map").assertExists()
+    }
+
+    @Test
+    fun nfcViewShouldDisplayVisitorDate() {
         composeTestRule.onNodeWithText(
-            SimpleDateFormat("EEE, MMM d, yyyy").format(Date(1651653481L))
+            SimpleDateFormat("EEE, MMM d, yyyy", Locale.FRANCE).format(Date(1651653481L))
         ).assertExists()
     }
 
     @Test
-    fun createNewNfcFailure() {
-        composeTestRule.waitUntil (1000) { viewModel.isNewTag.value == true}
-        composeTestRule.onNodeWithText("No").assertExists()
-        composeTestRule.onNodeWithText("No").performClick()
+    fun nfcViewNavigateToUserProfile() {
+        composeTestRule.onNodeWithText("testUserVisitor").performClick()
     }
+
 }

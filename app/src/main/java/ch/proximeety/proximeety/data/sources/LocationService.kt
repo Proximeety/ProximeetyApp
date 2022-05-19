@@ -55,7 +55,7 @@ class LocationService(
             location.value = it
         }
         locationManger.requestLocationUpdates(
-            LocationManager.FUSED_PROVIDER,
+            LocationManager.GPS_PROVIDER,
             100,
             0F,
             gpsLocationListener

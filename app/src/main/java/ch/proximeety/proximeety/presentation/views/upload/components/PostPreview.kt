@@ -22,12 +22,12 @@ fun PostPreview(image: ImagePainter, viewModel: UploadViewModel) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(MaterialTheme.spacing.medium),
+                .padding(spacing.medium),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(text = "Post", style = MaterialTheme.typography.h1)
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            Spacer(modifier = Modifier.height(spacing.medium))
             Image(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -37,7 +37,7 @@ fun PostPreview(image: ImagePainter, viewModel: UploadViewModel) {
                 contentScale = ContentScale.Crop,
                 contentDescription = "Captured image"
             )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            Spacer(modifier = Modifier.height(spacing.medium))
             PostPreviewButtonBar(
                 onCancel = {
                     viewModel.onEvent(

@@ -6,7 +6,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.runtime.Composable
@@ -88,13 +87,13 @@ fun UploadView(
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
                     .height(PICTURE_BUTTON_SIZE)
-                    .padding(MaterialTheme.spacing.small),
+                    .padding(spacing.small),
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(
                     modifier = Modifier
-                        .padding(MaterialTheme.spacing.medium),
+                        .padding(spacing.medium),
                     onClick = {
                         launcher.launch("image/*")
                     }

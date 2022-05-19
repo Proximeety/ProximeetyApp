@@ -127,7 +127,7 @@ fun GoogleMapView(
     }
 
     SafeArea {
-        Column(modifier = Modifier.padding(MaterialTheme.spacing.small)) {
+        Column(modifier = Modifier.padding(spacing.small)) {
             MapTypeControls(onMapTypeClick = {
                 mapProperties.value = mapProperties.value.copy(mapType = it)
             })

@@ -22,16 +22,14 @@ fun CommentComponent(comment: Comment, onCommentLike: (Comment) -> Unit) {
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.Start,
         modifier = Modifier
-            .padding(all = MaterialTheme.spacing.small)
+            .padding(all = spacing.small)
             .fillMaxWidth()
     ) {
         CommentProfilePic(
             picUrl = comment.userProfilePicture,
             displayName = comment.userDisplayName
         )
-
-        Spacer(modifier = Modifier.size(MaterialTheme.spacing.small))
-
+        Spacer(modifier = Modifier.size(spacing.small))
         Column(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
@@ -42,7 +40,7 @@ fun CommentComponent(comment: Comment, onCommentLike: (Comment) -> Unit) {
                 style = MaterialTheme.typography.subtitle2
             )
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+            Spacer(modifier = Modifier.height(spacing.small))
 
             Text(
                 text = comment.comment,
@@ -58,8 +56,8 @@ fun CommentComponent(comment: Comment, onCommentLike: (Comment) -> Unit) {
                         onCommentLike(comment)
                     },
                     modifier = Modifier
-                        .padding(all = MaterialTheme.spacing.small)
-                        .size(MaterialTheme.spacing.medium)
+                        .padding(all = spacing.small)
+                        .size(spacing.medium)
                 ) {
                     Icon(
                         imageVector = if (comment.isLiked) Icons.Rounded.Favorite
@@ -68,7 +66,7 @@ fun CommentComponent(comment: Comment, onCommentLike: (Comment) -> Unit) {
                     )
                 }
 
-                Spacer(modifier = Modifier.width(MaterialTheme.spacing.extraSmall))
+                Spacer(modifier = Modifier.width(spacing.extraSmall))
 
                 Text(text = comment.likes.toString(), style = MaterialTheme.typography.h5)
             }

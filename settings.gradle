@@ -10,6 +10,10 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven {
+            name 'libs'
+            url './libs'
+        }
     }
 }
 rootProject.name = "Proximeety"

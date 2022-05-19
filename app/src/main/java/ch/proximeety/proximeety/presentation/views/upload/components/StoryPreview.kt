@@ -28,7 +28,7 @@ fun StoryPreview(image: ImagePainter, viewModel: UploadViewModel) {
         )
         Text(
             text = "Story", modifier = Modifier
-                .padding(top = MaterialTheme.spacing.large)
+                .padding(top = spacing.large)
                 .align(
                     Alignment.TopCenter
                 ), style = MaterialTheme.typography.h1

@@ -10,7 +10,7 @@ import ch.proximeety.proximeety.util.SyncActivity
 /**
  * The NFC service.
  */
-class NfcService(private val context: Context) {
+class NfcService(context: Context) {
 
     private val nfcAdapter = NfcAdapter.getDefaultAdapter(context)
     private var activity: SyncActivity? = null

@@ -32,7 +32,7 @@ import java.util.*
  * @param firebaseAccessObject the object used to access firebase.
  */
 class UserRepositoryImplementation(
-    private val context: Context,
+    context: Context,
     private val firebaseAccessObject: FirebaseAccessObject,
     private val bluetoothService: BluetoothService,
     private val locationService: LocationService,
