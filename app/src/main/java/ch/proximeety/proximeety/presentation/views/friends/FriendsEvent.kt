@@ -6,4 +6,5 @@ package ch.proximeety.proximeety.presentation.views.friends
  */
 sealed class FriendsEvent {
     class OnUserClick(val id: String) : FriendsEvent()
+    class UpdateSearch(val query: String) : FriendsEvent()
 }

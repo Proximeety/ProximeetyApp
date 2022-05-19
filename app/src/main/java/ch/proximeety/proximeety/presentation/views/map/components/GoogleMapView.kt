@@ -54,7 +54,7 @@ fun GoogleMapView(
         scaffoldState = scaffoldState,
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                val nextFriendId = friends.value.get(Random.nextInt(0, friends.value.size)).id
+                val nextFriendId = friends.value[Random.nextInt(0, friends.value.size)].id
                 val nextFriendPosition = friendsPosition.value[nextFriendId]
                 if (nextFriendPosition != null) {
                     cameraPositionState.move(CameraUpdateFactory.newLatLng(LatLng(nextFriendPosition.second, nextFriendPosition.third)))
@@ -110,7 +110,7 @@ fun GoogleMapView(
     }
 
     SafeArea {
-        Column(modifier = Modifier.padding(MaterialTheme.spacing.small)) {
+        Column(modifier = Modifier.padding(spacing.small)) {
             MapTypeControls(onMapTypeClick = {
                 mapProperties.value = mapProperties.value.copy(mapType = it)
             })

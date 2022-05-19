@@ -1,0 +1,13 @@
+node:internal/modules/cjs/loader:936
+  throw err;
+  ^
+
+Error: Cannot find module '/home/yanis/AndroidStudioProjects/Proximeety/--dns-result-order=ipv4first'
+    at Function.Module._resolveFilename (node:internal/modules/cjs/loader:933:15)
+    at Function._resolveFilename (pkg/prelude/bootstrap.js:1955:46)
+    at Function.Module._load (node:internal/modules/cjs/loader:778:27)
+    at Function.runMain (pkg/prelude/bootstrap.js:1983:12)
+    at node:internal/main/run_main_module:17:47 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}

@@ -51,7 +51,7 @@ fun NearbyUsersView(
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(MaterialTheme.spacing.extraSmall)
+                            modifier = Modifier.padding(spacing.extraSmall)
                         ) {
                             Image(
                                 painter = rememberImagePainter(it.profilePicture),
@@ -64,7 +64,7 @@ fun NearbyUsersView(
                                         Color.Gray
                                     )
                             )
-                            Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
+                            Spacer(modifier = Modifier.width(spacing.small))
                             Text(text = it.displayName, style = MaterialTheme.typography.h5)
                         }
                     }

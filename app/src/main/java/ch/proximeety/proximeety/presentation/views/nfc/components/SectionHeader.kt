@@ -12,12 +12,14 @@ import ch.proximeety.proximeety.core.entities.Tag
 @Composable
 fun SectionHeader(tag: Tag?, modifier: Modifier = Modifier) {
     Column {
-        Text(tag?.name.toString(), style = MaterialTheme.typography.h1)
-        Text(
-            "By ${tag?.owner?.displayName}",
-            style = MaterialTheme.typography.h1,
-            fontWeight = FontWeight.Light,
-            color = Color.Gray
-        )
+        if (tag != null) {
+            Text(tag.name, style = MaterialTheme.typography.h1)
+            Text(
+                "By ${tag.owner.displayName}",
+                style = MaterialTheme.typography.h1,
+                fontWeight = FontWeight.Light,
+                color = Color.Gray
+            )
+        }
     }
 }

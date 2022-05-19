@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Thu May 12 17:05:01 CEST 2022
+org.jacoco.doc-0.8.8-SNAPSHOT.pom>=
+org.jacoco.doc-0.8.8-SNAPSHOT-javadoc.jar>=
+org.jacoco.doc-0.8.8-SNAPSHOT.jar>=

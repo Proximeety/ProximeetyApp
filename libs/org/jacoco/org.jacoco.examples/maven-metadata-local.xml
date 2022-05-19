@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.jacoco</groupId>
+  <artifactId>org.jacoco.examples</artifactId>
+  <versioning>
+    <versions>
+      <version>0.8.8-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20220512150049</lastUpdated>
+  </versioning>
+</metadata>

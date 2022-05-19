@@ -15,7 +15,7 @@ abstract class Timer(
         timer?.cancel()
         timer = scope.launch {
             var tickCount = 0
-            var neededTicks = durationMillis / tickIntervalMillis
+            val neededTicks = durationMillis / tickIntervalMillis
             while (tickCount < neededTicks) {
                 delay(tickIntervalMillis)
                 onTick(durationMillis - tickCount * tickIntervalMillis)

@@ -30,19 +30,19 @@ fun NfcView(viewModel: NfcViewModel = hiltViewModel()) {
         BoxWithConstraints(
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = MaterialTheme.spacing.medium)
+                .padding(horizontal = spacing.medium)
         ) {
             val width = this.maxWidth.value
             val height = this.maxHeight.value
             Column(
                 Modifier.verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
+                verticalArrangement = Arrangement.spacedBy(spacing.large)
             ) {
                 SectionHeader(tag.value, modifier = Modifier.width(width.dp))
                 SectionPictures(tag = tag.value, width = width, height = height)
-                SectionMap(tag = tag, width = width)
+                SectionMap(viewModel = viewModel, tag = tag, width = width)
                 SectionVisitors(tag = tag.value, viewModel = viewModel)
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+                Spacer(modifier = Modifier.height(spacing.small))
             }
         }
     }

@@ -54,9 +54,6 @@ class HomeViewModel @Inject constructor(
 
     fun onEvent(event: HomeEvent) {
         when (event) {
-            HomeEvent.NavigateToNearbyUsersViewModel -> {
-                navigationManager.navigate(MainNavigationCommands.nearbyUsers)
-            }
             HomeEvent.SignOut -> {
                 userInteractions.signOut()
                 navigationManager.navigate(AuthenticationNavigationCommands.default)

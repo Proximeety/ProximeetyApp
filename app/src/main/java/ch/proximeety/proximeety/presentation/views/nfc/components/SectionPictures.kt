@@ -15,15 +15,15 @@ import com.google.accompanist.placeholder.material.placeholder
 fun SectionPictures(tag: Tag?, modifier: Modifier = Modifier, width: Float, height: Float) {
     Row(
         modifier = Modifier
-            .height(width.dp * 2f / 3f - MaterialTheme.spacing.large * 1f / 3f)
+            .height(width.dp * 2f / 3f - spacing.large * 1f / 3f)
             .fillMaxWidth()
     ) {
-        Picture(width.dp * 2f / 3f - MaterialTheme.spacing.large * 1f / 3f)
-        Spacer(modifier = Modifier.width(MaterialTheme.spacing.large))
+        Picture(width.dp * 2f / 3f - spacing.large * 1f / 3f)
+        Spacer(modifier = Modifier.width(spacing.large))
         Column {
-            Picture((height.dp - MaterialTheme.spacing.large) * 0.5f)
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
-            Picture((height.dp - MaterialTheme.spacing.large) * 0.5f)
+            Picture((height.dp - spacing.large) * 0.5f)
+            Spacer(modifier = Modifier.height(spacing.large))
+            Picture((height.dp - spacing.large) * 0.5f)
         }
     }
 }
