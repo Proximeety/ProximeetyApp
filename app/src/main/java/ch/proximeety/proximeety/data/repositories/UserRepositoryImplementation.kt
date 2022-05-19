@@ -192,6 +192,14 @@ class UserRepositoryImplementation(
         firebaseAccessObject.postComment(postId, comment)
     }
 
+    override suspend fun toggleCommentLike(comment: Comment) {
+        firebaseAccessObject.toggleCommentLike(comment)
+    }
+
+    override suspend fun isCommentLiked(comment: Comment): Boolean {
+        return firebaseAccessObject.isCommentLiked(comment)
+    }
+
     override suspend fun getStoriesByUserId(id: String): List<Story> {
         return firebaseAccessObject.getStoriesByUserID(id)
     }

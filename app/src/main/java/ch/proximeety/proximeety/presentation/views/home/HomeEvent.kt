@@ -1,5 +1,6 @@
 package ch.proximeety.proximeety.presentation.views.home
 
+import ch.proximeety.proximeety.core.entities.Comment
 import ch.proximeety.proximeety.core.entities.Post
 
 /**
@@ -21,4 +22,5 @@ sealed class HomeEvent {
     object RefreshComments: HomeEvent()
     object SignOut : HomeEvent()
     class TogglePostLike(val post: Post) : HomeEvent()
+    class ToggleCommentLike(val comment: Comment): HomeEvent()
 }
