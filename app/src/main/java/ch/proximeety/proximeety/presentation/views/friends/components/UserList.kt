@@ -13,14 +13,17 @@ import ch.proximeety.proximeety.presentation.views.friends.FriendsViewModel
 
 @Composable
 fun UserList(users: List<User>, viewModel: FriendsViewModel) {
-
     LazyColumn {
         items(users) {
             UserCard(
                 user = it,
-                onUserClick = { id -> viewModel.onEvent(FriendsEvent.OnUserClick(id)) }
+                onUserClick = { id ->
+                    viewModel.onEvent(FriendsEvent.OnUserClick(id))
+                }
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(
+                modifier = Modifier.height(4.dp)
+            )
         }
     }
 }

@@ -17,9 +17,7 @@ class ActivityResult(
 /**
  * A permission result.
  */
-class PermissionResult(
-    val grantResults: IntArray
-)
+class PermissionResult
 
 /**
  * An synchronous activity.
@@ -63,7 +61,7 @@ abstract class SyncActivity : ComponentActivity(),
         permissions: Array<String>,
         grantResults: IntArray
     ) {
-        permissionsResultByCode[requestCode]?.complete(PermissionResult(grantResults)) ?: run {
+        permissionsResultByCode[requestCode]?.complete(PermissionResult()) ?: run {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }

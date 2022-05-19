@@ -76,7 +76,7 @@ fun StoriesView(
                     ) { viewModel.onEvent(StoriesEvent.NextStory) })
             }
             Column(horizontalAlignment = Alignment.Start, verticalArrangement = Arrangement.Top) {
-                Row(modifier = Modifier.padding(MaterialTheme.spacing.small)) {
+                Row(modifier = Modifier.padding(spacing.small)) {
                     for (i in (0 until currentUserStoryCount)) {
                         LinearProgressIndicator(
                             modifier = Modifier
@@ -85,22 +85,20 @@ fun StoriesView(
                             progress = if (i == currentStoryIndex) progress else if (i < currentStoryIndex) 1f else 0f
                         )
                         if (i != currentUserStoryCount - 1) {
-                            Spacer(modifier = Modifier.width(MaterialTheme.spacing.extraSmall))
+                            Spacer(modifier = Modifier.width(spacing.extraSmall))
                         }
                     }
                 }
                 Row(
                     modifier = Modifier.padding(
-                        vertical = MaterialTheme.spacing.extraSmall,
-                        horizontal = MaterialTheme.spacing.small
+                        vertical = spacing.extraSmall,
+                        horizontal = spacing.small
                     ).fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-
-                    ) {
-                        Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
+                    Row {
+                        Spacer(modifier = Modifier.width(spacing.small))
                         Image(
                             painter = rememberImagePainter(user.value?.profilePicture),
                             contentDescription = "Profile picture of ${user.value?.displayName}",
@@ -112,7 +110,7 @@ fun StoriesView(
                                 .background(Color.Gray)
                                 .clickable { viewModel.onEvent(StoriesEvent.OnClickOnUserPicture) }
                         )
-                        Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
+                        Spacer(modifier = Modifier.width(spacing.small))
                         Column {
                             Text(
                                 text = user.value?.displayName.toString(),

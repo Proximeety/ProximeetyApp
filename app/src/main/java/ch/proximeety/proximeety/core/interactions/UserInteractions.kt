@@ -1,7 +1,5 @@
 package ch.proximeety.proximeety.core.interactions
 
-import ch.proximeety.proximeety.presentation.views.home.HomeEvent
-
 /**
  * Set of user interactions or uses cases.
  */

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import ch.proximeety.proximeety.core.entities.Comment
@@ -25,7 +24,7 @@ fun CommentSection(
 ) {
 
     Column(
-        modifier = Modifier.padding(MaterialTheme.spacing.extraSmall)
+        modifier = Modifier.padding(spacing.extraSmall)
     ) {
         CommentTopBar(comments.size, onCloseClick)
         CommentPostComponent(user?.profilePicture, user?.displayName, onPostClick)

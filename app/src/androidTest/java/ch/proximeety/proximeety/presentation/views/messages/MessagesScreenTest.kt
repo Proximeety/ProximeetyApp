@@ -1,12 +1,12 @@
-package ch.proximeety.proximeety.presentation.views.messagesScreen
+package ch.proximeety.proximeety.presentation.views.messages
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
 import ch.proximeety.proximeety.di.AppModule
 import ch.proximeety.proximeety.presentation.MainActivity
 import ch.proximeety.proximeety.presentation.theme.ProximeetyTheme
-import ch.proximeety.proximeety.presentation.views.conversationList.ConversationListView
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -50,5 +50,11 @@ class MessagesScreenTest {
     fun shouldDisplayBottomBar() {
         composeTestRule.onNodeWithText("Send").assertExists()
         composeTestRule.onNodeWithText("Type your Message").assertExists()
+    }
+
+    @Test
+    fun shouldSendMessages() {
+        composeTestRule.onNodeWithText("Type your Message").assertExists().performTextInput("Test Message")
+        composeTestRule.onNodeWithText("Send").assertExists().performClick()
     }
 }

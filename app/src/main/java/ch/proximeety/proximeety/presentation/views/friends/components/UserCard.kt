@@ -1,6 +1,5 @@
 package ch.proximeety.proximeety.presentation.views.friends.components
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,19 +13,27 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ch.proximeety.proximeety.core.entities.User
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun UserCard(user: User, onUserClick: (String) -> Unit) {
-    Box(Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { onUserClick(user.id) },
+                .clickable {
+                    onUserClick(user.id)
+                },
             shape = MaterialTheme.shapes.medium,
             elevation = 3.dp
         ) {
-            Row(modifier = Modifier.padding(all = 20.dp)) {
+            Row(
+                modifier = Modifier.padding(all = 20.dp)
+            ) {
                 Image(
                     painter = rememberImagePainter(user.profilePicture),
                     contentDescription = "User profile picture",
@@ -34,12 +41,20 @@ fun UserCard(user: User, onUserClick: (String) -> Unit) {
                         .size(50.dp)
                         .clip(CircleShape)
                 )
-                Spacer(modifier = Modifier.width(20.dp))
-
+                Spacer(
+                    modifier = Modifier.width(20.dp)
+                )
                 Column {
-                    Text(text = user.displayName, fontSize = 20.sp)
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Text(text = user.email.toString())
+                    Text(
+                        text = user.displayName,
+                        fontSize = 20.sp
+                    )
+                    Spacer(
+                        modifier = Modifier.height(10.dp)
+                    )
+                    Text(
+                        text = user.email.toString()
+                    )
                 }
             }
         }

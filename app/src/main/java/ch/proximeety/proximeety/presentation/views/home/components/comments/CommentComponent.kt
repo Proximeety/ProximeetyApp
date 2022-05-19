@@ -15,7 +15,7 @@ fun CommentComponent(comment: Comment) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
         modifier = Modifier
-            .padding(all = MaterialTheme.spacing.small)
+            .padding(all = spacing.small)
             .fillMaxWidth()
     ) {
         CommentProfilePic(
@@ -23,7 +23,7 @@ fun CommentComponent(comment: Comment) {
             displayName = comment.userDisplayName
         )
         
-        Spacer(modifier = Modifier.size(MaterialTheme.spacing.small))
+        Spacer(modifier = Modifier.size(spacing.small))
         
         Column(
             verticalArrangement = Arrangement.SpaceBetween,

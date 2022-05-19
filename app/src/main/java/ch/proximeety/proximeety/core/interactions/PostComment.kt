@@ -1,6 +1,5 @@
 package ch.proximeety.proximeety.core.interactions
 
-import ch.proximeety.proximeety.core.entities.Comment
 import ch.proximeety.proximeety.core.repositories.UserRepository
 
 /**

@@ -1,4 +1,4 @@
-package ch.proximeety.proximeety.presentation.views.messagesScreen
+package ch.proximeety.proximeety.presentation.views.messages
 
 data class MessagesModel(
     val from: String,

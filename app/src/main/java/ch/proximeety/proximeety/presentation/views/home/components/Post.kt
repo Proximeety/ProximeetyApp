@@ -3,7 +3,6 @@ package ch.proximeety.proximeety.presentation.views.home.components
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
@@ -23,14 +22,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import ch.proximeety.proximeety.core.entities.Post
-import ch.proximeety.proximeety.core.interactions.GetComments
 import ch.proximeety.proximeety.presentation.theme.spacing
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
-import okhttp3.internal.Internal
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
@@ -42,7 +39,7 @@ fun Post(
 ) {
     Column(
         modifier = Modifier
-            .padding(MaterialTheme.spacing.medium)
+            .padding(spacing.medium)
             .fillMaxWidth()
     ) {
         Row(
@@ -65,7 +62,7 @@ fun Post(
                             Color.Gray
                         )
                 )
-                Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
+                Spacer(modifier = Modifier.width(spacing.medium))
                 Column {
                     Text(text = post.userDisplayName, style = MaterialTheme.typography.h4)
                     Text(text = "Lausanne", style = MaterialTheme.typography.h5, color = Color.Gray)
@@ -75,7 +72,7 @@ fun Post(
                 Icon(imageVector = Icons.Rounded.MoreHoriz, contentDescription = "More")
             }
         }
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+        Spacer(modifier = Modifier.height(spacing.small))
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -96,7 +93,7 @@ fun Post(
                 )
             }
         }
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+        Spacer(modifier = Modifier.height(spacing.small))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Start,
@@ -113,10 +110,10 @@ fun Post(
                         contentDescription = "Like"
                     )
                 }
-                Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
+                Spacer(modifier = Modifier.width(spacing.small))
                 Text(text = post.likes.toString(), style = MaterialTheme.typography.h4)
             }
-            Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
+            Spacer(modifier = Modifier.width(spacing.medium))
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
@@ -127,7 +124,7 @@ fun Post(
                         contentDescription = "Comments"
                     )
                 }
-                Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
+                Spacer(modifier = Modifier.width(spacing.small))
                 Text(text = "$numComments", style = MaterialTheme.typography.h4)
             }
         }

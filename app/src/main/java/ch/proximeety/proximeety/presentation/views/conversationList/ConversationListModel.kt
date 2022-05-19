@@ -10,8 +10,6 @@ data class MessagesModel(
     val senderImage: String? = null
 )
 
-var msg1 = MessagesModel("333", "test1", "sender1")
-
 val msg2 = MessagesModel(
     sender = "Test sender",
     time = "10:00 AM",

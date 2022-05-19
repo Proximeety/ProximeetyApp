@@ -1,4 +1,4 @@
-package ch.proximeety.proximeety.presentation.views.messagesScreen
+package ch.proximeety.proximeety.presentation.views.messages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -66,10 +66,10 @@ fun MessagesView(
 
 @Composable
 fun MessagesBottomBar() {
-    var text = remember { mutableStateOf("") }
+    val text = remember { mutableStateOf("") }
     Row(
         modifier = Modifier
-            .padding(MaterialTheme.spacing.extraSmall)
+            .padding(spacing.extraSmall)
             .fillMaxWidth()
             .padding(bottom = 40.dp)
             .clip(MaterialTheme.shapes.medium),

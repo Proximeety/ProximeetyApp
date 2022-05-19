@@ -26,7 +26,7 @@ import com.google.accompanist.placeholder.material.placeholder
 fun Stories(users: List<User>, onStoryClick: (String) -> Unit, loading: Boolean = false) {
     LazyRow(
         modifier = Modifier
-            .padding(MaterialTheme.spacing.medium)
+            .padding(spacing.medium)
             .fillMaxWidth()
             .height(64.dp)
     ) {
@@ -42,14 +42,14 @@ fun Stories(users: List<User>, onStoryClick: (String) -> Unit, loading: Boolean 
                     contentDescription = "Profile picture of ${it.displayName}",
                 )
             }
-            Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
+            Spacer(modifier = Modifier.width(spacing.medium))
         }
     }
 }
 
 @Composable
 private fun Element(
-    loading: Boolean = false,
+    loading: Boolean,
     content: @Composable BoxScope.() -> Unit
 ) {
     Box(
