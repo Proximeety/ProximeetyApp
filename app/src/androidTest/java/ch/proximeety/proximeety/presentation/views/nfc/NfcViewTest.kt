@@ -70,6 +70,7 @@ class NfcViewTest {
 
     @Test
     fun createNfcTag() {
+        composeTestRule.waitUntil(1000) { viewModel.nfcTag.value != null}
         composeTestRule.onNodeWithText("Yes").performClick()
     }
 
