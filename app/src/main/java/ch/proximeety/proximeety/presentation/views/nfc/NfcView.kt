@@ -45,11 +45,11 @@ fun NfcView(viewModel: NfcViewModel = hiltViewModel()) {
                 Text(text = "New tag found", style = MaterialTheme.typography.h2)
                 Text(text = "Do you want to create a new tag?", style = MaterialTheme.typography.h3)
                 Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)) {
-                    Button(onClick = { viewModel.onEvent(NfcEvent.GoBack) }) {
-                        Text(text = "No")
-                    }
                     Button(onClick = { viewModel.onEvent(NfcEvent.CreateNewTag) }) {
                         Text(text = "Yes")
+                    }
+                    Button(onClick = { viewModel.onEvent(NfcEvent.GoBack) }) {
+                        Text(text = "No")
                     }
                 }
             }
