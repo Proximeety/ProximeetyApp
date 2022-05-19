@@ -21,7 +21,7 @@ import androidx.lifecycle.viewModelScope
 import ch.proximeety.proximeety.presentation.components.Post
 import ch.proximeety.proximeety.presentation.views.home.components.HomeTopBar
 import ch.proximeety.proximeety.presentation.views.home.components.Stories
-import ch.proximeety.proximeety.presentation.views.home.components.comments.CommentSection
+import ch.proximeety.proximeety.presentation.components.comments.CommentSection
 import ch.proximeety.proximeety.util.SafeArea
 import ch.proximeety.proximeety.util.extensions.getActivity
 import com.google.accompanist.swiperefresh.SwipeRefresh
