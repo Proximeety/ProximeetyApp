@@ -31,7 +31,7 @@ data class Post(
     /**
      * The URL of the post image.
      */
-    val postURL: String? = null,
+    var postURL: String? = null,
     /**
      * The number of likes.
      */

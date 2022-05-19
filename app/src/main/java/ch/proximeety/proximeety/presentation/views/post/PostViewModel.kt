@@ -25,6 +25,8 @@ class PostViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    val user = userInteractions.getAuthenticatedUser()
+
     private var _post = mutableStateOf<LiveData<Post?>>(MutableLiveData(null))
     val post: State<LiveData<Post?>> = _post
 
@@ -36,7 +38,11 @@ class PostViewModel @Inject constructor(
     val commentCount: State<Int> = _commentCount
 
     private var _commentSectionPostId: String? = null
+
+    private var refreshJob: Job? = null
     private var downloadJob: Job? = null
+    private val _isRefreshing = mutableStateOf(false)
+    val isRefreshing: State<Boolean> = _isRefreshing
 
     init {
         savedStateHandle.get<String>("userId")?.also { userId ->
@@ -53,11 +59,19 @@ class PostViewModel @Inject constructor(
 
     fun onEvent(event: PostEvent) {
         when (event) {
+            /*PostEvent.Refresh -> {
+                refresh()
+            }*/
+            PostEvent.RefreshComments -> {
+                refreshComments()
+            }
             is PostEvent.DownloadPost -> {
                 if (downloadJob == null) {
                     downloadJob = viewModelScope.launch(Dispatchers.IO) {
-                        /*TODO*/
+                        _post.value.value?.isLiked = userInteractions.isPostLiked(event.post)
+                        _post.value.value?.postURL = userInteractions.downloadPost(event.post).postURL
                         downloadJob = null
+                        _commentCount.value = userInteractions.getComments(event.post.id).size
                     }
                 }
             }
@@ -65,11 +79,45 @@ class PostViewModel @Inject constructor(
                 viewModelScope.launch(Dispatchers.IO) {
                     userInteractions.togglePostLike(event.post)
                 }
-                /*TODO*/
+                post.value.value?.likes = post.value.value?.likes?.plus(if (post.value.value?.isLiked == true) -1 else 1)!!
+                post.value.value?.isLiked = !post.value.value?.isLiked!!
             }
             is PostEvent.OnCommentSectionClick -> {
-                /*TODO*/
+                _comments.value = listOf()
+                _commentSectionPostId = event.postId
+                viewModelScope.launch(Dispatchers.IO) {
+                    val comments = userInteractions.getComments(event.postId)
+                    viewModelScope.launch(Dispatchers.Main) {
+                        Log.d("COMMENTS", comments.toString())
+                        _comments.value = comments.reversed()
+                    }
+                }
             }
+            is PostEvent.PostComment -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    _commentSectionPostId?.let { userInteractions.postComment(it, event.text) }
+                }
+                if (_commentSectionPostId != null) {
+                    _commentCount.value = _commentCount.value.plus(((_commentCount.value ?: 0) + 1))
+                }
+            }
+        }
+    }
+    /*private fun refresh() {
+        refreshJob?.cancel()
+        _isRefreshing.value = true
+        refreshJob = viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.launch(Dispatchers.Main) {
+                _isRefreshing.value = false
+            }
+        }
+    }*/
+    private fun refreshComments() {
+        refreshJob?.cancel()
+        _isRefreshing.value = true
+        refreshJob = viewModelScope.launch(Dispatchers.IO) {
+            _comments.value = _commentSectionPostId?.let { userInteractions.getComments(it) }!!
+            _isRefreshing.value = false
         }
     }
 }
