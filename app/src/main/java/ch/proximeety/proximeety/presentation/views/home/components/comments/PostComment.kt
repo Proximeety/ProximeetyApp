@@ -20,7 +20,8 @@ fun CommentSection(
     user: User?,
     comments: List<Comment>,
     onCloseClick: () -> Unit,
-    onPostClick: (String) -> Unit
+    onPostClick: (String) -> Unit,
+    onCommentLike: (Comment) -> Unit
 ) {
 
     Column(
@@ -34,7 +35,7 @@ fun CommentSection(
             modifier = Modifier.fillMaxHeight(0.45f)
         ) {
             items(comments) {
-                CommentComponent(it)
+                CommentComponent(it, onCommentLike)
             }
         }
     }

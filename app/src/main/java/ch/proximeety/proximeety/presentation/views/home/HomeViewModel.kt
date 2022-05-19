@@ -107,7 +107,9 @@ class HomeViewModel @Inject constructor(
                     val comments = userInteractions.getComments(event.postId)
                     viewModelScope.launch(Dispatchers.Main) {
                         Log.d("COMMENTS", comments.toString())
-                        _comments.value = comments.reversed()
+                        _comments.value = comments.map {
+                            it.copy(isLiked = userInteractions.isCommentLiked(it))
+                        }.reversed()
                     }
                 }
             }
@@ -133,6 +135,19 @@ class HomeViewModel @Inject constructor(
                     isLiked = !newList[index].isLiked
                 )
                 _posts.value = newList.toList()
+            }
+
+            is HomeEvent.ToggleCommentLike -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    userInteractions.toggleCommentLike(event.comment)
+                }
+                val index = _comments.value.indexOfFirst { it.id == event.comment.id }
+                val newList = _comments.value.toMutableList()
+                newList[index] = newList[index].copy(
+                    likes = newList[index].likes + if (newList[index].isLiked) -1 else 1,
+                    isLiked = !newList[index].isLiked
+                )
+                _comments.value = newList.toList()
             }
         }
     }

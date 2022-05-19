@@ -133,6 +133,20 @@ interface UserRepository {
     suspend fun postComment(postId: String, comment: String)
 
     /**
+     * Toggle likes on a Comment
+     *
+     * @param comment the comment
+     */
+    suspend fun toggleCommentLike(comment: Comment)
+
+    /**
+     * is a Comment liked
+     *
+     * @param comment the comment
+     */
+    suspend fun isCommentLiked(comment: Comment): Boolean
+
+    /**
      * Get the stories of an user.
      */
     suspend fun getStoriesByUserId(id: String): List<Story>

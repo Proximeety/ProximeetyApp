@@ -19,6 +19,8 @@ data class UserInteractions(
     val isPostLiked: IsPostLiked,
     val postComment: PostComment,
     val getComments: GetComments,
+    val isCommentLiked: IsCommentLiked,
+    val toggleCommentLike: ToggleCommentLike,
     val setActivity: SetActivity,
     val setAuthenticatedUserVisible: SetAuthenticatedUserVisible,
     val signOut: SignOut,

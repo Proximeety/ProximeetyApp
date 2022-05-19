@@ -135,6 +135,8 @@ class AppModule {
             startLiveLocation = StartLiveLocation(repository),
             getFriendsLocations = GetFriendsLocations(repository),
             getComments = GetComments(repository),
+            isCommentLiked = IsCommentLiked(repository),
+            toggleCommentLike = ToggleCommentLike(repository),
             enableNfc = EnableNfc(repository),
             getNfcTag = GetNfcTag(repository)
         )
