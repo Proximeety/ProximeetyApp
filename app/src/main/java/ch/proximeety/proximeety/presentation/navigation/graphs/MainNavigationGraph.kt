@@ -78,7 +78,7 @@ fun NavGraphBuilder.mainNavigationGraph() {
         }
         composable(
             route = MainNavigationCommands.nfc.route,
-            arguments = MainNavigationCommands.nfc.arguments
+            //arguments = MainNavigationCommands.nfc.arguments
         ) {
             NfcView()
         }
