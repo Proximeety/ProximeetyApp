@@ -23,6 +23,12 @@ class UserRepositoryMockImplementation : UserRepository {
             hasStories = true,
         )
     )
+    private var nonNullUser: User =
+        User (
+            id = "-MzJUaBgPuPH8EHhw0yQ",
+            displayName = "Proximeety",
+            profilePicture = null
+        )
     private var posts =
         mutableListOf<Post>(
             Post(
@@ -333,20 +339,58 @@ class UserRepositoryMockImplementation : UserRepository {
 
     private val tag = MutableLiveData<Tag?>(null)
 
-    override fun getNfcTag(): LiveData<Tag?> {
-        return tag
-    }
-
-    fun setTag() {
-        tag.postValue(Tag(
+    private val tags = mutableListOf<Tag>(
+        Tag(
             "00:00:00:00:00:00",
             "testTag",
             47.0,
             47.0,
             listOf(Pair(1651653481L, User("testUserVisitorId", "testUserVisitor"))),
             User("testUserId", "testUser")
-        ))
+        )
+    )
+
+    override fun getLiveNfcTagId(): LiveData<String?> {
+        return MutableLiveData(tag.value?.id)
     }
+
+    override suspend fun getAllNfcs(): List<Tag> {
+        return tags
+    }
+
+    override suspend fun createNewNfcTag(): Tag? {
+        return Tag(
+            "00:00:00:00:00:00",
+            "testTag",
+            47.0,
+            47.0,
+            listOf(Pair(1651653481L, User("testUserVisitorId", "testUserVisitor"))),
+            User("testUserId", "testUser")
+        )
+    }
+
+    override suspend fun getNfcTagById(id: String): Tag? {
+        when (id) {
+            tag.value?.id -> {
+                return tag.value
+            }
+        }
+        return null
+    }
+
+    override suspend fun writeNfcTag(tag: Tag) {
+    }
+
+//    fun setTag() {
+//        tag.postValue(Tag(
+//            "00:00:00:00:00:00",
+//            "testTag",
+//            47.0,
+//            47.0,
+//            listOf(Pair(1651653481L, User("testUserVisitorId", "testUserVisitor"))),
+//            User("testUserId", "testUser")
+//        ))
+//    }
     
     override suspend fun isCommentLiked(comment: Comment): Boolean {
         return true

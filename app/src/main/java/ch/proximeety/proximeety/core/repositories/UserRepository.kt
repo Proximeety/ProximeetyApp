@@ -184,5 +184,16 @@ interface UserRepository {
     /**
      * Get NFC tag.
      */
-    fun getNfcTag(): LiveData<Tag?>
+    fun getLiveNfcTagId(): LiveData<String?>
+
+    /**
+     * Get all existing NFC tags.
+     */
+    suspend fun getAllNfcs(): List<Tag>
+
+    suspend fun createNewNfcTag(): Tag?
+
+    suspend fun getNfcTagById(id: String): Tag?
+
+    suspend fun writeNfcTag(tag: Tag)
 }
