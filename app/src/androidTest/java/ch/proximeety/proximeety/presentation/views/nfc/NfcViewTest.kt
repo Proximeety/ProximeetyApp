@@ -2,6 +2,7 @@ package ch.proximeety.proximeety.presentation.views.nfc
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.lifecycle.SavedStateHandle
 import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.core.repositories.UserRepository
@@ -65,6 +66,11 @@ class NfcViewTest {
         }
 
         //(repository as UserRepositoryMockImplementation).setTag()
+    }
+
+    @Test
+    fun createNfcTag() {
+        composeTestRule.onNodeWithText("Yes").performClick()
     }
 
     @Test
