@@ -79,6 +79,7 @@ class FirebaseAccessObject(
         private const val COMMENT_USER_PROFILE_PICTURE_KEY = "userProfilePicture"
         private const val COMMENT_TIMESTAMP_KEY = "timestamp"
         private const val COMMENT_VALUE_KEY = "comment"
+        private const val COMMENT_LIKES_KEY = "likes"
 
         private const val STORY_PATH = "stories"
         private const val STORY_POSTER_ID_KEY = "posterId"
