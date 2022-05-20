@@ -24,7 +24,7 @@ class UserRepositoryMockImplementation : UserRepository {
             hasStories = false,
         )
     )
-    private var nonNullUser: User =
+    private var visitUser: User =
         User (
             id = "-MzJUaBgPuPH8EHhw0yQ",
             displayName = "Proximeety",
@@ -372,15 +372,23 @@ class UserRepositoryMockImplementation : UserRepository {
     }
 
     override suspend fun getNfcTagById(id: String): Tag? {
-        when (id) {
-            tag.value?.id -> {
-                return tag.value
+        for (tag in tags) {
+            if (tag.id == id) {
+                return tag
             }
         }
         return null
     }
 
     override suspend fun writeNfcTag(tag: Tag) {
+        for (t in tags) {
+            if (t.id == tag.id) {
+                tags.remove(t)
+                tags.add(tag)
+                return
+            }
+        }
+        tags.add(tag)
     }
     
     override suspend fun isCommentLiked(comment: Comment): Boolean {
