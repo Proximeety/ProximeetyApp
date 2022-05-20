@@ -49,7 +49,7 @@ fun GoogleMapView(
 
     val friendsPosition = viewModel.friendsPosition.observeAsState(mapOf())
     val friends = viewModel.friends
-    val tags = viewModel.nfcs
+    val tags = viewModel.tags
 
     val scaffoldState = rememberScaffoldState()
     Scaffold(

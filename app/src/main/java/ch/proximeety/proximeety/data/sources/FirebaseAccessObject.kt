@@ -742,7 +742,7 @@ class FirebaseAccessObject(
                 val name = it.child(USER_DISPLAY_NAME_KEY).value as String?
                 val profilePicture = it.child(USER_PROFILE_PICTURE_KEY).value as String?
                 val timestamp = it.child(TAG_VISITORS_TIMESTAMP_KEY).value as Long?
-                if (name != null && timestamp != null) {
+                if (name != null && profilePicture != null && timestamp != null) {
                     return@mapNotNull Pair(
                         timestamp, User(
                             id = it.key!!,
@@ -756,12 +756,11 @@ class FirebaseAccessObject(
 
             val owner = snapshot.child(TAG_OWNER_KEY).let {
                 if (it.exists() && it.key != null) {
-                    val id = it.child(USER_ID_KEY).value as String?
                     val name = it.child(USER_DISPLAY_NAME_KEY).value as String?
                     val profilePicture = it.child(USER_PROFILE_PICTURE_KEY).value as String?
-                    if (id != null && name != null) {
+                    if (name != null && profilePicture != null) {
                         return@let User(
-                            id = id,
+                            id = it.key!!,
                             displayName = name,
                             profilePicture = profilePicture
                         )
@@ -790,6 +789,17 @@ class FirebaseAccessObject(
                 )
             ).await()
         }
+    }
+
+    /**
+     *  Retrieve all existing NFC tags
+     */
+    suspend fun getAllNfcs(): List<Tag> {
+        authenticatedUser?.value?.also {
+            val tags = database.child(TAG_PATH).get().await().children.mapNotNull { it.key }
+            return tags.mapNotNull { id -> getTagById(id) }
+        }
+        return listOf()
     }
 
     suspend fun writeTag(tag: Tag) {

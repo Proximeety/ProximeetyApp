@@ -382,17 +382,6 @@ class UserRepositoryMockImplementation : UserRepository {
 
     override suspend fun writeNfcTag(tag: Tag) {
     }
-
-//    fun setTag() {
-//        tag.postValue(Tag(
-//            "00:00:00:00:00:00",
-//            "testTag",
-//            47.0,
-//            47.0,
-//            listOf(Pair(1651653481L, User("testUserVisitorId", "testUserVisitor"))),
-//            User("testUserId", "testUser")
-//        ))
-//    }
     
     override suspend fun isCommentLiked(comment: Comment): Boolean {
         return true
