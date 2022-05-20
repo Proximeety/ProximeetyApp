@@ -8,5 +8,4 @@ sealed class PostEvent {
     class DownloadPost(val post: Post) : PostEvent()
     class PostComment(val text : String): PostEvent()
     object RefreshComments: PostEvent()
-    //object Refresh : PostEvent()
 }

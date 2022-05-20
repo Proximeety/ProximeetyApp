@@ -8,7 +8,6 @@ import ch.proximeety.proximeety.core.entities.Comment
 import ch.proximeety.proximeety.core.entities.Post
 import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
-import ch.proximeety.proximeety.presentation.views.home.HomeEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -59,9 +58,6 @@ class PostViewModel @Inject constructor(
 
     fun onEvent(event: PostEvent) {
         when (event) {
-            /*PostEvent.Refresh -> {
-                refresh()
-            }*/
             PostEvent.RefreshComments -> {
                 refreshComments()
             }
@@ -103,15 +99,6 @@ class PostViewModel @Inject constructor(
             }
         }
     }
-    /*private fun refresh() {
-        refreshJob?.cancel()
-        _isRefreshing.value = true
-        refreshJob = viewModelScope.launch(Dispatchers.IO) {
-            viewModelScope.launch(Dispatchers.Main) {
-                _isRefreshing.value = false
-            }
-        }
-    }*/
     private fun refreshComments() {
         refreshJob?.cancel()
         _isRefreshing.value = true
@@ -121,4 +108,3 @@ class PostViewModel @Inject constructor(
         }
     }
 }
-
