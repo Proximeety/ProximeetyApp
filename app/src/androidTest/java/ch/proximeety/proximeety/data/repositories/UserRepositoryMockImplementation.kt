@@ -343,7 +343,7 @@ class UserRepositoryMockImplementation : UserRepository {
 
     private val tags = mutableListOf<Tag>(
         Tag(
-            "00:00:00:00:00:00",
+            "10:00:00:00:00:00",
             "testTag",
             47.0,
             47.0,

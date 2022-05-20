@@ -113,12 +113,12 @@ class FirebaseAccessObject(
     private var authenticatedUser: MutableLiveData<User?>? = null
 
     init {
-        Firebase.database.setPersistenceEnabled(false)
-        if (BuildConfig.DEBUG) {
-            Firebase.auth.useEmulator("10.0.2.2", 9099)
-            Firebase.database.useEmulator("10.0.2.2", 9000)
-            Firebase.storage.useEmulator("10.0.2.2", 9199)
-        }
+        //Firebase.database.setPersistenceEnabled(false)
+//        if (BuildConfig.DEBUG) {
+//            Firebase.auth.useEmulator("10.0.2.2", 9099)
+//            Firebase.database.useEmulator("10.0.2.2", 9000)
+//            Firebase.storage.useEmulator("10.0.2.2", 9199)
+//        }
         auth = Firebase.auth
         database = Firebase.database.reference
         storage = Firebase.storage.reference
@@ -742,7 +742,7 @@ class FirebaseAccessObject(
                 val name = it.child(USER_DISPLAY_NAME_KEY).value as String?
                 val profilePicture = it.child(USER_PROFILE_PICTURE_KEY).value as String?
                 val timestamp = it.child(TAG_VISITORS_TIMESTAMP_KEY).value as Long?
-                if (name != null && profilePicture != null && timestamp != null) {
+                if (name != null && timestamp != null) {
                     return@mapNotNull Pair(
                         timestamp, User(
                             id = it.key!!,
@@ -756,11 +756,12 @@ class FirebaseAccessObject(
 
             val owner = snapshot.child(TAG_OWNER_KEY).let {
                 if (it.exists() && it.key != null) {
+                    val id = it.child(USER_ID_KEY).value as String?
                     val name = it.child(USER_DISPLAY_NAME_KEY).value as String?
                     val profilePicture = it.child(USER_PROFILE_PICTURE_KEY).value as String?
-                    if (name != null && profilePicture != null) {
+                    if (id != null && name != null) {
                         return@let User(
-                            id = it.key!!,
+                            id = id,
                             displayName = name,
                             profilePicture = profilePicture
                         )
