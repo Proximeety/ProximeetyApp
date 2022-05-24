@@ -60,6 +60,13 @@ interface UserRepository {
     suspend fun addFriend(id: String)
 
     /**
+     * Remove user as friend.
+     *
+     * @param id the id of the user to add as friend.
+     */
+    suspend fun removeFriend(id: String)
+
+    /**
      * Get the friends of the authenticated user.
      */
     suspend fun getFriends(): List<User>

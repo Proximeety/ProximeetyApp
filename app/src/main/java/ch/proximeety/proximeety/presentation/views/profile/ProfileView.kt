@@ -77,7 +77,7 @@ fun ProfileView(
                         Text(text = "Sign out")
                     }
                 } else if (isFriend) {
-                    Button(onClick = {  }) {
+                    Button(onClick = { viewModel.onEvent(ProfileEvent.RemoveFriend) }) {
                         Text(text = "Remove")
                     }
                 } else {

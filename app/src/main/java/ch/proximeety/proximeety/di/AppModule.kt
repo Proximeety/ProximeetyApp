@@ -112,6 +112,7 @@ class AppModule {
     fun provideUserInteractions(repository: UserRepository): UserInteractions {
         return UserInteractions(
             addFriend = AddFriend(repository),
+            removeFriend = RemoveFriend(repository),
             authenticateWithGoogle = AuthenticateWithGoogle(repository),
             downloadPost = DownloadPost(repository),
             fetchUserById = FetchUserById(repository),

@@ -82,6 +82,15 @@ class ProfileViewModel @Inject constructor(
                         userInteractions.addFriend(it)
                     }
                 }
+                _isFriend.value = true
+            }
+            ProfileEvent.RemoveFriend -> {
+                user.value.value?.id?.also {
+                    viewModelScope.launch {
+                        userInteractions.removeFriend(it)
+                    }
+                }
+                _isFriend.value = false
             }
             ProfileEvent.SignOut -> {
                 userInteractions.signOut()

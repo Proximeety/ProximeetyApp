@@ -338,6 +338,16 @@ class FirebaseAccessObject(
     }
 
     /**
+     * Removes a friend to the authenticated user.
+     * @param id the id of the friend.
+     */
+    suspend fun removeFriend(id: String) {
+        authenticatedUser?.value?.also {
+            database.child(USER_FRIENDS_PATH).child(it.id).child(id).setValue(false).await()
+        }
+    }
+
+    /**
      * Gets the friends of a users.
      */
     suspend fun getFriends(): List<User> {
