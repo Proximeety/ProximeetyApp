@@ -37,7 +37,7 @@ class AuthenticationHomeViewTest {
     @Test
     fun sampleTest() {
         // Page 1
-        composeTestRule.onNodeWithText("Welcome to Proxeemity!").assertExists()
+        composeTestRule.onNodeWithText("Welcome to Proximeety!").assertExists()
         composeTestRule.onNodeWithText("Next").performClick()
 
         // Page 2
@@ -53,7 +53,7 @@ class AuthenticationHomeViewTest {
     @Test
     fun testBackButton() {
         // Page 1
-        composeTestRule.onNodeWithText("Welcome to Proximity!").assertExists()
+        composeTestRule.onNodeWithText("Welcome to Proximeety!").assertExists()
         composeTestRule.onNodeWithText("Next").performClick()
 
         // Page 2
@@ -62,6 +62,6 @@ class AuthenticationHomeViewTest {
         composeTestRule.onNodeWithText("Back").performClick()
 
         // Page 1
-        composeTestRule.onNodeWithText("Welcome to Proximity!").assertExists()
+        composeTestRule.onNodeWithText("Welcome to Proximeety!").assertExists()
     }
 }

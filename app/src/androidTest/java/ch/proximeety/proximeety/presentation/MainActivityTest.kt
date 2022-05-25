@@ -29,7 +29,7 @@ class MainActivityTest {
     @Test
     fun sampleTest() {
         // Page 1
-        composeTestRule.onNodeWithText("Welcome to Proximity!").assertExists()
+        composeTestRule.onNodeWithText("Welcome to Proximeety!").assertExists()
         composeTestRule.onNodeWithText("Next").performClick()
 
         // Page 2
@@ -56,7 +56,7 @@ class MainActivityTest {
             }
         }
         // Page 1
-        composeTestRule.onNodeWithText("Welcome to Proximity!").assertExists()
+        composeTestRule.onNodeWithText("Welcome to Proximeety!").assertExists()
         composeTestRule.onNodeWithText("Next").performClick()
 
         // Page 2
@@ -83,7 +83,7 @@ class MainActivityTest {
             }
         }
         // Page 1
-        composeTestRule.onNodeWithText("Welcome to Proximity!").assertExists()
+        composeTestRule.onNodeWithText("Welcome to Proximeety!").assertExists()
         composeTestRule.onNodeWithText("Next").performClick()
 
         // Page 2
