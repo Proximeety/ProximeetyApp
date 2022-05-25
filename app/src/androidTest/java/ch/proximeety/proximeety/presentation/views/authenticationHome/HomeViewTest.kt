@@ -37,7 +37,7 @@ class AuthenticationHomeViewTest {
     @Test
     fun sampleTest() {
         // Page 1
-        composeTestRule.onNodeWithText("Welcome to Proximity!").assertExists()
+        composeTestRule.onNodeWithText("Welcome to Proxeemity!").assertExists()
         composeTestRule.onNodeWithText("Next").performClick()
 
         // Page 2
