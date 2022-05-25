@@ -186,6 +186,10 @@ class UserRepositoryMockImplementation : UserRepository {
         fetchUserById(id).value?.let { friends.add(it) }
     }
 
+    override suspend fun removeFriend(id: String) {
+        fetchUserById(id).value?.let { friends.remove(it) }
+    }
+
     override suspend fun getFriends(): List<User> {
         user?.also {
             return friends.plus(it)
