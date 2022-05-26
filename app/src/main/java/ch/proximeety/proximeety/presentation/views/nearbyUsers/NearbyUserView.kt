@@ -1,10 +1,12 @@
 package ch.proximeety.proximeety.presentation.views.nearbyUsers
 
+import android.os.CountDownTimer
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -41,31 +43,40 @@ fun NearbyUsersView(
                 horizontalAlignment = Alignment.CenterHorizontally
             )
             {
-                nearbyUsers.value.forEach {
-                    Box(
-                        modifier = Modifier
-                            .clip(MaterialTheme.shapes.medium)
-                            .clickable {
-                                viewModel.onEvent(NearbyUsersEvent.NavigateToUserProfile(it.id))
-                            }
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(spacing.extraSmall)
-                        ) {
-                            Image(
-                                painter = rememberImagePainter(it.profilePicture),
-                                contentDescription = "Profile picture of ${it.displayName}",
+                when (nearbyUsers.value.size) {
+                    0 -> {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                    else -> {
+                        nearbyUsers.value.forEach {
+                            Box(
                                 modifier = Modifier
-                                    .width(32.dp)
-                                    .aspectRatio(1f)
-                                    .clip(CircleShape)
-                                    .background(
-                                        Color.Gray
+                                    .clip(MaterialTheme.shapes.medium)
+                                    .clickable {
+                                        viewModel.onEvent(NearbyUsersEvent.NavigateToUserProfile(it.id))
+                                    }
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.padding(spacing.extraSmall)
+                                ) {
+                                    Image(
+                                        painter = rememberImagePainter(it.profilePicture),
+                                        contentDescription = "Profile picture of ${it.displayName}",
+                                        modifier = Modifier
+                                            .width(32.dp)
+                                            .aspectRatio(1f)
+                                            .clip(CircleShape)
+                                            .background(
+                                                Color.Gray
+                                            )
                                     )
-                            )
-                            Spacer(modifier = Modifier.width(spacing.small))
-                            Text(text = it.displayName, style = MaterialTheme.typography.h5)
+                                    Spacer(modifier = Modifier.width(spacing.small))
+                                    Text(text = it.displayName, style = MaterialTheme.typography.h5)
+                                }
+                            }
                         }
                     }
                 }

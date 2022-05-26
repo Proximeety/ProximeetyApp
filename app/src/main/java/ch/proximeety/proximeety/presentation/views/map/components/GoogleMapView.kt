@@ -105,6 +105,7 @@ fun GoogleMapView(
                                     position = LatLng(position.second, position.third),
                                     title = user.displayName,
                                     icon = BitmapDescriptorFactory.fromBitmap(bitmap.value!!),
+                                    onInfoWindowClick = { viewModel.onEvent(MapEvent.OnClickUserProfile(user.id)) }
                                 )
                             }
                         }
