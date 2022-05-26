@@ -373,32 +373,40 @@ class FirebaseAccessObject(
      */
     suspend fun getPostsByUserID(userId: String): List<Post> {
         return database.child(POSTS_PATH).child(userId).get()
-            .await().children.mapNotNull { snapshot ->
-                if (snapshot.exists() && snapshot.key != null) {
-                    val posterId =
-                        snapshot.child(POST_POSTER_ID_KEY).value as String?
-                    val userDisplayName =
-                        snapshot.child(POST_USER_DISPLAY_NAME_KEY).value as String?
-                    val userProfilePicture =
-                        snapshot.child(POST_USER_PROFILE_PICTURE_KEY).value as String?
-                    val timestamp = snapshot.child(POST_TIMESTAMP_KEY).value as Long?
-                    val likes =
-                        snapshot.child(POST_LIKES_KEY).children.mapNotNull { it.value as? Boolean }
-                            .filter { it }.count()
-                    if (posterId != null && userDisplayName != null && timestamp != null) {
-                        return@mapNotNull Post(
-                            snapshot.key!!,
-                            posterId,
-                            userDisplayName,
-                            userProfilePicture,
-                            timestamp,
-                            null,
-                            likes
-                        )
-                    }
-                }
-                return@mapNotNull null
+            .await().children.mapNotNull { snapshotToPost(it) }
+    }
+
+    /**
+     * Convert a snapshot of a post to a [Post].
+     *
+     * @param snapshot the snapshot coming from the database.
+     * @return A [Post] if the snapshot could be converted, null otherwise.
+     */
+    private fun snapshotToPost(snapshot: DataSnapshot): Post? {
+        if (snapshot.exists() && snapshot.key != null) {
+            val posterId =
+                snapshot.child(POST_POSTER_ID_KEY).value as String?
+            val userDisplayName =
+                snapshot.child(POST_USER_DISPLAY_NAME_KEY).value as String?
+            val userProfilePicture =
+                snapshot.child(POST_USER_PROFILE_PICTURE_KEY).value as String?
+            val timestamp = snapshot.child(POST_TIMESTAMP_KEY).value as Long?
+            val likes =
+                snapshot.child(POST_LIKES_KEY).children.mapNotNull { it.value as? Boolean }
+                    .count { it }
+            if (posterId != null && userDisplayName != null && timestamp != null) {
+                return Post(
+                    snapshot.key!!,
+                    posterId,
+                    userDisplayName,
+                    userProfilePicture,
+                    timestamp,
+                    null,
+                    likes
+                )
             }
+        }
+        return null
     }
 
     /**
@@ -817,29 +825,9 @@ class FirebaseAccessObject(
      * @param userId the id of the poster.
      * @param postId the id of the post
      */
-    suspend fun getPostByIds(userId: String, postId: String): LiveData<Post?> {
-        var post = MutableLiveData<Post>(null)
-        val ref = database.child(POSTS_PATH).child(userId).child(postId)
-        ref.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    post.value =
-                        Post(
-                            id = postId,
-                            posterId = userId,
-                            userDisplayName = snapshot.child(POST_USER_DISPLAY_NAME_KEY).value as String,
-                            userProfilePicture = snapshot.child(POST_USER_PROFILE_PICTURE_KEY).value as String?,
-                            timestamp = snapshot.child(POST_TIMESTAMP_KEY).value as Long,
-                            likes = snapshot.child(POST_LIKES_KEY).children.mapNotNull { it.value as? Boolean }
-                                .filter { it }.count()
-                        )
-                }
-            }
-            override fun onCancelled(error: DatabaseError) {
-                Log.e(TAG, error.message)
-            }
-        })
-        return post
+    suspend fun getPostByIds(userId: String, postId: String): Post? {
+        val snapshot = database.child(POSTS_PATH).child(userId).child(postId).get().await()
+        return snapshotToPost(snapshot)
     }
 
     suspend fun writeTag(tag: Tag) {

@@ -5,7 +5,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -20,7 +19,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PostView(viewModel: PostViewModel = hiltViewModel()) {
-    val post = viewModel.post.value.observeAsState().value
+    val post = viewModel.post.value
     var comments = viewModel.comments.value
     val commentCount = viewModel.commentCount.value
     val user = viewModel.user.value

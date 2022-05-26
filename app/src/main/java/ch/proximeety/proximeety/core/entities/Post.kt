@@ -31,13 +31,13 @@ data class Post(
     /**
      * The URL of the post image.
      */
-    var postURL: String? = null,
+    val postURL: String? = null,
     /**
      * The number of likes.
      */
-    var likes: Int,
+    val likes: Int,
     /**
      * True if the post is liked by the authenticated user.
      */
-    var isLiked: Boolean = false
+    val isLiked: Boolean = false
 )

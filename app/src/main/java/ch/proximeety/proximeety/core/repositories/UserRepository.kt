@@ -192,5 +192,5 @@ interface UserRepository {
      * @param userId the id of the poster
      * @param postId the id of the post
      */
-    suspend fun getPostByIds(userId: String, postId: String): LiveData<Post?>
+    suspend fun getPostByIds(userId: String, postId: String): Post?
 }

@@ -11,7 +11,7 @@ import ch.proximeety.proximeety.core.repositories.UserRepository
 class GetPostByIds(
     private val repository: UserRepository
 ) {
-    suspend operator fun invoke(userId: String, postId: String): LiveData<Post?> {
+    suspend operator fun invoke(userId: String, postId: String): Post? {
         return repository.getPostByIds(userId, postId)
     }
 }

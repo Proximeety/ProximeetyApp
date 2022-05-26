@@ -3,7 +3,9 @@ package ch.proximeety.proximeety.presentation.views.post
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.*
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import ch.proximeety.proximeety.core.entities.Comment
 import ch.proximeety.proximeety.core.entities.Post
 import ch.proximeety.proximeety.core.interactions.UserInteractions
@@ -26,8 +28,8 @@ class PostViewModel @Inject constructor(
 
     val user = userInteractions.getAuthenticatedUser()
 
-    private var _post = mutableStateOf<LiveData<Post?>>(MutableLiveData(null))
-    val post: State<LiveData<Post?>> = _post
+    private var _post = mutableStateOf<Post?>(null)
+    val post: State<Post?> = _post
 
 
     private var _comments = mutableStateOf<List<Comment>>(listOf())
@@ -64,8 +66,10 @@ class PostViewModel @Inject constructor(
             is PostEvent.DownloadPost -> {
                 if (downloadJob == null) {
                     downloadJob = viewModelScope.launch(Dispatchers.IO) {
-                        _post.value.value?.isLiked = userInteractions.isPostLiked(event.post)
-                        _post.value.value?.postURL = userInteractions.downloadPost(event.post).postURL
+                        _post.value = _post.value?.copy(
+                            isLiked = userInteractions.isPostLiked(event.post),
+                            postURL = userInteractions.downloadPost(event.post).postURL
+                        )
                         downloadJob = null
                         _commentCount.value = userInteractions.getComments(event.post.id).size
                     }
@@ -75,8 +79,10 @@ class PostViewModel @Inject constructor(
                 viewModelScope.launch(Dispatchers.IO) {
                     userInteractions.togglePostLike(event.post)
                 }
-                post.value.value?.likes = post.value.value?.likes?.plus(if (post.value.value?.isLiked == true) -1 else 1)!!
-                post.value.value?.isLiked = !post.value.value?.isLiked!!
+                _post.value = post.value?.copy(
+                    likes = post.value?.likes?.plus(if (post.value?.isLiked == true) -1 else 1)!!,
+                    isLiked = !post.value?.isLiked!!
+                )
             }
             is PostEvent.OnCommentSectionClick -> {
                 _comments.value = listOf()
