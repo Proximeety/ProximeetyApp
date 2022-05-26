@@ -1,6 +1,5 @@
 package ch.proximeety.proximeety.core.interactions
 
-import ch.proximeety.proximeety.core.entities.Comment
 import ch.proximeety.proximeety.core.repositories.UserRepository
 
 /**
@@ -10,7 +9,7 @@ import ch.proximeety.proximeety.core.repositories.UserRepository
 class ReplyToComment(
     private val repository: UserRepository
 ) {
-    suspend operator fun invoke(commentId: String, commentReply: String) {
-        return repository.replyToComment(commentId, commentReply)
+    suspend operator fun invoke(postId: String, commentId: String, commentReply: String) {
+        return repository.replyToComment(postId, commentId, commentReply)
     }
 }

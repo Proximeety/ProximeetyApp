@@ -19,7 +19,9 @@ data class UserInteractions(
     val togglePostLike: TogglePostLike,
     val isPostLiked: IsPostLiked,
     val postComment: PostComment,
+    val replyToComment: ReplyToComment,
     val getComments: GetComments,
+    val getCommentReplies: GetCommentReplies,
     val isCommentLiked: IsCommentLiked,
     val toggleCommentLike: ToggleCommentLike,
     val setActivity: SetActivity,
@@ -33,11 +35,11 @@ data class UserInteractions(
     val startLiveLocation: StartLiveLocation,
     val enableNfc: EnableNfc,
     val getCommentReplies: GetCommentReplies,
-    val replyToComment: ReplyToComment
+    val replyToComment: ReplyToComment,
     val getLiveNfcTagId: GetLiveNfcTagId,
     val getNfcTagById: GetNfcTagById,
     val createNewNfcTag: CreateNewNfcTag,
     val writeNfcTag : WriteNfcTag,
     val getAllNfcTags: GetAllNfcTags,
-    val getPostByIds: GetPostByIds
+    val getPostByIds: GetPostByIds,
 )
