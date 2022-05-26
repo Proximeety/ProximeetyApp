@@ -27,6 +27,7 @@ fun ProfileView(
 ) {
     val isAuthenticatedUserProfile = viewModel.isAuthenticatedUserProfile
     val user = viewModel.user.value.observeAsState()
+    val isFriend = viewModel.isFriend.value
 
     SafeArea {
         Column(
@@ -74,6 +75,10 @@ fun ProfileView(
                 if (isAuthenticatedUserProfile) {
                     Button(onClick = { viewModel.onEvent(ProfileEvent.SignOut) }) {
                         Text(text = "Sign out")
+                    }
+                } else if (isFriend) {
+                    Button(onClick = { viewModel.onEvent(ProfileEvent.RemoveFriend) }) {
+                        Text(text = "Remove")
                     }
                 } else {
                     Button(onClick = { viewModel.onEvent(ProfileEvent.AddAsFriend) }) {

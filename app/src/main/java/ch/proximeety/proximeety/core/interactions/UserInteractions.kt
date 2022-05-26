@@ -5,6 +5,7 @@ package ch.proximeety.proximeety.core.interactions
  */
 data class UserInteractions(
     val addFriend: AddFriend,
+    val removeFriend: RemoveFriend,
     val authenticateWithGoogle: AuthenticateWithGoogle,
     val downloadPost: DownloadPost,
     val fetchUserById: FetchUserById,

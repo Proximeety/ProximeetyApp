@@ -5,7 +5,7 @@ data class AuthenticationHomeModel(
 )
 
 val screens = listOf(
-    AuthenticationHomeModel("Welcome to Proximity!"),
+    AuthenticationHomeModel("Welcome to Proximeety!"),
     AuthenticationHomeModel("The new social network to stay closer to your friends"),
     AuthenticationHomeModel("Do you already have an account?")
 )

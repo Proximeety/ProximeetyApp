@@ -136,6 +136,10 @@ class UserRepositoryImplementation(
         firebaseAccessObject.addFriend(id)
     }
 
+    override suspend fun removeFriend(id: String) {
+        firebaseAccessObject.removeFriend(id)
+    }
+
     override suspend fun getFriends(): List<User> {
         if (!connectivityManager.isConnected()) {
             return friendsCacheDao.getFriends()
