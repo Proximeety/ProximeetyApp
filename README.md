@@ -1,6 +1,6 @@
 ![Build Status](https://img.shields.io/cirrus/github/Proximeety/ProximeetyApp)
 ![Code Coverage](https://img.shields.io/codeclimate/coverage/Proximeety/ProximeetyApp)
-[![Maintainability](https://api.codeclimate.com/v1/badges/e804775d6b20006a3778/maintainability)](https://codeclimate.com/github/Proximeety/ProximeetyApp)
+[![Maintainability](https://img.shields.io/codeclimate/maintainability/Proximeety/ProximeetyApp)]
 
 # Proximeety Android Applications
 
