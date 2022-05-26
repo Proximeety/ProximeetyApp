@@ -28,54 +28,54 @@ fun PostView(viewModel: PostViewModel = hiltViewModel()) {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState()
 
-    SafeArea {
-        BottomSheetScaffold(
-            sheetContent = {
-                CommentSection(
-                    user = user,
-                    comments = comments,
-                    onCloseClick = {
-                        scope.launch {
-                            if (scaffoldState.bottomSheetState.isExpanded)
-                                scaffoldState.bottomSheetState.collapse()
-                            comments = listOf()
-                        }
-                    },
-                    onCommentLike = { comment ->
-                        viewModel.onEvent(PostEvent.ToggleCommentLike(comment))
-                    },
-                    onPostClick = {
-                    viewModel.viewModelScope.launch(Dispatchers.IO) {
-                        viewModel
-                            .onEvent(PostEvent.PostComment(it))
-                        viewModel.onEvent(PostEvent.RefreshComments)
-                    }
-                })
-            },
-            scaffoldState = scaffoldState,
-            sheetPeekHeight = 0.dp,
-        ) {
-            if (post != null) {
-                SideEffect {
-                    if (post.postURL == null) {
-                        viewModel.onEvent(PostEvent.DownloadPost(post))
-                    }
-                }
-
-                Post(
-                    post = post,
-                    onLike = {
-                        viewModel.onEvent(PostEvent.TogglePostLike(post))
-                    },
-                    onCommentClick = {
-                        viewModel.onEvent(PostEvent.OnCommentSectionClick(post.id))
-                        scope.launch {
-                            scaffoldState.bottomSheetState.expand()
-                        }
-                    },
-                    numComments = commentCount
-                )
-            }
-        }
-    }
+//    SafeArea {
+//        BottomSheetScaffold(
+//            sheetContent = {
+//                CommentSection(
+//                    user = user,
+//                    comments = comments,
+//                    onCloseClick = {
+//                        scope.launch {
+//                            if (scaffoldState.bottomSheetState.isExpanded)
+//                                scaffoldState.bottomSheetState.collapse()
+//                            comments = listOf()
+//                        }
+//                    },
+//                    onCommentLike = { comment ->
+//                        viewModel.onEvent(PostEvent.ToggleCommentLike(comment))
+//                    },
+//                    onPostClick = {
+//                    viewModel.viewModelScope.launch(Dispatchers.IO) {
+//                        viewModel
+//                            .onEvent(PostEvent.PostComment(it))
+//                        viewModel.onEvent(PostEvent.RefreshComments)
+//                    }
+//                })
+//            },
+//            scaffoldState = scaffoldState,
+//            sheetPeekHeight = 0.dp,
+//        ) {
+//            if (post != null) {
+//                SideEffect {
+//                    if (post.postURL == null) {
+//                        viewModel.onEvent(PostEvent.DownloadPost(post))
+//                    }
+//                }
+//
+//                Post(
+//                    post = post,
+//                    onLike = {
+//                        viewModel.onEvent(PostEvent.TogglePostLike(post))
+//                    },
+//                    onCommentClick = {
+//                        viewModel.onEvent(PostEvent.OnCommentSectionClick(post.id))
+//                        scope.launch {
+//                            scaffoldState.bottomSheetState.expand()
+//                        }
+//                    },
+//                    numComments = commentCount
+//                )
+//            }
+//        }
+//    }
 }
