@@ -26,7 +26,7 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val navigationManager: NavigationManager,
     private val userInteractions: UserInteractions,
-    private val savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     var isAuthenticatedUserProfile: Boolean = false
@@ -111,6 +111,11 @@ class ProfileViewModel @Inject constructor(
             is ProfileEvent.OnCloseDialog -> {
                 _showDialog.value = false
             }
+            is ProfileEvent.OnPostClick -> {
+                user.value.value?.id?.also {
+                    navigationManager.navigate(MainNavigationCommands.postWithArgs(it, event.postId))
+                }
+            }
         }
-    }  
+    }
 }

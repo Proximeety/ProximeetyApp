@@ -1,10 +1,7 @@
 package ch.proximeety.proximeety.presentation.views.conversationList
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
-import androidx.compose.ui.test.onNodeWithText
-import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.di.AppModule
 import ch.proximeety.proximeety.presentation.MainActivity
 import ch.proximeety.proximeety.presentation.theme.ProximeetyTheme
@@ -14,7 +11,6 @@ import dagger.hilt.android.testing.UninstallModules
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import javax.inject.Inject
 
 @HiltAndroidTest
 @UninstallModules(AppModule::class)

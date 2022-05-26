@@ -1,0 +1,128 @@
+package ch.proximeety.proximeety.presentation.views.post
+
+import android.util.Log
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import ch.proximeety.proximeety.core.entities.Comment
+import ch.proximeety.proximeety.core.entities.Post
+import ch.proximeety.proximeety.core.interactions.UserInteractions
+import ch.proximeety.proximeety.presentation.navigation.NavigationManager
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+/**
+ * The ViewModel for the Post View.
+ */
+@HiltViewModel
+class PostViewModel @Inject constructor(
+    private val navigationManager: NavigationManager,
+    private val userInteractions: UserInteractions,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
+
+    val user = userInteractions.getAuthenticatedUser()
+
+    private var _post = mutableStateOf<Post?>(null)
+    val post: State<Post?> = _post
+
+
+    private var _comments = mutableStateOf<List<Comment>>(listOf())
+    val comments: State<List<Comment>> = _comments
+
+    private var _commentCount = mutableStateOf<Int>(0)
+    val commentCount: State<Int> = _commentCount
+
+    private var _commentSectionPostId: String? = null
+
+    private var refreshJob: Job? = null
+    private var downloadJob: Job? = null
+    private val _isRefreshing = mutableStateOf(false)
+    val isRefreshing: State<Boolean> = _isRefreshing
+
+    init {
+        savedStateHandle.get<String>("userId")?.also { userId ->
+            savedStateHandle.get<String>("postId")?.also { postId ->
+                viewModelScope.launch(Dispatchers.IO) {
+                    val post = userInteractions.getPostByIds(userId, postId)
+                    viewModelScope.launch(Dispatchers.Main) {
+                        _post.value = post
+                    }
+                }
+            }
+        }
+    }
+
+    fun onEvent(event: PostEvent) {
+        when (event) {
+            PostEvent.RefreshComments -> {
+                refreshComments()
+            }
+            is PostEvent.DownloadPost -> {
+                if (downloadJob == null) {
+                    downloadJob = viewModelScope.launch(Dispatchers.IO) {
+                        _post.value = _post.value?.copy(
+                            isLiked = userInteractions.isPostLiked(event.post),
+                            postURL = userInteractions.downloadPost(event.post).postURL
+                        )
+                        downloadJob = null
+                        _commentCount.value = userInteractions.getComments(event.post.id).size
+                    }
+                }
+            }
+            is PostEvent.TogglePostLike -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    userInteractions.togglePostLike(event.post)
+                }
+                _post.value = post.value?.copy(
+                    likes = post.value?.likes?.plus(if (post.value?.isLiked == true) -1 else 1)!!,
+                    isLiked = !post.value?.isLiked!!
+                )
+            }
+            is PostEvent.OnCommentSectionClick -> {
+                _comments.value = listOf()
+                _commentSectionPostId = event.postId
+                viewModelScope.launch(Dispatchers.IO) {
+                    val comments = userInteractions.getComments(event.postId)
+                    viewModelScope.launch(Dispatchers.Main) {
+                        Log.d("COMMENTS", comments.toString())
+                        _comments.value = comments.reversed()
+                    }
+                }
+            }
+            is PostEvent.PostComment -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    _commentSectionPostId?.let { userInteractions.postComment(it, event.text) }
+                }
+                if (_commentSectionPostId != null) {
+                    _commentCount.value = _commentCount.value.plus(((_commentCount.value ?: 0) + 1))
+                }
+            }
+            is PostEvent.ToggleCommentLike -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    userInteractions.toggleCommentLike(event.comment)
+                }
+                val index = _comments.value.indexOfFirst { it.id == event.comment.id }
+                val newList = _comments.value.toMutableList()
+                newList[index] = newList[index].copy(
+                    likes = newList[index].likes + if (newList[index].isLiked) -1 else 1,
+                    isLiked = !newList[index].isLiked
+                )
+                _comments.value = newList.toList()
+            }
+        }
+    }
+    private fun refreshComments() {
+        refreshJob?.cancel()
+        _isRefreshing.value = true
+        refreshJob = viewModelScope.launch(Dispatchers.IO) {
+            _comments.value = _commentSectionPostId?.let { userInteractions.getComments(it) }!!
+            _isRefreshing.value = false
+        }
+    }
+}

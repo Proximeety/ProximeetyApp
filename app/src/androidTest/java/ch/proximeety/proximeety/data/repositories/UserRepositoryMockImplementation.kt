@@ -2,11 +2,7 @@ package ch.proximeety.proximeety.data.repositories
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import ch.proximeety.proximeety.core.entities.Comment
-import ch.proximeety.proximeety.core.entities.Post
-import ch.proximeety.proximeety.core.entities.Story
-import ch.proximeety.proximeety.core.entities.Tag
-import ch.proximeety.proximeety.core.entities.User
+import ch.proximeety.proximeety.core.entities.*
 import ch.proximeety.proximeety.core.repositories.UserRepository
 import ch.proximeety.proximeety.util.SyncActivity
 
@@ -16,23 +12,29 @@ import ch.proximeety.proximeety.util.SyncActivity
 class UserRepositoryMockImplementation : UserRepository {
 
     private var user: User? = null
-    private var friends = mutableListOf<User>(
+    private var friends = mutableListOf(
         User(
             id = "friendWithStoryId",
             displayName = "friendWithStory",
             hasStories = true,
+        ),
+        User(
+            id = "friendWithoutStoryId",
+            displayName = "friendWithoutStory",
+            hasStories = false,
         )
     )
     private var posts =
-        mutableListOf<Post>(
+        mutableListOf(
             Post(
                 id = "-MzLEU_55gpq5ZQgAOAp",
                 userDisplayName = "Yanis De Busschere",
                 userProfilePicture = null,
                 timestamp = 1648566863399,
-                postURL = null,
-                likes = 0,
-                posterId = "testUserId"
+                postURL = "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
+                likes = 1,
+                posterId = "friendWithStoryId",
+                isLiked = true
             ),
             Post(
                 id = "-MzLCslyh0zEGu6dioMT",
@@ -118,7 +120,7 @@ class UserRepositoryMockImplementation : UserRepository {
     )
 
     private var stories =
-        mutableListOf<Story>(
+        mutableListOf(
             Story(
                 id = "-MzKNArXlI8iMmVkVeXP",
                 userDisplayName = "Yanis De Busschere",
@@ -346,5 +348,16 @@ class UserRepositoryMockImplementation : UserRepository {
             listOf(Pair(1651653481L, User("testUserVisitorId", "testUserVisitor"))),
             User("testUserId", "testUser")
         ))
+    }
+
+    override suspend fun isCommentLiked(comment: Comment): Boolean {
+        return true
+    }
+
+    override suspend fun toggleCommentLike(comment: Comment) {
+    }
+
+    override suspend fun getPostByIds(userId: String, postId: String): Post? {
+        return posts.first { post -> post.id == postId && post.posterId == userId }
     }
 }

@@ -83,14 +83,14 @@ interface UserRepository {
     /**
      * Delete a post
      *
-     * @param id the local id of the image.
+     * @param postId the local id of the image.
      */
     suspend fun deletePost(postId: String)
 
     /**
      * Delete a story
      *
-     * @param id the local id of the image.
+     * @param storyId the local id of the image.
      */
     suspend fun deleteStory(storyId: String)
 
@@ -133,6 +133,20 @@ interface UserRepository {
     suspend fun postComment(postId: String, comment: String)
 
     /**
+     * Toggle likes on a Comment
+     *
+     * @param comment the comment
+     */
+    suspend fun toggleCommentLike(comment: Comment)
+
+    /**
+     * is a Comment liked
+     *
+     * @param comment the comment
+     */
+    suspend fun isCommentLiked(comment: Comment): Boolean
+
+    /**
      * Get the stories of an user.
      */
     suspend fun getStoriesByUserId(id: String): List<Story>
@@ -171,4 +185,12 @@ interface UserRepository {
      * Get NFC tag.
      */
     fun getNfcTag(): LiveData<Tag?>
+
+    /**
+     * Get a certain post from a user.
+     *
+     * @param userId the id of the poster
+     * @param postId the id of the post
+     */
+    suspend fun getPostByIds(userId: String, postId: String): Post?
 }

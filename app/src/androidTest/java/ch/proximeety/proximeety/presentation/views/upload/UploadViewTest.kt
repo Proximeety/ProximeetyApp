@@ -15,11 +15,12 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.Assert.*
 import javax.inject.Inject
+
 
 @HiltAndroidTest
 @UninstallModules(AppModule::class)
@@ -31,7 +32,7 @@ class UploadViewTest {
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    lateinit var context: Context
+    private lateinit var context: Context
 
     @Inject
     lateinit var navigationManager: NavigationManager
@@ -81,6 +82,7 @@ class UploadViewTest {
         composeTestRule.onNodeWithContentDescription("Upload post")
             .assertExists()
             .performClick()
+        composeTestRule.waitForIdle()
         runBlocking {
             val feed = userInteractions.getFeed()
             assertTrue(feed.filter { it.id == randomUri }.size == 1)
@@ -94,6 +96,7 @@ class UploadViewTest {
         composeTestRule.onNodeWithContentDescription("Cancel post")
             .assertExists()
             .performClick()
+        composeTestRule.waitForIdle()
         runBlocking {
             val feed = userInteractions.getFeed()
             assertTrue(feed.none { it.id == randomUri })
@@ -108,6 +111,7 @@ class UploadViewTest {
         composeTestRule.onNodeWithContentDescription("Upload story")
             .assertExists()
             .performClick()
+        composeTestRule.waitForIdle()
         runBlocking {
             val stories = userInteractions.getStoriesByUserId("testUserId")
             assertTrue(stories.filter { it.id == randomUri }.size == 1)
@@ -122,9 +126,31 @@ class UploadViewTest {
         composeTestRule.onNodeWithContentDescription("Cancel story")
             .assertExists()
             .performClick()
+        composeTestRule.waitForIdle()
         runBlocking {
             val stories = userInteractions.getStoriesByUserId("testUserId")
             assertTrue(stories.none { it.id == randomUri })
         }
     }
+
+// NOT WORKING IN EMULATOR : see https://github.com/android/camera-samples/issues/428
+//    @Test
+//    fun takePictureShouldWork() {
+//        if (composeTestRule.activity.checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//            composeTestRule.onNodeWithText("Enable permissions")
+//                .assertExists()
+//                .performClick()
+//            composeTestRule.waitForIdle()
+//            PermissionsTestsUtils.assertPermissionsAreDisplayAndAllow()
+//        }
+//        composeTestRule.waitForIdle()
+//        composeTestRule.onNodeWithTag(context.getString(R.string.TT_UV_take_picture_button))
+//            .assertExists()
+//            .performClick()
+//        composeTestRule.waitUntil(10000) {
+//            viewModel.imageUri.value != EMPTY_IMAGE_URI
+//        }
+//        composeTestRule.onNodeWithContentDescription("Upload post")
+//            .assertExists()
+//    }
 }

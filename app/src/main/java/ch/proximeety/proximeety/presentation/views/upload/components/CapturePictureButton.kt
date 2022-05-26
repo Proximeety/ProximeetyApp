@@ -35,8 +35,8 @@ fun CapturePictureButton(
             modifier = modifier
                 .aspectRatio(1f)
                 .fillMaxSize()
-                .border(MaterialTheme.spacing.extraSmall, color, CircleShape)
-                .padding(MaterialTheme.spacing.small)
+                .border(spacing.extraSmall, color, CircleShape)
+                .padding(spacing.small)
                 .testTag(stringResource(id = R.string.TT_UV_take_picture_button)),
             shape = CircleShape,
             colors = ButtonDefaults.buttonColors(backgroundColor = color),

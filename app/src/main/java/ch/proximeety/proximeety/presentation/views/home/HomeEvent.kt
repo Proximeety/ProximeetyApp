@@ -1,5 +1,6 @@
 package ch.proximeety.proximeety.presentation.views.home
 
+import ch.proximeety.proximeety.core.entities.Comment
 import ch.proximeety.proximeety.core.entities.Post
 
 /**
@@ -10,7 +11,6 @@ sealed class HomeEvent {
     object NavigateToMapView : HomeEvent()
     object NavigateToMessagingView : HomeEvent()
     object NavigateToNearbyUsersView : HomeEvent()
-    object NavigateToNearbyUsersViewModel : HomeEvent()
     object NavigateToProfileView : HomeEvent()
     object NavigateToUploadView : HomeEvent()
     object NavigateToFriendsView : HomeEvent()
@@ -21,4 +21,5 @@ sealed class HomeEvent {
     object RefreshComments: HomeEvent()
     object SignOut : HomeEvent()
     class TogglePostLike(val post: Post) : HomeEvent()
+    class ToggleCommentLike(val comment: Comment): HomeEvent()
 }

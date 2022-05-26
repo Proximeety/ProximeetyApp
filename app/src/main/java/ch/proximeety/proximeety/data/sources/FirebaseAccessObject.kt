@@ -8,26 +8,26 @@ import android.media.ExifInterface
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
+import ch.proximeety.proximeety.BuildConfig
 import ch.proximeety.proximeety.R
-import ch.proximeety.proximeety.core.entities.Comment
-import ch.proximeety.proximeety.core.entities.Post
-import ch.proximeety.proximeety.core.entities.Story
-import ch.proximeety.proximeety.core.entities.Tag
-import ch.proximeety.proximeety.core.entities.User
+import ch.proximeety.proximeety.core.entities.*
 import ch.proximeety.proximeety.util.SyncActivity
 import ch.proximeety.proximeety.util.extensions.await
+import ch.proximeety.proximeety.util.extensions.observeOnce
 import ch.proximeety.proximeety.util.extensions.rotate
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.auth.ktx.userProfileChangeRequest
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
@@ -63,6 +63,7 @@ class FirebaseAccessObject(
         private const val USER_EMAIL_KEY = "email"
         private const val USER_PROFILE_PICTURE_KEY = "profilePicture"
         private const val USER_HAS_STORY_KEY = "hasStory"
+        private const val USER_ID_KEY = "id"
 
         private const val USER_FRIENDS_PATH = "usersFriends"
 
@@ -71,7 +72,6 @@ class FirebaseAccessObject(
         private const val POST_USER_DISPLAY_NAME_KEY = "userDisplayName"
         private const val POST_USER_PROFILE_PICTURE_KEY = "userProfilePicture"
         private const val POST_TIMESTAMP_KEY = "timestamp"
-        private const val POST_URL_KEY = "postURL"
         private const val POST_LIKES_KEY = "likes"
 
         private const val COMMENT_PATH = "comments"
@@ -88,7 +88,6 @@ class FirebaseAccessObject(
         private const val STORY_USER_DISPLAY_NAME_KEY = "userDisplayName"
         private const val STORY_USER_PROFILE_PICTURE_KEY = "userProfilePicture"
         private const val STORY_TIMESTAMP_KEY = "timestamp"
-        private const val STORY_URL_KEY = "storyURL"
 
         private const val USER_LOCATION_PATH = "usersLocations"
         private const val USER_LOCATION_LATITUDE_KEY = "latitude"
@@ -99,7 +98,6 @@ class FirebaseAccessObject(
         private const val STORAGE_STORY_PATH = "stories"
 
         private const val TAG_PATH = "tags"
-        private const val TAG_ID_KEY = "id"
         private const val TAG_NAME_KEY = "name"
         private const val TAG_LATITUDE_KEY = "latitude"
         private const val TAG_LONGITUDE_KEY = "longitude"
@@ -118,6 +116,11 @@ class FirebaseAccessObject(
 
     init {
         Firebase.database.setPersistenceEnabled(false)
+        if (BuildConfig.DEBUG) {
+            Firebase.auth.useEmulator("10.0.2.2", 9099)
+            Firebase.database.useEmulator("10.0.2.2", 9000)
+            Firebase.storage.useEmulator("10.0.2.2", 9199)
+        }
         auth = Firebase.auth
         database = Firebase.database.reference
         storage = Firebase.storage.reference
@@ -127,16 +130,28 @@ class FirebaseAccessObject(
      * Gets the currently authenticated user.
      * @return The authenticated user.
      */
-    fun getAuthenticatedUser(lifecycleOwner: LifecycleOwner): LiveData<User?> {
+    fun getAuthenticatedUser(lifecycleOwner: LifecycleOwner?): LiveData<User?> {
         if (auth.currentUser != null) {
             if (authenticatedUser != null) return authenticatedUser!!
             authenticatedUser =
                 MutableLiveData(User(auth.currentUser!!.uid, auth.currentUser!!.uid))
-            fetchUserById(auth.currentUser!!.uid, lifecycleOwner).observe(lifecycleOwner) {
-                if (it != null) {
-                    authenticatedUser!!.value = it
+
+            val fetchedUser = fetchUserById(auth.currentUser!!.uid, lifecycleOwner)
+
+            if (lifecycleOwner != null) {
+                fetchedUser.observe(lifecycleOwner) {
+                    if (it != null) {
+                        authenticatedUser?.value = it
+                    }
+                }
+            } else {
+                fetchedUser.observeOnce {
+                    if (it != null) {
+                        authenticatedUser?.value = it
+                    }
                 }
             }
+
             return authenticatedUser!!
         }
         return MutableLiveData(null)
@@ -146,6 +161,7 @@ class FirebaseAccessObject(
      * Sign out the currently authenticated user.
      */
     fun signOut() {
+        authenticatedUser = null
         auth.signOut()
     }
 
@@ -155,63 +171,111 @@ class FirebaseAccessObject(
      * @return The authenticated user.
      */
     suspend fun authenticateWithGoogle(activity: SyncActivity): User? {
+        try {
 
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(context.resources.getString(R.string.firebase_server_client_id))
-            .requestEmail()
-            .requestProfile()
-            .requestId()
-            .build()
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(context.resources.getString(R.string.firebase_server_client_id))
+                .requestEmail()
+                .requestProfile()
+                .requestId()
+                .build()
 
-        val googleSignInClient = GoogleSignIn.getClient(activity, gso)
-        val intent = googleSignInClient.signInIntent
+            val googleSignInClient = GoogleSignIn.getClient(activity, gso)
+            val intent = googleSignInClient.signInIntent
 
-        googleSignInClient.signOut()
+            googleSignInClient.signOut()
 
-        val result = activity.waitForIntentResult({
-            activity.startActivityForResult(intent, REQUEST_CODE_GOOGLE_SIGN_IN)
-        }, REQUEST_CODE_GOOGLE_SIGN_IN)
+            val result = activity.waitForIntentResult({
+                activity.startActivityForResult(intent, REQUEST_CODE_GOOGLE_SIGN_IN)
+            }, REQUEST_CODE_GOOGLE_SIGN_IN)
 
-        result?.also { activityResult ->
-            if (activityResult.resultCode == Activity.RESULT_OK) {
-                try {
-                    val account =
-                        GoogleSignIn.getSignedInAccountFromIntent(activityResult.data).result
-                    val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-                    auth.signInWithCredential(credential).await().user?.also { firebaseUser ->
-                        val user = User(
-                            id = firebaseUser.uid,
-                            displayName = account.displayName ?: firebaseUser.uid,
-                            givenName = account.givenName,
-                            familyName = account.familyName,
-                            email = account.email,
-                            profilePicture = account.photoUrl?.toString()
-                        )
-                        database.child(USER_PATH).child(user.id).setValue(
-                            mapOf(
-                                USER_DISPLAY_NAME_KEY to user.displayName,
-                                USER_NAME_KEY to user.displayName,
-                                USER_GIVEN_NAME_KEY to user.givenName,
-                                USER_FAMILY_NAME_KEY to user.familyName,
-                                USER_EMAIL_KEY to user.email,
-                                USER_PROFILE_PICTURE_KEY to user.profilePicture
+            result?.also { activityResult ->
+                if (activityResult.resultCode == Activity.RESULT_OK) {
+                    try {
+                        val account =
+                            GoogleSignIn.getSignedInAccountFromIntent(activityResult.data).result
+                        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+                        auth.signInWithCredential(credential).await().user?.also { firebaseUser ->
+                            val user = User(
+                                id = firebaseUser.uid,
+                                displayName = account.displayName ?: firebaseUser.uid,
+                                givenName = account.givenName,
+                                familyName = account.familyName,
+                                email = account.email,
+                                profilePicture = account.photoUrl?.toString()
                             )
-                        ).addOnSuccessListener {
-                            Log.d(
-                                TAG,
-                                "Added user"
-                            )
-                        }.addOnFailureListener {
-                            Log.e(
-                                TAG,
-                                it.message.toString()
-                            )
+                            uploadUser(user)
+                            return user
                         }
-                        return user
+                    } catch (e: ApiException) {
                     }
-                } catch (e: ApiException) {
                 }
             }
+        } catch (e: Exception) {
+            Log.e(TAG, "Authenticate with Google failed", e)
+           return null
+        }
+
+        return null
+    }
+
+    private fun uploadUser(user : User) {
+        database.child(USER_PATH).child(user.id).setValue(
+            mapOf(
+                USER_DISPLAY_NAME_KEY to user.displayName,
+                USER_NAME_KEY to user.displayName,
+                USER_GIVEN_NAME_KEY to user.givenName,
+                USER_FAMILY_NAME_KEY to user.familyName,
+                USER_EMAIL_KEY to user.email,
+                USER_PROFILE_PICTURE_KEY to user.profilePicture
+            )
+        ).addOnSuccessListener {
+            Log.d(
+                TAG,
+                "Added user"
+            )
+        }.addOnFailureListener {
+            Log.e(
+                TAG,
+                it.message.toString()
+            )
+        }
+    }
+
+    /**
+     * Authenticate with email and password.
+     *
+     * @param email the email of the user.
+     * @param password the password of the user.
+     *
+     * @return The authenticated user.
+     */
+    suspend fun authenticateWithEmailAndPassword(email: String, password: String): User? {
+        val firebaseUser = try {
+            auth.createUserWithEmailAndPassword(email, password).await().user
+        } catch (e: FirebaseAuthUserCollisionException) {
+            try {
+                auth.signInWithEmailAndPassword(email, password).await().user
+            } catch (e: java.lang.Exception) {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
+
+        if (firebaseUser != null) {
+            val user = User(
+                id = firebaseUser.uid,
+                displayName = firebaseUser.displayName ?: firebaseUser.uid,
+                email = firebaseUser.email,
+                profilePicture = firebaseUser.photoUrl?.toString()
+            )
+
+            uploadUser(user)
+
+            authenticatedUser = MutableLiveData(user)
+
+            return user
         }
 
         return null
@@ -231,9 +295,9 @@ class FirebaseAccessObject(
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     user.value =
-                        User(
-                            id = id,
-                            displayName = snapshot.child(USER_DISPLAY_NAME_KEY).value as String?
+                            User(
+                                id = id,
+                                displayName = snapshot.child(USER_DISPLAY_NAME_KEY).value as String?
                                 ?: id,
                             givenName = snapshot.child(USER_GIVEN_NAME_KEY).value as String?,
                             familyName = snapshot.child(USER_FAMILY_NAME_KEY).value as String?,
@@ -269,9 +333,9 @@ class FirebaseAccessObject(
      * Adds a friend to the authenticated user.
      * @param id the id of the friend.
      */
-    fun addFriend(id: String) {
+    suspend fun addFriend(id: String) {
         authenticatedUser?.value?.also {
-            database.child(USER_FRIENDS_PATH).child(it.id).child(id).setValue(true)
+            database.child(USER_FRIENDS_PATH).child(it.id).child(id).setValue(true).await()
         }
     }
 
@@ -304,37 +368,45 @@ class FirebaseAccessObject(
     }
 
     /**
-     * Gets all the posts of a users. This function does the download the post images. You have to call [downloadPost] afterwards for each of them.
+     * Gets all the posts of a users. This function doesn't the download the post images. You have to call [downloadPost] afterwards for each of them.
      * @param userId the id of the user whose posts are downloaded.
      */
     suspend fun getPostsByUserID(userId: String): List<Post> {
         return database.child(POSTS_PATH).child(userId).get()
-            .await().children.mapNotNull { snapshot ->
-                if (snapshot.exists() && snapshot.key != null) {
-                    val posterId =
-                        snapshot.child(POST_POSTER_ID_KEY).value as String?
-                    val userDisplayName =
-                        snapshot.child(POST_USER_DISPLAY_NAME_KEY).value as String?
-                    val userProfilePicture =
-                        snapshot.child(POST_USER_PROFILE_PICTURE_KEY).value as String?
-                    val timestamp = snapshot.child(POST_TIMESTAMP_KEY).value as Long?
-                    val likes =
-                        snapshot.child(POST_LIKES_KEY).children.mapNotNull { it.value as? Boolean }
-                            .filter { it }.count()
-                    if (posterId != null && userDisplayName != null && userProfilePicture != null && timestamp != null) {
-                        return@mapNotNull Post(
-                            snapshot.key!!,
-                            posterId,
-                            userDisplayName,
-                            userProfilePicture,
-                            timestamp,
-                            null,
-                            likes
-                        )
-                    }
-                }
-                return@mapNotNull null
+            .await().children.mapNotNull { snapshotToPost(it) }
+    }
+
+    /**
+     * Convert a snapshot of a post to a [Post].
+     *
+     * @param snapshot the snapshot coming from the database.
+     * @return A [Post] if the snapshot could be converted, null otherwise.
+     */
+    private fun snapshotToPost(snapshot: DataSnapshot): Post? {
+        if (snapshot.exists() && snapshot.key != null) {
+            val posterId =
+                snapshot.child(POST_POSTER_ID_KEY).value as String?
+            val userDisplayName =
+                snapshot.child(POST_USER_DISPLAY_NAME_KEY).value as String?
+            val userProfilePicture =
+                snapshot.child(POST_USER_PROFILE_PICTURE_KEY).value as String?
+            val timestamp = snapshot.child(POST_TIMESTAMP_KEY).value as Long?
+            val likes =
+                snapshot.child(POST_LIKES_KEY).children.mapNotNull { it.value as? Boolean }
+                    .count { it }
+            if (posterId != null && userDisplayName != null && timestamp != null) {
+                return Post(
+                    snapshot.key!!,
+                    posterId,
+                    userDisplayName,
+                    userProfilePicture,
+                    timestamp,
+                    null,
+                    likes
+                )
             }
+        }
+        return null
     }
 
     /**
@@ -352,7 +424,7 @@ class FirebaseAccessObject(
                     val userProfilePicture =
                         snapshot.child(POST_USER_PROFILE_PICTURE_KEY).value as String?
                     val timestamp = snapshot.child(POST_TIMESTAMP_KEY).value as Long?
-                    if (posterId != null && userDisplayName != null && userProfilePicture != null && timestamp != null) {
+                    if (posterId != null && userDisplayName != null && timestamp != null) {
                         return@mapNotNull Story(
                             snapshot.key!!,
                             posterId,
@@ -410,9 +482,9 @@ class FirebaseAccessObject(
                             POST_USER_PROFILE_PICTURE_KEY to user.profilePicture,
                             POST_TIMESTAMP_KEY to Calendar.getInstance().timeInMillis
                         )
-                    )
+                    ).await()
                 } catch (e: Exception) {
-                    Log.e(TAG, e.message.toString())
+                    Log.e(TAG, "Failed to post picture", e)
                 }
             }
         }
@@ -421,11 +493,11 @@ class FirebaseAccessObject(
     /**
      * Delete a post.
      *
-     * @param postID the id of the picture (local file).
+     * @param postId the id of the picture (local file).
      */
-    fun deletePost(postId: String) {
+    suspend fun deletePost(postId: String) {
         authenticatedUser?.value?.also { user ->
-            database.child(POSTS_PATH).child(user.id).child(postId).removeValue()
+            database.child(POSTS_PATH).child(user.id).child(postId).removeValue().await()
         }
     }
 
@@ -434,9 +506,9 @@ class FirebaseAccessObject(
      *
      * @param storyId the id of the story (local file).
      */
-    fun deleteStory(storyId: String) {
+    suspend fun deleteStory(storyId: String) {
         authenticatedUser?.value?.also { user ->
-            database.child(STORY_PATH).child(user.id).child(storyId).removeValue()
+            database.child(STORY_PATH).child(user.id).child(storyId).removeValue().await()
         }
     }
 
@@ -500,9 +572,9 @@ class FirebaseAccessObject(
                             STORY_USER_PROFILE_PICTURE_KEY to user.profilePicture,
                             STORY_TIMESTAMP_KEY to Calendar.getInstance().timeInMillis
                         )
-                    )
+                    ).await()
                     database.child(USER_PATH).child(user.id).child(USER_HAS_STORY_KEY)
-                        .setValue(true)
+                        .setValue(true).await()
                 } catch (e: Exception) {
                     Log.e(TAG, e.message.toString())
                 }
@@ -589,7 +661,7 @@ class FirebaseAccessObject(
      * @param postId the post's id
      * @param comment the comment to leave
      */
-    fun postComment(postId: String, comment: String) {
+    suspend fun postComment(postId: String, comment: String) {
         authenticatedUser?.value?.let { user ->
             val ref = database.child(COMMENT_PATH).child(postId).push()
             ref.key?.also {
@@ -603,7 +675,7 @@ class FirebaseAccessObject(
                             COMMENT_USER_PROFILE_PICTURE_KEY to user.profilePicture,
                             COMMENT_TIMESTAMP_KEY to Calendar.getInstance().timeInMillis
                         )
-                    )
+                    ).await()
                 } catch (e: Exception) {
                     Log.e(TAG, e.message.toString())
                 }
@@ -629,10 +701,11 @@ class FirebaseAccessObject(
                     val comment = snapshot.child(
                         COMMENT_VALUE_KEY
                     ).value as String?
+                    val likes =
+                        snapshot.child(COMMENT_LIKES_KEY).children.mapNotNull { it.value as? Boolean }
+                            .filter { it }.count()
 
-                    if (postId != null && posterId != null && userDisplayName != null && userProfilePicture != null && timestamp != null && comment != null) {
-                        Log.d("aa", snapshot.key.toString())
-
+                    if (postId != null && posterId != null && userDisplayName != null && timestamp != null && comment != null) {
                         return@mapNotNull Comment(
                             id = snapshot.key!!,
                             postId = postId,
@@ -641,13 +714,46 @@ class FirebaseAccessObject(
                             userProfilePicture = userProfilePicture,
                             timestamp = timestamp,
                             comment = comment,
-                            likes = 0,
+                            likes = likes,
                             isLiked = false
                         )
                     }
                 }
                 return@mapNotNull null
             }
+    }
+
+    suspend fun isCommentLiked(comment: Comment): Boolean {
+        authenticatedUser?.value?.also { user ->
+            val ref =
+                database
+                    .child(COMMENT_PATH)
+                    .child(comment.postId)
+                    .child(comment.id)
+                    .child(COMMENT_LIKES_KEY)
+                    .child(user.id)
+            (ref.get().await().value as? Boolean)?.also {
+                return it
+            }
+        }
+        return false
+    }
+
+    /**
+     * Like or unlike the comment.
+     */
+    suspend fun toggleCommentLike(comment: Comment) {
+        authenticatedUser?.value?.also { user ->
+            val ref =
+                database.child(COMMENT_PATH)
+                    .child(comment.postId)
+                    .child(comment.id)
+                    .child(COMMENT_LIKES_KEY)
+                    .child(user.id)
+            (ref.get().await().value as? Boolean).also {
+                ref.setValue(if (it == null) true else !it)
+            }
+        }
     }
 
     /**
@@ -664,7 +770,7 @@ class FirebaseAccessObject(
                 val name = it.child(USER_DISPLAY_NAME_KEY).value as String?
                 val profilePicture = it.child(USER_PROFILE_PICTURE_KEY).value as String?
                 val timestamp = it.child(TAG_VISITORS_TIMESTAMP_KEY).value as Long?
-                if (name != null && profilePicture != null && timestamp != null) {
+                if (name != null && timestamp != null) {
                     return@mapNotNull Pair(
                         timestamp, User(
                             id = it.key!!,
@@ -678,11 +784,12 @@ class FirebaseAccessObject(
 
             val owner = snapshot.child(TAG_OWNER_KEY).let {
                 if (it.exists() && it.key != null) {
+                    val id = it.child(USER_ID_KEY).value as String?
                     val name = it.child(USER_DISPLAY_NAME_KEY).value as String?
                     val profilePicture = it.child(USER_PROFILE_PICTURE_KEY).value as String?
-                    if (name != null && profilePicture != null) {
+                    if (id != null && name != null) {
                         return@let User(
-                            id = it.key!!,
+                            id = id,
                             displayName = name,
                             profilePicture = profilePicture
                         )
@@ -692,14 +799,14 @@ class FirebaseAccessObject(
             }
 
             if (name != null && longitude != null && latitude != null && owner != null) {
-                return Tag(id, name, longitude, latitude, visitors, owner)
+                return Tag(id, name, latitude, longitude, visitors, owner)
             }
         }
         return null
     }
 
     /**
-     * Set the ahthenticated user as a visitor of the tag.
+     * Set the authenticated user as a visitor of the tag.
      */
     suspend fun visitTag(tagId: String) {
         authenticatedUser?.value?.also { user ->
@@ -709,7 +816,33 @@ class FirebaseAccessObject(
                     USER_DISPLAY_NAME_KEY to user.displayName,
                     USER_PROFILE_PICTURE_KEY to user.profilePicture
                 )
-            )
+            ).await()
         }
+    }
+
+    /**
+     * Get a certain post from a user.
+     * @param userId the id of the poster.
+     * @param postId the id of the post
+     */
+    suspend fun getPostByIds(userId: String, postId: String): Post? {
+        val snapshot = database.child(POSTS_PATH).child(userId).child(postId).get().await()
+        return snapshotToPost(snapshot)
+    }
+
+    suspend fun writeTag(tag: Tag) {
+        database.child(TAG_PATH).child(tag.id).setValue(
+            mapOf(
+                TAG_NAME_KEY to tag.name,
+                TAG_LONGITUDE_KEY to tag.longitude,
+                TAG_LATITUDE_KEY to tag.latitude,
+                TAG_OWNER_KEY to mapOf(
+                    USER_ID_KEY to tag.owner.id,
+                    USER_DISPLAY_NAME_KEY to tag.owner.displayName,
+                    USER_PROFILE_PICTURE_KEY to tag.owner.profilePicture
+                )
+            )
+        ).await()
+        visitTag(tag.id)
     }
 }

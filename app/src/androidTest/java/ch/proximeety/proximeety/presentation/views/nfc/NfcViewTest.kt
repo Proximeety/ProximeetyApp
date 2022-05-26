@@ -1,7 +1,7 @@
 package ch.proximeety.proximeety.presentation.views.nfc
 
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithText
 import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.core.repositories.UserRepository
 import ch.proximeety.proximeety.data.repositories.UserRepositoryMockImplementation
@@ -77,11 +77,22 @@ class NfcViewTest {
     }
 
     @Test
+    fun nfcViewShouldDisplayMap() {
+        composeTestRule.waitUntil(10000) { viewModel.mapReady.value }
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag("map").assertExists()
+    }
+
+    @Test
     fun nfcViewShouldDisplayVisitorDate() {
         composeTestRule.onNodeWithText(
-            SimpleDateFormat("EEE, MMM d, yyyy").format(Date(1651653481L))
+            SimpleDateFormat("EEE, MMM d, yyyy", Locale.FRANCE).format(Date(1651653481L))
         ).assertExists()
     }
 
+    @Test
+    fun nfcViewNavigateToUserProfile() {
+        composeTestRule.onNodeWithText("testUserVisitor").performClick()
+    }
 
 }

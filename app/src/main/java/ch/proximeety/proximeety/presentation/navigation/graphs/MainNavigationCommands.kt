@@ -76,4 +76,16 @@ object MainNavigationCommands {
         override val arguments = emptyList<NamedNavArgument>()
         override val route = "nfc_view"
     }
+
+    val post = object : NavigationCommand {
+        override val arguments: List<NamedNavArgument> =
+            listOf(navArgument("userId") { type = NavType.StringType },
+                navArgument("postId") { type = NavType.StringType })
+        override val route = "posts/{userId}/{postId}"
+    }
+
+    fun postWithArgs(userId: String, postId: String) = object : NavigationCommand {
+        override val arguments: List<NamedNavArgument> = post.arguments
+        override val route: String = "posts/$userId/$postId"
+    }
 }

@@ -7,9 +7,10 @@ import ch.proximeety.proximeety.presentation.views.conversationList.Conversation
 import ch.proximeety.proximeety.presentation.views.friends.FriendsView
 import ch.proximeety.proximeety.presentation.views.home.HomeView
 import ch.proximeety.proximeety.presentation.views.map.MapView
-import ch.proximeety.proximeety.presentation.views.messagesScreen.MessagesView
+import ch.proximeety.proximeety.presentation.views.messages.MessagesView
 import ch.proximeety.proximeety.presentation.views.nearbyUsers.NearbyUsersView
 import ch.proximeety.proximeety.presentation.views.nfc.NfcView
+import ch.proximeety.proximeety.presentation.views.post.PostView
 import ch.proximeety.proximeety.presentation.views.profile.ProfileView
 import ch.proximeety.proximeety.presentation.views.settings.SettingsView
 import ch.proximeety.proximeety.presentation.views.stories.StoriesView
@@ -80,6 +81,12 @@ fun NavGraphBuilder.mainNavigationGraph() {
             route = MainNavigationCommands.nfc.route
         ) {
             NfcView()
+        }
+        composable(
+            route = MainNavigationCommands.post.route,
+            arguments = MainNavigationCommands.post.arguments
+        ) {
+            PostView()
         }
     }
 }

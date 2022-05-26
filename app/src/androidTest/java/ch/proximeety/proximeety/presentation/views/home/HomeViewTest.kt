@@ -2,7 +2,6 @@ package ch.proximeety.proximeety.presentation.views.home
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.di.AppModule
 import ch.proximeety.proximeety.presentation.MainActivity
@@ -72,6 +71,56 @@ class HomeViewTest {
         composeTestRule
             .onNodeWithContentDescription("Close Comment Section")
             .assertHasClickAction()
+            .performClick()
+    }
+
+    @Test
+    fun moreDoesNothing() {
+        composeTestRule.waitUntil(10000) { viewModel.posts.value.isNotEmpty() }
+        composeTestRule
+            .onAllNodesWithContentDescription("More")
+            .onFirst()
+            .performClick()
+    }
+
+    @Test
+    fun clickOnProfile() {
+        composeTestRule.onNodeWithContentDescription("Profile")
+            .assertExists()
+            .performClick()
+    }
+    @Test
+    fun clickOnUpload() {
+        composeTestRule.onNodeWithContentDescription("Upload")
+            .assertExists()
+            .performClick()
+    }
+
+    @Test
+    fun clickOnFriends() {
+        composeTestRule.onNodeWithContentDescription("Friends")
+            .assertExists()
+            .performClick()
+    }
+
+    @Test
+    fun clickOnNearby() {
+        composeTestRule.onNodeWithContentDescription("Nearby")
+            .assertExists()
+            .performClick()
+    }
+
+    @Test
+    fun clickOnMap() {
+        composeTestRule.onNodeWithContentDescription("Map")
+            .assertExists()
+            .performClick()
+    }
+
+    @Test
+    fun clickOnMessages() {
+        composeTestRule.onNodeWithContentDescription("Messages")
+            .assertExists()
             .performClick()
     }
 }

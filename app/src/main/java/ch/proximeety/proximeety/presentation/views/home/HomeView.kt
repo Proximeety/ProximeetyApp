@@ -18,10 +18,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
+import ch.proximeety.proximeety.presentation.components.Post
 import ch.proximeety.proximeety.presentation.views.home.components.HomeTopBar
-import ch.proximeety.proximeety.presentation.views.home.components.Post
 import ch.proximeety.proximeety.presentation.views.home.components.Stories
-import ch.proximeety.proximeety.presentation.views.home.components.comments.CommentSection
+import ch.proximeety.proximeety.presentation.components.comments.CommentSection
 import ch.proximeety.proximeety.util.SafeArea
 import ch.proximeety.proximeety.util.extensions.getActivity
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -66,14 +66,18 @@ fun HomeView(
                                 scaffoldState.bottomSheetState.collapse()
                             comments = listOf()
                         }
+                    },
+                    onCommentLike = { comment ->
+                        viewModel.onEvent(HomeEvent.ToggleCommentLike(comment))
+                    },
+                    onPostClick = {
+                        viewModel.viewModelScope.launch(Dispatchers.IO) {
+                            viewModel
+                                .onEvent(HomeEvent.PostComment(it))
+                            viewModel.onEvent(HomeEvent.RefreshComments)
+                        }
                     }
-                ) {
-                    viewModel.viewModelScope.launch(Dispatchers.IO) {
-                        viewModel
-                            .onEvent(HomeEvent.PostComment(it))
-                        viewModel.onEvent(HomeEvent.RefreshComments)
-                    }
-                }
+                )
             },
             scaffoldState = scaffoldState,
             sheetPeekHeight = 0.dp,

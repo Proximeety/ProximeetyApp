@@ -1,0 +1,4 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Thu May 12 17:04:54 CEST 2022
+jacoco-maven-plugin.test-0.8.8-SNAPSHOT.pom>=
+jacoco-maven-plugin.test-0.8.8-SNAPSHOT.jar>=

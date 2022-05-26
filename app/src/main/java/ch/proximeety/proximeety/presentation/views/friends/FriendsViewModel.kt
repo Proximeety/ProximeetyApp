@@ -24,10 +24,14 @@ class FriendsViewModel @Inject constructor(
 
     private var _allFriends = listOf<User>()
     private val _friends = mutableStateOf<List<User>>(listOf())
-    var friends: State<List<User>> = _friends
+    val friends: State<List<User>> = _friends
 
     init {
-        showAllFriends()
+        viewModelScope.launch(Dispatchers.Main) {
+            _allFriends = userInteractions.getFriends().sortedWith(compareBy { it.givenName })
+        }.invokeOnCompletion {
+            _friends.value = _allFriends
+        }
     }
 
     fun onEvent(event: FriendsEvent) {
@@ -35,25 +39,17 @@ class FriendsViewModel @Inject constructor(
             is FriendsEvent.OnUserClick -> {
                 navigationManager.navigate(MainNavigationCommands.profileWithArgs(event.id))
             }
-        }
-    }
-
-    private fun showAllFriends() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val list = userInteractions.getFriends().sortedWith(compareBy { it.givenName })
-            viewModelScope.launch(Dispatchers.Main) {
-                _friends.value = list
-                _allFriends = _friends.value
+            is FriendsEvent.UpdateSearch -> {
+                if (event.query.isBlank()) {
+                    _friends.value = _allFriends
+                } else {
+                    _friends.value =
+                        _allFriends.filter {
+                            (it.displayName).lowercase().startsWith(event.query.lowercase())
+                        }
+                }
             }
         }
     }
 
-    fun updateSearch(newQuery: String) {
-        if (newQuery == "") {
-            _friends.value = _allFriends
-        } else {
-            _friends.value =
-                _allFriends.filter { (it.displayName).lowercase().startsWith(newQuery.lowercase()) }
-        }
-    }
 }

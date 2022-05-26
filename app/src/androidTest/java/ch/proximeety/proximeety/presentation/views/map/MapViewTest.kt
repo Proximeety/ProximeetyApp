@@ -1,8 +1,6 @@
 package ch.proximeety.proximeety.presentation.views.map
 
-import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.di.AppModule
@@ -45,7 +43,7 @@ class MapViewTest {
             userInteractions.authenticateWithGoogle()
         }
 
-        viewModel = MapViewModel(navigationManager, userInteractions)
+        viewModel = MapViewModel(userInteractions)
 
         composeTestRule.setContent {
             ProximeetyTheme {

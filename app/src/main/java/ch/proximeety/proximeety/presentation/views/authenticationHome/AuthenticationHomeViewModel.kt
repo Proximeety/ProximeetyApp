@@ -7,10 +7,8 @@ import ch.proximeety.proximeety.presentation.navigation.NavigationManager
 import ch.proximeety.proximeety.presentation.navigation.graphs.MainNavigationCommands
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,9 +20,6 @@ class AuthenticationHomeViewModel @Inject constructor(
     private val navigationManager: NavigationManager,
     private val userInteractions: UserInteractions
 ) : ViewModel() {
-
-    private val _eventFlow = MutableSharedFlow<AuthenticationHomeUIEvent>()
-    val eventFlow = _eventFlow.asSharedFlow()
 
     private val _currentPage = MutableStateFlow(0)
     val currentPage: StateFlow<Int> get() = _currentPage
@@ -38,10 +33,9 @@ class AuthenticationHomeViewModel @Inject constructor(
                     }
                 }
             }
+            is AuthenticationHomeEvent.SetCurrentPage -> {
+                _currentPage.value = event.page
+            }
         }
-    }
-
-    fun setCurrentPage(currentPage: Int) {
-        _currentPage.value = currentPage
     }
 }

@@ -3,7 +3,6 @@ package ch.proximeety.proximeety.presentation.views.upload.components
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Check
@@ -21,7 +20,7 @@ fun PostPreviewButtonBar(
 ) {
     Row(
         modifier = Modifier
-            .padding(bottom = MaterialTheme.spacing.large)
+            .padding(bottom = spacing.large)
             .then(modifier)
     ) {
         IconButton(
@@ -33,7 +32,7 @@ fun PostPreviewButtonBar(
                 modifier = Modifier.size(48.dp)
             )
         }
-        Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
+        Spacer(modifier = Modifier.width(spacing.medium))
         IconButton(
             onClick = onValidate,
         ) {

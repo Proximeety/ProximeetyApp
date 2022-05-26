@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
  * @param firebaseAccessObject the object used to access firebase.
  */
 class UserRepositoryImplementation(
-    private val context: Context,
+    context: Context,
     private val firebaseAccessObject: FirebaseAccessObject,
     private val bluetoothService: BluetoothService,
     private val locationService: LocationService,
@@ -192,6 +192,14 @@ class UserRepositoryImplementation(
         firebaseAccessObject.postComment(postId, comment)
     }
 
+    override suspend fun toggleCommentLike(comment: Comment) {
+        firebaseAccessObject.toggleCommentLike(comment)
+    }
+
+    override suspend fun isCommentLiked(comment: Comment): Boolean {
+        return firebaseAccessObject.isCommentLiked(comment)
+    }
+
     override suspend fun getStoriesByUserId(id: String): List<Story> {
         return firebaseAccessObject.getStoriesByUserID(id)
     }
@@ -244,5 +252,9 @@ class UserRepositoryImplementation(
 
     override fun getFriendsLocations(): LiveData<Map<String, Triple<Long, Double, Double>>> {
         return firebaseAccessObject.getFriendsLocation(activity)
+    }
+
+    override suspend fun getPostByIds(userId: String, postId: String): Post? {
+        return firebaseAccessObject.getPostByIds(userId, postId)
     }
 }

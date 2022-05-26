@@ -1,7 +1,5 @@
 package ch.proximeety.proximeety.core.interactions
 
-import ch.proximeety.proximeety.presentation.views.home.HomeEvent
-
 /**
  * Set of user interactions or uses cases.
  */
@@ -21,6 +19,8 @@ data class UserInteractions(
     val isPostLiked: IsPostLiked,
     val postComment: PostComment,
     val getComments: GetComments,
+    val isCommentLiked: IsCommentLiked,
+    val toggleCommentLike: ToggleCommentLike,
     val setActivity: SetActivity,
     val setAuthenticatedUserVisible: SetAuthenticatedUserVisible,
     val signOut: SignOut,
@@ -31,5 +31,6 @@ data class UserInteractions(
     val getFriendsLocations: GetFriendsLocations,
     val startLiveLocation: StartLiveLocation,
     val enableNfc: EnableNfc,
-    val getNfcTag: GetNfcTag
+    val getNfcTag: GetNfcTag,
+    val getPostByIds: GetPostByIds
 )

@@ -1,6 +1,7 @@
 package ch.proximeety.proximeety.presentation.views.upload.components
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -31,13 +31,14 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import java.io.File
 
+@SuppressLint("RestrictedApi")
 @ExperimentalPermissionsApi
 @ExperimentalCoroutinesApi
 @Composable
 fun CameraCapture(
     modifier: Modifier = Modifier,
     cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA,
-    onImageFile: (File) -> Unit = { }
+    onImageFile: (File) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -46,11 +47,18 @@ fun CameraCapture(
     Box(modifier = modifier) {
         val lifecycleOwner = LocalLifecycleOwner.current
         val coroutineScope = rememberCoroutineScope()
-        var previewUseCase by remember { mutableStateOf<UseCase>(Preview.Builder().build()) }
+        var previewUseCase by remember {
+            mutableStateOf<UseCase>(
+                Preview.Builder().setCameraSelector(
+                    CameraSelector.DEFAULT_BACK_CAMERA
+                ).build()
+            )
+        }
         val imageCaptureUseCase by remember {
             mutableStateOf(
                 ImageCapture.Builder()
                     .setCaptureMode(CAPTURE_MODE_MAXIMIZE_QUALITY)
+                    .setCameraSelector(CameraSelector.DEFAULT_BACK_CAMERA)
                     .build()
             )
         }
@@ -70,7 +78,7 @@ fun CameraCapture(
             CapturePictureButton(
                 modifier = Modifier
                     .size(120.dp)
-                    .padding(MaterialTheme.spacing.medium)
+                    .padding(spacing.medium)
                     .align(Alignment.BottomCenter),
                 onClick = {
                     coroutineScope.launch {

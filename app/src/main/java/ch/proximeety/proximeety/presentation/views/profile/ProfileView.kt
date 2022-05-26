@@ -61,7 +61,7 @@ fun ProfileView(
                     modifier = Modifier.padding(top = 15.dp)
                 )
                 user.value?.bio?.let { UserBio(Modifier.padding(bottom = 20.dp), it) }
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+                Spacer(modifier = Modifier.height(spacing.small))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly,
@@ -70,7 +70,7 @@ fun ProfileView(
                     FriendStat(viewModel.friends.value.count())
                     PostsStat(viewModel.posts.value.count())
                 }
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+                Spacer(modifier = Modifier.height(spacing.small))
                 if (isAuthenticatedUserProfile) {
                     Button(onClick = { viewModel.onEvent(ProfileEvent.SignOut) }) {
                         Text(text = "Sign out")
@@ -80,12 +80,12 @@ fun ProfileView(
                         Text(text = "Add")
                     }
                 }
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
-                Box(modifier = Modifier.padding(horizontal = MaterialTheme.spacing.small)) {
+                Spacer(modifier = Modifier.height(spacing.small))
+                Box(modifier = Modifier.padding(horizontal = spacing.small)) {
                     LazyVerticalGrid(
                         columns = GridCells.Adaptive(100.dp),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall),
-                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall)
+                        verticalArrangement = Arrangement.spacedBy(spacing.extraSmall),
+                        horizontalArrangement = Arrangement.spacedBy(spacing.extraSmall)
                     ) {
                         items(viewModel.posts.value) {
                             SideEffect {

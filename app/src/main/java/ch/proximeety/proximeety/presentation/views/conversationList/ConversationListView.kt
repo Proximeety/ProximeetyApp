@@ -42,21 +42,19 @@ fun ConversationListView(
                 items(messages.value) {
                     Row(
                         modifier = Modifier
-                            .padding(MaterialTheme.spacing.extraSmall)
+                            .padding(spacing.extraSmall)
                             .fillMaxWidth()
                             .clip(MaterialTheme.shapes.medium)
                             .clickable {
                                 viewModel.onEvent(
-                                    ConversationListEvent.ConversationClick(
-                                        it
-                                    )
+                                    ConversationListEvent.ConversationClick()
                                 )
                             },
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Box(
                             modifier = Modifier
-                                .padding(MaterialTheme.spacing.medium)
+                                .padding(spacing.medium)
                                 .clip(CircleShape)
                                 .width(40.dp)
                                 .aspectRatio(1f)
