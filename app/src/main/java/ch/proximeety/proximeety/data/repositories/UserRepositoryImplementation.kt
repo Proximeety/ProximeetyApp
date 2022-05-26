@@ -21,7 +21,6 @@ import ch.proximeety.proximeety.util.extensions.isConnected
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.*
 
 /**
  * Implementation of the user repository user Firebase.
@@ -193,6 +192,10 @@ class UserRepositoryImplementation(
         firebaseAccessObject.postComment(postId, comment)
     }
 
+    override suspend fun replyToComment(postId: String, commentId: String, comment: String) {
+        firebaseAccessObject.replyToComment(postId, commentId, comment)
+    }
+
     override suspend fun toggleCommentLike(comment: Comment) {
         firebaseAccessObject.toggleCommentLike(comment)
     }
@@ -230,7 +233,11 @@ class UserRepositoryImplementation(
     override suspend fun getComments(id: String): List<Comment> {
         return firebaseAccessObject.getComments(id)
     }
-    
+
+    override suspend fun getCommentReplies(commentId: String): List<CommentReply> {
+        return firebaseAccessObject.getCommentReplies(commentId)
+    }
+
     override fun enableNfc() {
         nfcService.enable(activity)
     }
