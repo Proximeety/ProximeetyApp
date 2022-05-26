@@ -43,7 +43,7 @@ class MapViewTest {
             userInteractions.authenticateWithGoogle()
         }
 
-        viewModel = MapViewModel(userInteractions)
+        viewModel = MapViewModel(navigationManager, userInteractions)
 
         composeTestRule.setContent {
             ProximeetyTheme {

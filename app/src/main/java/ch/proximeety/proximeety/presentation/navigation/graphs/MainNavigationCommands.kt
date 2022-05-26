@@ -4,6 +4,8 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import ch.proximeety.proximeety.presentation.navigation.NavigationCommand
+import com.google.android.gms.maps.model.LatLng
+import java.util.jar.Attributes
 
 /**
  * Contains the commands to navigate the through the main graph of the application.
@@ -73,8 +75,13 @@ object MainNavigationCommands {
     }
 
     val nfc = object : NavigationCommand {
-        override val arguments = emptyList<NamedNavArgument>()
-        override val route = "nfc_view"
+        override val arguments = listOf(navArgument("tagId") {type = NavType.StringType})
+        override val route = "nfc_view/{tagId}"
+    }
+
+    fun nfcWithArgs(tagId: String) = object : NavigationCommand {
+        override val arguments: List<NamedNavArgument> = nfc.arguments
+        override val route: String = "nfc_view/$tagId"
     }
 
     val post = object : NavigationCommand {

@@ -831,6 +831,17 @@ class FirebaseAccessObject(
     }
 
     /**
+     *  Retrieve all existing NFC tags
+     */
+    suspend fun getAllNfcs(): List<Tag> {
+        authenticatedUser?.value?.also {
+            val tags = database.child(TAG_PATH).get().await().children.mapNotNull { it.key }
+            return tags.mapNotNull { id -> getTagById(id) }
+        }
+        return listOf()
+    }
+     
+    /**
      * Get a certain post from a user.
      * @param userId the id of the poster.
      * @param postId the id of the post
@@ -856,3 +867,4 @@ class FirebaseAccessObject(
         visitTag(tag.id)
     }
 }
+

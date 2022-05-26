@@ -40,6 +40,12 @@ class MainActivity : SyncActivity() {
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
+        userInteractions.getLiveNfcTagId().observe(this) {
+            if (it != null) {
+                navigationManager.navigate(MainNavigationCommands.nfcWithArgs(it))
+            }
+        }
+
         setContent {
             val navController = rememberNavController()
             navigationManager.command.collectAsState().value?.also { command ->
@@ -50,12 +56,6 @@ class MainActivity : SyncActivity() {
                     navController.navigate(command.route)
                 }
                 navigationManager.clear()
-            }
-
-            userInteractions.getNfcTag().observe(this) {
-                if (it != null) {
-                    navigationManager.navigate(MainNavigationCommands.nfc)
-                }
             }
 
             ProximeetyTheme {

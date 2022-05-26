@@ -24,6 +24,12 @@ class UserRepositoryMockImplementation : UserRepository {
             hasStories = false,
         )
     )
+    private var visitUser: User =
+        User (
+            id = "-MzJUaBgPuPH8EHhw0yQ",
+            displayName = "Proximeety",
+            profilePicture = null
+        )
     private var posts =
         mutableListOf(
             Post(
@@ -339,19 +345,54 @@ class UserRepositoryMockImplementation : UserRepository {
 
     private val tag = MutableLiveData<Tag?>(null)
 
-    override fun getNfcTag(): LiveData<Tag?> {
-        return tag
+    private val tags = mutableListOf<Tag>(
+        Tag(
+            "10:00:00:00:00:00",
+            "testTag",
+            47.0,
+            47.0,
+            listOf(Pair(1651653481L, User("testUserVisitorId", "testUserVisitor"))),
+            User("testUserId", "testUser")
+        )
+    )
+
+    override fun getLiveNfcTagId(): LiveData<String?> {
+        return MutableLiveData(tag.value?.id)
     }
 
-    fun setTag() {
-        tag.postValue(Tag(
+    override suspend fun getAllNfcs(): List<Tag> {
+        return tags
+    }
+
+    override suspend fun createNewNfcTag(): Tag? {
+        return Tag(
             "00:00:00:00:00:00",
             "testTag",
             47.0,
             47.0,
             listOf(Pair(1651653481L, User("testUserVisitorId", "testUserVisitor"))),
             User("testUserId", "testUser")
-        ))
+        )
+    }
+
+    override suspend fun getNfcTagById(id: String): Tag? {
+        for (tag in tags) {
+            if (tag.id == id) {
+                return tag
+            }
+        }
+        return null
+    }
+
+    override suspend fun writeNfcTag(tag: Tag) {
+        for (t in tags) {
+            if (t.id == tag.id) {
+                tags.remove(t)
+                tags.add(tag)
+                return
+            }
+        }
+        tags.add(tag)
     }
 
     override suspend fun isCommentLiked(comment: Comment): Boolean {

@@ -58,11 +58,15 @@ class TestAppModule {
             getStoriesByUserId = GetStoriesByUserId(repository),
             getFriendsLocations = GetFriendsLocations(repository),
             startLiveLocation = StartLiveLocation(repository),
-            getNfcTag = GetNfcTag(repository),
-            enableNfc = EnableNfc(repository),
             getPostByIds = GetPostByIds(repository),
             isCommentLiked = IsCommentLiked(repository),
-            toggleCommentLike = ToggleCommentLike(repository)
+            toggleCommentLike = ToggleCommentLike(repository),
+            enableNfc = EnableNfc(repository),
+            getLiveNfcTagId = GetLiveNfcTagId(repository),
+            createNewNfcTag = CreateNewNfcTag(repository),
+            getAllNfcTags = GetAllNfcTags(repository),
+            getNfcTagById = GetNfcTagById(repository),
+            writeNfcTag = WriteNfcTag(repository)
         )
     }
 }

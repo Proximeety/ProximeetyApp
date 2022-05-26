@@ -24,10 +24,6 @@ class NfcService(context: Context) {
             this.activity = activity
             nfcAdapter.enableReaderMode(activity, { tag ->
                 this.tag.postValue(tag.id.joinToString(":") { "%02X".format(it) })
-                Log.d(
-                    "NfcService",
-                    "Tag scanned: ${tag.id.joinToString(":") { "%02X".format(it) }}"
-                )
             }, NfcAdapter.FLAG_READER_NFC_A or NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK, null)
         }
     }

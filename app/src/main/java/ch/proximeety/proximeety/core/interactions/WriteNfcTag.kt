@@ -4,13 +4,10 @@ import androidx.lifecycle.LiveData
 import ch.proximeety.proximeety.core.entities.Tag
 import ch.proximeety.proximeety.core.repositories.UserRepository
 
-/**
- * Get the ID of the NFC tag.
- */
-class GetNfcTag(
+class WriteNfcTag (
     private val repository: UserRepository,
 ) {
-    operator fun invoke(): LiveData<Tag?> {
-        return repository.getNfcTag()
+    suspend operator fun invoke(tag : Tag) {
+        return repository.writeNfcTag(tag)
     }
 }
