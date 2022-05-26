@@ -48,6 +48,9 @@ class HomeViewModel @Inject constructor(
     private var _commentCount = mutableStateOf<Map<String, Int>>(mapOf())
     val commentCount: State<Map<String, Int>> = _commentCount
 
+    private var _replyCount = mutableStateOf<Map<String, Int>>(mapOf())
+    val replyCount: State<Map<String, Int>> = _replyCount
+
     private var refreshJob: Job? = null
     private var downloadJob: Job? = null
     private val _isRefreshing = mutableStateOf(false)
@@ -121,6 +124,20 @@ class HomeViewModel @Inject constructor(
                     }
                 }
             }
+            is HomeEvent.OnRepliesClick -> {
+                _replies.value = listOf()
+                _commentSectionPostId = event.postId
+                _commentId = event.commentId
+                viewModelScope.launch(Dispatchers.IO) {
+                    val comments = userInteractions.getComments(event.postId)
+                    viewModelScope.launch(Dispatchers.Main) {
+                        _comments.value = comments.map {
+                            it.copy(hasReplies = userInteractions.isCommentReplied(it))
+                        }.reversed()
+                        _replies.value = userInteractions.getCommentReplies(event.commentId)
+                    }
+                }
+            }
             is HomeEvent.OnStoryClick -> {
                 navigationManager.navigate(MainNavigationCommands.storiesWithArgs(event.id))
             }
@@ -138,14 +155,19 @@ class HomeViewModel @Inject constructor(
 
             is HomeEvent.ReplyToComment -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    _commentId?.let { userInteractions.replyToComment(it, event.commentReply) }
+                    _commentId?.let { commentId ->
+                        _commentSectionPostId?.let {
+                            userInteractions.replyToComment(it, commentId, event.commentReply)
+                        }
+
+                    }
+                    if (_commentSectionPostId != null && _commentId != null) {
+                        _replyCount.value = _replyCount.value.plus(
+                            _commentId!! to ((_replyCount.value[_commentId]
+                                ?: 0) + 1)
+                        )
+                    }
                 }
-//                if (_commentId != null) {
-//                    _replyCount.value = _replyCount.value.plus(
-//                        _commentId!! to ((_replyCount.value[_commentId]
-//                            ?: 0) + 1)
-//                    )
-//                }
             }
 
             is HomeEvent.TogglePostLike -> {

@@ -17,6 +17,7 @@ sealed class HomeEvent {
     object NavigateToFriendsView : HomeEvent()
     class OnStoryClick(val id: String) : HomeEvent()
     class OnCommentSectionClick(val postId: String) : HomeEvent()
+    class OnRepliesClick(val postId: String, val commentId: String): HomeEvent()
     class PostComment(val text: String) : HomeEvent()
     object Refresh : HomeEvent()
     object RefreshComments : HomeEvent()
