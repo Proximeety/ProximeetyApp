@@ -103,6 +103,18 @@ class PostViewModel @Inject constructor(
                     _commentCount.value = _commentCount.value.plus(((_commentCount.value ?: 0) + 1))
                 }
             }
+            is PostEvent.ToggleCommentLike -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    userInteractions.toggleCommentLike(event.comment)
+                }
+                val index = _comments.value.indexOfFirst { it.id == event.comment.id }
+                val newList = _comments.value.toMutableList()
+                newList[index] = newList[index].copy(
+                    likes = newList[index].likes + if (newList[index].isLiked) -1 else 1,
+                    isLiked = !newList[index].isLiked
+                )
+                _comments.value = newList.toList()
+            }
         }
     }
     private fun refreshComments() {

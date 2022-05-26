@@ -357,11 +357,6 @@ class UserRepositoryMockImplementation : UserRepository {
     override suspend fun toggleCommentLike(comment: Comment) {
     }
 
-    override suspend fun getPostByIds(userId: String, postId: String): LiveData<Post?> {
-        var post = posts.filter { post -> post.id == postId && post.posterId == userId }
-        return MutableLiveData(post.first())
-    }
-
     override suspend fun getPostByIds(userId: String, postId: String): Post? {
         return posts.first { post -> post.id == postId && post.posterId == userId }
     }

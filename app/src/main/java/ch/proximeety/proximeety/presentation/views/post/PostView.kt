@@ -11,6 +11,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import ch.proximeety.proximeety.presentation.components.Post
 import ch.proximeety.proximeety.presentation.components.comments.CommentSection
+import ch.proximeety.proximeety.presentation.views.home.HomeEvent
 import ch.proximeety.proximeety.util.SafeArea
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,14 +40,17 @@ fun PostView(viewModel: PostViewModel = hiltViewModel()) {
                                 scaffoldState.bottomSheetState.collapse()
                             comments = listOf()
                         }
-                    }
-                ) {
+                    },
+                    onCommentLike = { comment ->
+                        viewModel.onEvent(PostEvent.ToggleCommentLike(comment))
+                    },
+                    onPostClick = {
                     viewModel.viewModelScope.launch(Dispatchers.IO) {
                         viewModel
                             .onEvent(PostEvent.PostComment(it))
                         viewModel.onEvent(PostEvent.RefreshComments)
                     }
-                }
+                })
             },
             scaffoldState = scaffoldState,
             sheetPeekHeight = 0.dp,

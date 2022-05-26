@@ -661,7 +661,7 @@ class FirebaseAccessObject(
      * @param postId the post's id
      * @param comment the comment to leave
      */
-    fun postComment(postId: String, comment: String) {
+    suspend fun postComment(postId: String, comment: String) {
         authenticatedUser?.value?.let { user ->
             val ref = database.child(COMMENT_PATH).child(postId).push()
             ref.key?.also {
