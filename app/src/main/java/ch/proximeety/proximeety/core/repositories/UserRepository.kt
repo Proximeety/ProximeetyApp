@@ -136,6 +136,15 @@ interface UserRepository {
     suspend fun postComment(postId: String, comment: String)
 
     /**
+     * Reply to a Comment
+     *
+     * @param postId id of the post where the comment has been posted
+     * @param commentId id of the comment to reply to
+     * @param comment the reply
+     */
+    suspend fun replyToComment(postId: String, commentId: String, comment: String)
+
+    /**
      * Toggle likes on a Comment
      *
      * @param comment the comment
@@ -148,6 +157,13 @@ interface UserRepository {
      * @param comment the comment
      */
     suspend fun isCommentLiked(comment: Comment): Boolean
+
+    /**
+     * does a comment have replies
+     *
+     * @param comment the comment in question
+     */
+    suspend fun hasReplies(comment: Comment): Boolean
 
     /**
      * Get the stories of an user.
@@ -180,6 +196,11 @@ interface UserRepository {
     suspend fun getComments(id: String): List<Comment>
 
     /**
+     * Get a comment's replies
+     */
+    suspend fun getCommentReplies(commentId: String): List<CommentReply>
+
+    /**
      * Enable NFC.
      */
     fun enableNfc()
@@ -209,17 +230,4 @@ interface UserRepository {
     suspend fun getPostByIds(userId: String, postId: String): Post?
 
     fun getNfcTag(): LiveData<Tag?>
-
-    /**
-     * Reply to a Comment
-     *
-     * @param commentId id of the comment to reply to
-     * @param comment the reply
-     */
-    suspend fun replyToComment(commentId: String, comment: String)
-
-    /**
-     * Get a comment's replies
-     */
-    suspend fun getCommentReplies(commentId: String): List<CommentReply>
 }
