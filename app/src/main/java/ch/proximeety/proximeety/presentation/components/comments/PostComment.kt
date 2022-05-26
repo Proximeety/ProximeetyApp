@@ -21,7 +21,9 @@ fun CommentSection(
     comments: List<Comment>,
     onCloseClick: () -> Unit,
     onPostClick: (String) -> Unit,
-    onCommentLike: (Comment) -> Unit
+    onCommentLike: (Comment) -> Unit,
+    onReplyClick: () -> Unit,
+    onShowRepliesClick: () -> Unit
 ) {
 
     Column(
@@ -35,7 +37,7 @@ fun CommentSection(
             modifier = Modifier.fillMaxHeight(0.45f)
         ) {
             items(comments) {
-                CommentComponent(it, onCommentLike)
+                CommentComponent(it, onCommentLike, onReplyClick, onShowRepliesClick)
             }
         }
     }
