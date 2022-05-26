@@ -42,7 +42,7 @@ class MapViewModel @Inject constructor(
         when (event) {
             MapEvent.MapLoaded -> _mapLoaded.value = true
             is MapEvent.OnClickNfcTag -> {
-                navigationManager.navigate(MainNavigationCommands.nfcWithArgs(event.nfcId))
+                navigationManager.navigate(MainNavigationCommands.nfcWithArgs(event.nfcId, false))
             }
         }
     }

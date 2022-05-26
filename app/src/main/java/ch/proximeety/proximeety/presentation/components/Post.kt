@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import ch.proximeety.proximeety.core.entities.Post
 import ch.proximeety.proximeety.presentation.theme.spacing
@@ -107,7 +108,7 @@ fun Post(
                     Icon(
                         imageVector = if (post.isLiked) Icons.Rounded.Favorite
                         else Icons.Rounded.FavoriteBorder,
-                        contentDescription = "Like"
+                        contentDescription = "Like Post"
                     )
                 }
                 Spacer(modifier = Modifier.width(spacing.small))
@@ -118,10 +119,11 @@ fun Post(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                IconButton(onClick = onCommentClick) {
+                IconButton(onClick = onCommentClick, modifier = Modifier.testTag("comment_button_${post.id}")) {
                     Icon(
                         imageVector = Icons.Rounded.Message,
                         contentDescription = "Comments"
+
                     )
                 }
                 Spacer(modifier = Modifier.width(spacing.small))

@@ -29,51 +29,60 @@ fun SectionVisitors(tag: Tag?, viewModel: NfcViewModel) {
         "Last visitors",
         style = MaterialTheme.typography.h3,
     )
-    Column(verticalArrangement = Arrangement.spacedBy(spacing.small)) {
-        tag?.visitors?.map { (timestamp, visitor) ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(MaterialTheme.shapes.large)
-                    .background(Color.Gray.copy(0.1f))
-                    .clickable {
-                        viewModel.onEvent(
-                            NfcEvent.NavigateToUserProfile(
-                                visitor.id
+    if (viewModel.canSeeVisitors.value) {
+
+        Column(verticalArrangement = Arrangement.spacedBy(spacing.small)) {
+            tag?.visitors?.map { (timestamp, visitor) ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(MaterialTheme.shapes.large)
+                        .background(Color.Gray.copy(0.1f))
+                        .clickable {
+                            viewModel.onEvent(
+                                NfcEvent.NavigateToUserProfile(
+                                    visitor.id
+                                )
                             )
+                        }
+                        .padding(spacing.small),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = rememberImagePainter(visitor.profilePicture),
+                        contentDescription = "Profile picture of ${visitor.displayName}",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .aspectRatio(1f)
+                            .background(Color.Gray)
+                    )
+                    Spacer(modifier = Modifier.width(spacing.small))
+                    Column {
+                        Text(
+                            text = visitor.displayName,
+                            style = MaterialTheme.typography.h4
+                        )
+                        Text(
+                            text = SimpleDateFormat("EEE, MMM d, yyyy", Locale.FRANCE).format(
+                                Date(
+                                    timestamp
+                                )
+                            ),
+                            fontWeight = FontWeight.Light,
+                            style = MaterialTheme.typography.h4,
+                            color = Color.Gray
                         )
                     }
-                    .padding(spacing.small),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = rememberImagePainter(visitor.profilePicture),
-                    contentDescription = "Profile picture of ${visitor.displayName}",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .aspectRatio(1f)
-                        .background(Color.Gray)
-                )
-                Spacer(modifier = Modifier.width(spacing.small))
-                Column {
-                    Text(
-                        text = visitor.displayName,
-                        style = MaterialTheme.typography.h4
-                    )
-                    Text(
-                        text = SimpleDateFormat("EEE, MMM d, yyyy", Locale.FRANCE).format(
-                            Date(
-                                timestamp
-                            )
-                        ),
-                        fontWeight = FontWeight.Light,
-                        style = MaterialTheme.typography.h4,
-                        color = Color.Gray
-                    )
                 }
             }
         }
+    } else {
+        Text(
+            "You are not allowed to see visitors. Please find and scan the tag to see the visitors.",
+            style = MaterialTheme.typography.h4,
+            color = Color.Gray
+        )
     }
 }

@@ -31,7 +31,7 @@ class NearbyUsersViewTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Inject
-    lateinit var userInteractions : UserInteractions
+    lateinit var userInteractions: UserInteractions
 
     @Before
     fun setup() {

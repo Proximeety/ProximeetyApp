@@ -1,7 +1,7 @@
 package ch.proximeety.proximeety.presentation.views.stories
 
-import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.lifecycle.SavedStateHandle
 import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.di.AppModule
@@ -12,7 +12,8 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.*
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -62,22 +63,24 @@ class StoriesViewTest {
 
     @Test
     fun storiesAreDisplayed() {
-        composeTestRule.waitUntil(1000) { viewModel.currentStory.value != null}
-        composeTestRule.waitUntil(1000) { viewModel.currentStory.value?.storyURL != null}
+        composeTestRule.waitUntil(1000) { viewModel.currentStory.value != null }
+        composeTestRule.waitUntil(1000) { viewModel.currentStory.value?.storyURL != null }
         composeTestRule.mainClock.advanceTimeBy(1000)
-        composeTestRule.onNodeWithContentDescription("Story of ${viewModel.currentStory.value?.userDisplayName}").assertExists()
+        composeTestRule.onNodeWithContentDescription("Story of ${viewModel.currentStory.value?.userDisplayName}")
+            .assertExists()
     }
 
     @Test
     fun storiesAreChanging() {
-        composeTestRule.waitUntil(1000) { viewModel.currentStory.value != null}
-        composeTestRule.waitUntil(1000) { viewModel.currentStory.value?.storyURL != null}
+        composeTestRule.waitUntil(1000) { viewModel.currentStory.value != null }
+        composeTestRule.waitUntil(1000) { viewModel.currentStory.value?.storyURL != null }
         val first = viewModel.currentStory.value?.storyURL
         composeTestRule.mainClock.autoAdvance = true
-        composeTestRule.waitUntil (10000) {  viewModel.currentStory.value?.storyURL != first}
+        composeTestRule.waitUntil(10000) { viewModel.currentStory.value?.storyURL != first }
         composeTestRule.mainClock.autoAdvance = false
         val after = viewModel.currentStory.value?.storyURL
-        composeTestRule.onNodeWithContentDescription("Story of ${viewModel.currentStory.value?.userDisplayName}").assertExists()
+        composeTestRule.onNodeWithContentDescription("Story of ${viewModel.currentStory.value?.userDisplayName}")
+            .assertExists()
         assertNotNull(first)
         assertNotNull(after)
         assertNotEquals(after!!, first!!)

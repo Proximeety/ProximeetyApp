@@ -54,7 +54,8 @@ class MessagesScreenTest {
 
     @Test
     fun shouldSendMessages() {
-        composeTestRule.onNodeWithText("Type your Message").assertExists().performTextInput("Test Message")
+        composeTestRule.onNodeWithText("Type your Message").assertExists()
+            .performTextInput("Test Message")
         composeTestRule.onNodeWithText("Send").assertExists().performClick()
     }
 }
