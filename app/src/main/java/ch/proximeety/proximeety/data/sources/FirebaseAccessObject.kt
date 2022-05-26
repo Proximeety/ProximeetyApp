@@ -353,7 +353,7 @@ class FirebaseAccessObject(
     suspend fun getFriends(): List<User> {
         authenticatedUser?.value?.also { user ->
             val friendsIds = database.child(USER_FRIENDS_PATH).child(user.id).get()
-                .await().children.mapNotNull { it.key }
+                .await().children.filter { it.value as? Boolean == true }.mapNotNull { it.key }
 
             return friendsIds.mapNotNull { id -> fetchUserById(id, null).await() }
         }
