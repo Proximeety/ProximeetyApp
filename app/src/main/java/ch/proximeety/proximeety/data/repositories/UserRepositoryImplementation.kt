@@ -6,11 +6,7 @@ import android.net.ConnectivityManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
-import ch.proximeety.proximeety.core.entities.Comment
-import ch.proximeety.proximeety.core.entities.Post
-import ch.proximeety.proximeety.core.entities.Story
-import ch.proximeety.proximeety.core.entities.Tag
-import ch.proximeety.proximeety.core.entities.User
+import ch.proximeety.proximeety.core.entities.*
 import ch.proximeety.proximeety.core.repositories.UserRepository
 import ch.proximeety.proximeety.data.sources.BluetoothService
 import ch.proximeety.proximeety.data.sources.FirebaseAccessObject
@@ -234,7 +230,7 @@ class UserRepositoryImplementation(
     override suspend fun getComments(id: String): List<Comment> {
         return firebaseAccessObject.getComments(id)
     }
-    
+
     override fun enableNfc() {
         nfcService.enable(activity)
     }
@@ -292,7 +288,16 @@ class UserRepositoryImplementation(
         return firebaseAccessObject.getFriendsLocation(activity)
     }
 
+    override suspend fun getCommentReplies(commentId: String): List<CommentReply> {
+        return firebaseAccessObject.getCommentReplies(commentId)
+    }
+
+    override suspend fun replyToComment(postId: String, commentId: String, comment: String) {
+        firebaseAccessObject.replyToComment(postId, commentId, comment)
+    }
+
     override suspend fun getPostByIds(userId: String, postId: String): Post? {
         return firebaseAccessObject.getPostByIds(userId, postId)
     }
+
 }

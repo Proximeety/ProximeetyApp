@@ -39,5 +39,9 @@ data class Comment(
     /**
      * Is Comment liked by the authenticated user
      */
-    val isLiked: Boolean = false
+    val isLiked: Boolean = false,
+    /**
+     * The number of replies
+     */
+    val replies: Int = 0,
 )

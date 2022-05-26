@@ -1,11 +1,7 @@
 package ch.proximeety.proximeety.core.repositories
 
 import androidx.lifecycle.LiveData
-import ch.proximeety.proximeety.core.entities.Comment
-import ch.proximeety.proximeety.core.entities.Post
-import ch.proximeety.proximeety.core.entities.Story
-import ch.proximeety.proximeety.core.entities.Tag
-import ch.proximeety.proximeety.core.entities.User
+import ch.proximeety.proximeety.core.entities.*
 import ch.proximeety.proximeety.util.SyncActivity
 
 /**
@@ -140,6 +136,15 @@ interface UserRepository {
     suspend fun postComment(postId: String, comment: String)
 
     /**
+     * Reply to a Comment
+     *
+     * @param postId id of the post where the comment has been posted
+     * @param commentId id of the comment to reply to
+     * @param comment the reply
+     */
+    suspend fun replyToComment(postId: String, commentId: String, comment: String)
+
+    /**
      * Toggle likes on a Comment
      *
      * @param comment the comment
@@ -182,6 +187,11 @@ interface UserRepository {
      * Get comments for a post.
      */
     suspend fun getComments(id: String): List<Comment>
+
+    /**
+     * Get a comment's replies
+     */
+    suspend fun getCommentReplies(commentId: String): List<CommentReply>
 
     /**
      * Enable NFC.

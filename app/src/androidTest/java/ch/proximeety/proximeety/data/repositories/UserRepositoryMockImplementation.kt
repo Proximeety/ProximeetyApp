@@ -291,6 +291,10 @@ class UserRepositoryMockImplementation : UserRepository {
         }
     }
 
+    override suspend fun replyToComment(postId: String, commentId: String, comment: String) {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getStoriesByUserId(id: String): List<Story> {
         return when (id) {
             user?.id -> {
@@ -339,7 +343,11 @@ class UserRepositoryMockImplementation : UserRepository {
 
         return listOf()
     }
-    
+
+    override suspend fun getCommentReplies(commentId: String): List<CommentReply> {
+        TODO("Not yet implemented")
+    }
+
     override fun enableNfc() {
     }
 

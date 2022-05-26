@@ -1,6 +1,7 @@
 package ch.proximeety.proximeety.presentation
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
