@@ -349,11 +349,15 @@ class UserRepositoryMockImplementation : UserRepository {
             User("testUserId", "testUser")
         ))
     }
-    
+
     override suspend fun isCommentLiked(comment: Comment): Boolean {
         return true
     }
-    
+
     override suspend fun toggleCommentLike(comment: Comment) {
+    }
+
+    override suspend fun getPostByIds(userId: String, postId: String): Post? {
+        return posts.first { post -> post.id == postId && post.posterId == userId }
     }
 }

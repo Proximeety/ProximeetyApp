@@ -1,4 +1,4 @@
-package ch.proximeety.proximeety.presentation.views.home.components
+package ch.proximeety.proximeety.presentation.components
 
 import android.net.Uri
 import androidx.compose.foundation.Image
@@ -40,7 +40,7 @@ fun Post(
     Column(
         modifier = Modifier
             .padding(spacing.medium)
-            .fillMaxWidth()
+            .fillMaxSize()
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),

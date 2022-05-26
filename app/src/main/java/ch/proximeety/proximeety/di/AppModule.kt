@@ -138,7 +138,8 @@ class AppModule {
             isCommentLiked = IsCommentLiked(repository),
             toggleCommentLike = ToggleCommentLike(repository),
             enableNfc = EnableNfc(repository),
-            getNfcTag = GetNfcTag(repository)
+            getNfcTag = GetNfcTag(repository),
+            getPostByIds = GetPostByIds(repository)
         )
     }
 }

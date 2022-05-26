@@ -31,5 +31,6 @@ data class UserInteractions(
     val getFriendsLocations: GetFriendsLocations,
     val startLiveLocation: StartLiveLocation,
     val enableNfc: EnableNfc,
-    val getNfcTag: GetNfcTag
+    val getNfcTag: GetNfcTag,
+    val getPostByIds: GetPostByIds
 )

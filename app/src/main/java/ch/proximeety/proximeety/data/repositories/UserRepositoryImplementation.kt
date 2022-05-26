@@ -253,4 +253,8 @@ class UserRepositoryImplementation(
     override fun getFriendsLocations(): LiveData<Map<String, Triple<Long, Double, Double>>> {
         return firebaseAccessObject.getFriendsLocation(activity)
     }
+
+    override suspend fun getPostByIds(userId: String, postId: String): Post? {
+        return firebaseAccessObject.getPostByIds(userId, postId)
+    }
 }
