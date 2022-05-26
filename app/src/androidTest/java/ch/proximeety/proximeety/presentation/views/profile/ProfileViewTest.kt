@@ -81,6 +81,23 @@ class ProfileViewTest {
     }
 
     @Test
+    fun removeFriendShouldBeDisplayed() {
+        setup("friendWithStoryId")
+        composeTestRule.onNodeWithText("Remove").assertExists()
+    }
+
+    @Test
+    fun removeFriendShouldRemoveAFriend() {
+        setup("friendWithStoryId")
+        composeTestRule.onNodeWithText("Remove").performClick()
+        runBlocking {
+            val friends = userInteractions.getFriends()
+            assertTrue(friends.none { it.id == "friendWithStoryId" })
+        }
+    }
+
+
+    @Test
     fun addAsFriendShouldNotBeDisplayedIfAuthenticatedUserProfile() {
         setup("testUserId")
         composeTestRule.onNodeWithText("Add").assertDoesNotExist()

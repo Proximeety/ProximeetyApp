@@ -192,6 +192,10 @@ class UserRepositoryMockImplementation : UserRepository {
         fetchUserById(id).value?.let { friends.add(it) }
     }
 
+    override suspend fun removeFriend(id: String) {
+        fetchUserById(id).value?.let { friends.remove(it) }
+    }
+
     override suspend fun getFriends(): List<User> {
         user?.also {
             return friends.plus(it)
@@ -390,11 +394,15 @@ class UserRepositoryMockImplementation : UserRepository {
         }
         tags.add(tag)
     }
-    
+
     override suspend fun isCommentLiked(comment: Comment): Boolean {
         return true
     }
-    
+
     override suspend fun toggleCommentLike(comment: Comment) {
+    }
+
+    override suspend fun getPostByIds(userId: String, postId: String): Post? {
+        return posts.first { post -> post.id == postId && post.posterId == userId }
     }
 }

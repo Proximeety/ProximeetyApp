@@ -5,6 +5,7 @@ package ch.proximeety.proximeety.core.interactions
  */
 data class UserInteractions(
     val addFriend: AddFriend,
+    val removeFriend: RemoveFriend,
     val authenticateWithGoogle: AuthenticateWithGoogle,
     val downloadPost: DownloadPost,
     val fetchUserById: FetchUserById,
@@ -35,5 +36,6 @@ data class UserInteractions(
     val getNfcTagById: GetNfcTagById,
     val createNewNfcTag: CreateNewNfcTag,
     val writeNfcTag : WriteNfcTag,
-    val getAllNfcTags: GetAllNfcTags
+    val getAllNfcTags: GetAllNfcTags,
+    val getPostByIds: GetPostByIds
 )

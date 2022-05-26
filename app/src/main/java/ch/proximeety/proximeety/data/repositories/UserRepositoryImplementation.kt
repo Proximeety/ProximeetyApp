@@ -137,6 +137,10 @@ class UserRepositoryImplementation(
         firebaseAccessObject.addFriend(id)
     }
 
+    override suspend fun removeFriend(id: String) {
+        firebaseAccessObject.removeFriend(id)
+    }
+
     override suspend fun getFriends(): List<User> {
         if (!connectivityManager.isConnected()) {
             return friendsCacheDao.getFriends()
@@ -286,5 +290,9 @@ class UserRepositoryImplementation(
 
     override fun getFriendsLocations(): LiveData<Map<String, Triple<Long, Double, Double>>> {
         return firebaseAccessObject.getFriendsLocation(activity)
+    }
+
+    override suspend fun getPostByIds(userId: String, postId: String): Post? {
+        return firebaseAccessObject.getPostByIds(userId, postId)
     }
 }

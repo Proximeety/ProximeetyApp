@@ -60,6 +60,13 @@ interface UserRepository {
     suspend fun addFriend(id: String)
 
     /**
+     * Remove user as friend.
+     *
+     * @param id the id of the user to add as friend.
+     */
+    suspend fun removeFriend(id: String)
+
+    /**
      * Get the friends of the authenticated user.
      */
     suspend fun getFriends(): List<User>
@@ -196,4 +203,12 @@ interface UserRepository {
     suspend fun getNfcTagById(id: String): Tag?
 
     suspend fun writeNfcTag(tag: Tag)
+
+    /**
+     * Get a certain post from a user.
+     *
+     * @param userId the id of the poster
+     * @param postId the id of the post
+     */
+    suspend fun getPostByIds(userId: String, postId: String): Post?
 }

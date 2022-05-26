@@ -34,6 +34,7 @@ class TestAppModule {
     fun provideUserInteractions(repository: UserRepository): UserInteractions {
         return UserInteractions(
             addFriend = AddFriend(repository),
+            removeFriend = RemoveFriend(repository),
             authenticateWithGoogle = AuthenticateWithGoogle(repository),
             downloadPost = DownloadPost(repository),
             fetchUserById = FetchUserById(repository),
@@ -57,6 +58,7 @@ class TestAppModule {
             getStoriesByUserId = GetStoriesByUserId(repository),
             getFriendsLocations = GetFriendsLocations(repository),
             startLiveLocation = StartLiveLocation(repository),
+            getPostByIds = GetPostByIds(repository),
             isCommentLiked = IsCommentLiked(repository),
             toggleCommentLike = ToggleCommentLike(repository),
             enableNfc = EnableNfc(repository),

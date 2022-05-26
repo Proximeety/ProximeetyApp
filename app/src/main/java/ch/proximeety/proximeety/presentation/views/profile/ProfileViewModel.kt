@@ -47,6 +47,9 @@ class ProfileViewModel @Inject constructor(
     private val _stories = mutableStateOf<List<Story>>(listOf())
     val stories: State<List<Story>> = _stories
 
+    private val _isFriend = mutableStateOf<Boolean>(false)
+    val isFriend: State<Boolean> = _isFriend
+
     init {
         savedStateHandle.get<String>("userId")?.also {
                 _user.value = userInteractions.fetchUserById(it)
@@ -60,6 +63,9 @@ class ProfileViewModel @Inject constructor(
                     _posts.value = posts
                     _friends.value = friends
                     _stories.value = stories
+                    if (friends.contains(user.value.value)) {
+                        _isFriend.value = true
+                    }
                 }
             }
         }
@@ -76,6 +82,15 @@ class ProfileViewModel @Inject constructor(
                         userInteractions.addFriend(it)
                     }
                 }
+                _isFriend.value = true
+            }
+            ProfileEvent.RemoveFriend -> {
+                user.value.value?.id?.also {
+                    viewModelScope.launch {
+                        userInteractions.removeFriend(it)
+                    }
+                }
+                _isFriend.value = false
             }
             ProfileEvent.SignOut -> {
                 userInteractions.signOut()
@@ -111,6 +126,11 @@ class ProfileViewModel @Inject constructor(
             is ProfileEvent.OnCloseDialog -> {
                 _showDialog.value = false
             }
+            is ProfileEvent.OnPostClick -> {
+                user.value.value?.id?.also {
+                    navigationManager.navigate(MainNavigationCommands.postWithArgs(it, event.postId))
+                }
+            }
         }
-    }  
+    }
 }

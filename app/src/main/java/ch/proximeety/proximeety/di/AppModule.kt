@@ -112,6 +112,7 @@ class AppModule {
     fun provideUserInteractions(repository: UserRepository): UserInteractions {
         return UserInteractions(
             addFriend = AddFriend(repository),
+            removeFriend = RemoveFriend(repository),
             authenticateWithGoogle = AuthenticateWithGoogle(repository),
             downloadPost = DownloadPost(repository),
             fetchUserById = FetchUserById(repository),
@@ -142,7 +143,8 @@ class AppModule {
             createNewNfcTag = CreateNewNfcTag(repository),
             getAllNfcTags = GetAllNfcTags(repository),
             getNfcTagById = GetNfcTagById(repository),
-            writeNfcTag = WriteNfcTag(repository)
+            writeNfcTag = WriteNfcTag(repository),
+            getPostByIds = GetPostByIds(repository)
         )
     }
 }
