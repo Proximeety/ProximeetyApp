@@ -66,7 +66,9 @@ class TestAppModule {
             createNewNfcTag = CreateNewNfcTag(repository),
             getAllNfcTags = GetAllNfcTags(repository),
             getNfcTagById = GetNfcTagById(repository),
-            writeNfcTag = WriteNfcTag(repository)
+            writeNfcTag = WriteNfcTag(repository),
+            getCommentReplies = GetCommentReplies(repository),
+            replyToComment = ReplyToComment(repository),
         )
     }
 }

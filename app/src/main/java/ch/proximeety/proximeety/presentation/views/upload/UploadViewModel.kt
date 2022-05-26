@@ -4,12 +4,12 @@ import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
 import ch.proximeety.proximeety.presentation.navigation.graphs.MainNavigationCommands
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,7 +29,7 @@ class UploadViewModel @Inject constructor(
         when (event) {
             is UploadEvent.Post -> {
                 _imageUri.value.toString().also {
-                    viewModelScope.launch(Dispatchers.IO) {
+                    MainScope().launch(Dispatchers.IO) {
                         userInteractions.post(it)
                     }
                     navigationManager.navigate(MainNavigationCommands.default)
@@ -37,7 +37,7 @@ class UploadViewModel @Inject constructor(
             }
             UploadEvent.PostStory -> {
                 _imageUri.value.toString().also {
-                    viewModelScope.launch(Dispatchers.IO) {
+                    MainScope().launch(Dispatchers.IO) {
                         userInteractions.postStory(it)
                     }
                     navigationManager.navigate(MainNavigationCommands.default)

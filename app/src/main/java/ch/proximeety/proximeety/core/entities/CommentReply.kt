@@ -29,7 +29,6 @@ data class CommentReply(
      */
     val timestamp: Long,
     /**
-     *
      * The reply's content.
      */
     val commentReply: String

@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ch.proximeety.proximeety.presentation.theme.spacing
 
 @Composable
 fun CommentTopBar(numComments: Int, onCloseClick: () -> Unit) {
@@ -21,7 +22,7 @@ fun CommentTopBar(numComments: Int, onCloseClick: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
-            .padding(vertical = 4.dp)
+            .padding(start = spacing.small)
             .fillMaxWidth()
     ) {
         Row(

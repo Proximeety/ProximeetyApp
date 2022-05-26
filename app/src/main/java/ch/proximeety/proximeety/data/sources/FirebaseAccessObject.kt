@@ -719,6 +719,7 @@ class FirebaseAccessObject(
                             REPLY_COMMENT_ID_KEY to commentId,
                             REPLY_VALUE_KEY to comment,
                             REPLY_USER_DISPLAY_NAME_KEY to user.displayName,
+                            REPLY_USER_PROFILE_PICTURE_KEY to user.profilePicture,
                             REPLY_TIMESTAMP_KEY to Calendar.getInstance().timeInMillis
                         )
                     )
@@ -727,13 +728,11 @@ class FirebaseAccessObject(
                 }
             }
 
-            ref = database.child(COMMENT_PATH).child(postId).child(commentId).child(
-                COMMENT_REPLIES_KEY
-            )
-            (ref.get().await().value as? Int).also {
-                if (it != null) {
-                    ref.setValue(it + 1 )
-                }
+            ref = database.child(COMMENT_PATH).child(postId).child(commentId)
+                .child(COMMENT_REPLIES_KEY)
+
+            (ref.get().await().value as? Long).also {
+                ref.setValue((it ?: 0) + 1).await()
             }
 
         }
@@ -751,18 +750,15 @@ class FirebaseAccessObject(
                     val userProfilePicture =
                         snapshot.child(COMMENT_USER_PROFILE_PICTURE_KEY).value as String?
                     val timestamp = snapshot.child(COMMENT_TIMESTAMP_KEY).value as Long?
-                    val comment = snapshot.child(
-                        COMMENT_VALUE_KEY
-                    ).value as String?
-
-                    val replies =
-                        snapshot.child(COMMENT_LIKES_KEY).value as Int
-
+                    val comment = snapshot.child(COMMENT_VALUE_KEY).value as String?
+                    val replies = (snapshot.child(COMMENT_REPLIES_KEY).value as? Long) ?: 0
                     val likes =
-                        snapshot.child(COMMENT_LIKES_KEY).children.mapNotNull { it.value as? Boolean }
-                            .filter { it }.count()
+                        snapshot.child(COMMENT_LIKES_KEY).children.mapNotNull { it.key to (it.value as? Boolean) }
+                            .filter { it.second == true }.map { it.first }
 
                     if (postId != null && posterId != null && userDisplayName != null && timestamp != null && comment != null) {
+                        val id = authenticatedUser?.value?.id
+                        val isLiked = id != null && likes.contains(id)
 
                         return@mapNotNull Comment(
                             id = snapshot.key!!,
@@ -772,8 +768,39 @@ class FirebaseAccessObject(
                             userProfilePicture = userProfilePicture,
                             timestamp = timestamp,
                             comment = comment,
-                            likes = likes,
-                            isLiked = false
+                            likes = likes.size,
+                            isLiked = isLiked,
+                            replies = replies.toInt()
+                        )
+                    }
+                }
+                return@mapNotNull null
+            }
+    }
+
+    suspend fun getCommentReplies(replyId: String): List<CommentReply> {
+        return database.child(REPLY_PATH).child(replyId).get()
+            .await().children.mapNotNull { snapshot ->
+                if (snapshot.exists() && snapshot.key != null) {
+                    val commentId = snapshot.child(REPLY_COMMENT_ID_KEY).value as? String?
+                    val posterId = snapshot.child(REPLY_POSTER_KEY).value as? String?
+                    val userDisplayName =
+                        snapshot.child(REPLY_USER_DISPLAY_NAME_KEY).value as? String?
+                    val userProfilePicture =
+                        snapshot.child(REPLY_USER_PROFILE_PICTURE_KEY).value as? String?
+                    val timestamp = snapshot.child(REPLY_TIMESTAMP_KEY).value as? Long?
+                    val reply = snapshot.child(REPLY_VALUE_KEY).value as String?
+
+                    if (commentId != null && posterId != null && userDisplayName != null && timestamp != null && reply != null
+                    ) {
+                        return@mapNotNull CommentReply(
+                            id = snapshot.key!!,
+                            commentId = commentId,
+                            posterId = posterId,
+                            userDisplayName = userDisplayName,
+                            userProfilePicture = userProfilePicture,
+                            timestamp = timestamp,
+                            commentReply = reply
                         )
                     }
                 }
@@ -888,7 +915,7 @@ class FirebaseAccessObject(
         }
         return listOf()
     }
-     
+
     /**
      * Get a certain post from a user.
      * @param userId the id of the poster.

@@ -43,9 +43,5 @@ data class Comment(
     /**
      * The number of replies
      */
-    val replies: Int,
-    /**
-     * Does the comment have replies
-     */
-    val hasReplies: Boolean = false
+    val replies: Int = 0,
 )

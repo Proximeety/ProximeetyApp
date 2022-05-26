@@ -21,6 +21,7 @@ import ch.proximeety.proximeety.util.extensions.isConnected
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.*
 
 /**
  * Implementation of the user repository user Firebase.
@@ -192,10 +193,6 @@ class UserRepositoryImplementation(
         firebaseAccessObject.postComment(postId, comment)
     }
 
-    override suspend fun replyToComment(postId: String, commentId: String, comment: String) {
-        firebaseAccessObject.replyToComment(postId, commentId, comment)
-    }
-
     override suspend fun toggleCommentLike(comment: Comment) {
         firebaseAccessObject.toggleCommentLike(comment)
     }
@@ -232,10 +229,6 @@ class UserRepositoryImplementation(
 
     override suspend fun getComments(id: String): List<Comment> {
         return firebaseAccessObject.getComments(id)
-    }
-
-    override suspend fun getCommentReplies(commentId: String): List<CommentReply> {
-        return firebaseAccessObject.getCommentReplies(commentId)
     }
 
     override fun enableNfc() {
@@ -299,11 +292,12 @@ class UserRepositoryImplementation(
         return firebaseAccessObject.getCommentReplies(commentId)
     }
 
-    override suspend fun replyToComment(commentId: String, comment: String) {
-        firebaseAccessObject.replyToComment(commentId, comment)
+    override suspend fun replyToComment(postId: String, commentId: String, comment: String) {
+        firebaseAccessObject.replyToComment(postId, commentId, comment)
     }
 
     override suspend fun getPostByIds(userId: String, postId: String): Post? {
         return firebaseAccessObject.getPostByIds(userId, postId)
     }
+
 }

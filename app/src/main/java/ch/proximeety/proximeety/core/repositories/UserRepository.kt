@@ -159,13 +159,6 @@ interface UserRepository {
     suspend fun isCommentLiked(comment: Comment): Boolean
 
     /**
-     * does a comment have replies
-     *
-     * @param comment the comment in question
-     */
-    suspend fun hasReplies(comment: Comment): Boolean
-
-    /**
      * Get the stories of an user.
      */
     suspend fun getStoriesByUserId(id: String): List<Story>
@@ -228,6 +221,4 @@ interface UserRepository {
      * @param postId the id of the post
      */
     suspend fun getPostByIds(userId: String, postId: String): Post?
-
-    fun getNfcTag(): LiveData<Tag?>
 }
