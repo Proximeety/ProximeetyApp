@@ -58,7 +58,7 @@ class FirebaseAccessObjectTest {
     }
 
     @Test
-    fun addFriendTest() {
+    fun friendTest() {
         val user1 = signIn("test1@test.com", "test123")
         firebaseAccessObject.signOut()
         val user2 = signIn("test2@test.com", "test123")
@@ -77,6 +77,9 @@ class FirebaseAccessObjectTest {
             assertEquals(friend.familyName, user1.familyName)
             assertEquals(friend.email, user1.email)
             assertEquals(friend.profilePicture, user1.profilePicture)
+
+            firebaseAccessObject.removeFriend(user1.id)
+            assertFalse(firebaseAccessObject.getFriends().any { it.id == user1.id })
         }
     }
 
@@ -174,6 +177,9 @@ class FirebaseAccessObjectTest {
 
             firebaseAccessObject.visitTag(tag.id)
             assertTrue(firebaseAccessObject.getTagById(tag.id)?.visitors?.any { it.second.id == user2!!.id } == true)
+
+            val tags = firebaseAccessObject.getAllNfcs()
+            assertTrue(tags.any { it.id == tag.id })
         }
     }
 
@@ -200,6 +206,41 @@ class FirebaseAccessObjectTest {
             val comments = firebaseAccessObject.getComments(post.id)
             assertTrue(comments.isNotEmpty())
             assertEquals(comments.first().comment, "testComment")
+
+            firebaseAccessObject.toggleCommentLike(comments.first())
+            assertTrue(firebaseAccessObject.isCommentLiked(comments.first()))
+        }
+    }
+
+    @Test
+    fun commentReplyTest() {
+        val user1 = signIn("test1@test.com", "test123")
+        assertNotNull(user1)
+
+        val tempFile = File.createTempFile("test", ".jpeg")
+        tempFile.writeBytes(
+            Base64.decode(TEST_ONE_PIXEL_IMAGE, Base64.DEFAULT)
+        )
+
+        runBlocking {
+            firebaseAccessObject.post(tempFile.toURI().toString())
+            val posts = firebaseAccessObject.getPostsByUserID(user1!!.id)
+            assertTrue(posts.isNotEmpty())
+
+            val post = posts.first()
+            assertTrue(firebaseAccessObject.getComments(post.id).isEmpty())
+
+            firebaseAccessObject.postComment(post.id, "testComment")
+
+            val comments = firebaseAccessObject.getComments(post.id)
+            assertTrue(comments.isNotEmpty())
+
+            firebaseAccessObject.replyToComment(post.id, comments.first().id, "testReply")
+
+            val replies = firebaseAccessObject.getCommentReplies(comments.first().id)
+            assertTrue(replies.isNotEmpty())
+            assertEquals(replies.first().commentReply, "testReply")
+
         }
     }
 }

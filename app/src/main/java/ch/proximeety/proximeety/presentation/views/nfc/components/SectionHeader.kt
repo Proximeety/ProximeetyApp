@@ -24,27 +24,33 @@ import ch.proximeety.proximeety.util.modifiers.clearFocusOnKeyboardDismiss
 @Composable
 fun SectionHeader(tag: Tag?, viewModel: NfcViewModel, modifier: Modifier = Modifier) {
 
+    val canEdit = viewModel.canEdit.value
+
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
     Column {
-        BasicTextField(
-            value = tag?.name ?: "",
-            onValueChange = { viewModel.onEvent(NfcEvent.OnNameChange(it)) },
-            textStyle = MaterialTheme.typography.h1,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                capitalization = KeyboardCapitalization.Sentences,
-                autoCorrect = true,
-                imeAction = ImeAction.Done,
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    keyboardController?.hide()
-                    focusManager.clearFocus()
-                }
-            ),
-            modifier = Modifier.clearFocusOnKeyboardDismiss()
-        )
+        if (canEdit) {
+            BasicTextField(
+                value = tag?.name ?: "",
+                onValueChange = { viewModel.onEvent(NfcEvent.OnNameChange(it)) },
+                textStyle = MaterialTheme.typography.h1,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    capitalization = KeyboardCapitalization.Sentences,
+                    autoCorrect = true,
+                    imeAction = ImeAction.Done,
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        keyboardController?.hide()
+                        focusManager.clearFocus()
+                    }
+                ),
+                modifier = Modifier.clearFocusOnKeyboardDismiss()
+            )
+        } else {
+            Text(text = tag?.name ?: "", style = MaterialTheme.typography.h1)
+        }
         Text(
             "By ${tag?.owner?.displayName}",
             style = MaterialTheme.typography.h1,

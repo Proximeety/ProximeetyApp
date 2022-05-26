@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import ch.proximeety.proximeety.presentation.theme.spacing
 import ch.proximeety.proximeety.presentation.components.Post
@@ -45,13 +46,12 @@ fun HomeView(
     val context = LocalContext.current
     val friendsWithStories = viewModel.friendsWithStories.value
     val posts = viewModel.posts.value
-    var comments = viewModel.comments.value
-    var replies = viewModel.replies.value
+    val comments = viewModel.comments.value
+    val replies = viewModel.replies.value
     val user = viewModel.user.value
 
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState()
-
 
     BackHandler {
         if (scaffoldState.bottomSheetState.isExpanded) {
@@ -155,4 +155,3 @@ fun HomeView(
         }
     }
 }
-

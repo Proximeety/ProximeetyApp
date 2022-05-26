@@ -27,7 +27,13 @@ class NfcViewModel @Inject constructor(
     val nfcTag: State<Tag?> = _nfcTag
 
     private val _mapReady = mutableStateOf(false)
-    val mapReady : State<Boolean> = _mapReady
+    val mapReady: State<Boolean> = _mapReady
+
+    private val _canEdit = mutableStateOf(false)
+    val canEdit: State<Boolean> = _canEdit
+
+    private val _canSeeVisitors = mutableStateOf(false)
+    val canSeeVisitors: State<Boolean> = _canSeeVisitors
 
     init {
         savedStateHandle.get<String>("tagId").also { id ->
@@ -39,7 +45,15 @@ class NfcViewModel @Inject constructor(
                 }
 
                 _isNewTag.value = nfcTag.value == null
+
+                userInteractions.getAuthenticatedUser().value?.also { user ->
+                    _canEdit.value = user.id == nfcTag.value?.owner?.id
+                }
             }
+        }
+
+        savedStateHandle.get<String>("canSeeVisitors")?.also {
+           _canSeeVisitors.value = it == "true"
         }
     }
 

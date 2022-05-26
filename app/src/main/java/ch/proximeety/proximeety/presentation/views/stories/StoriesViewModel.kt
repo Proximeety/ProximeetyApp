@@ -138,6 +138,21 @@ class StoriesViewModel @Inject constructor(
                 viewModelScope.launch(Dispatchers.IO) {
                     userInteractions.deleteStory(event.story!!.id)
                 }
+                stories.remove(event.story)
+                _storyCount.value = stories.size
+                if (stories.size == 0) {
+                    navigationManager.goBack()
+                } else {
+                    if (currentStoryIndex.value >= stories.size) {
+                        _currentStoryIndex.value = stories.size - 1
+                    }
+                    _currentStory.value = stories[currentStoryIndex.value]
+                    if (_nextStory.value == null && currentStoryIndex.value < stories.size - 1) {
+                        _nextStory.value = stories[currentStoryIndex.value]
+                    }
+                    _progress.value = 0f
+                    timer.start()
+                }
                 _showDialog.value = false
             }
             is StoriesEvent.OnOpenDialogClicked -> {

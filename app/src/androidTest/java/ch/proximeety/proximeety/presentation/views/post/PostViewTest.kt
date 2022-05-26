@@ -1,7 +1,8 @@
-package ch.proximeety.proximeety.presentation.views.home
+package ch.proximeety.proximeety.presentation.views.post
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.lifecycle.SavedStateHandle
 import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.di.AppModule
 import ch.proximeety.proximeety.presentation.MainActivity
@@ -18,7 +19,7 @@ import javax.inject.Inject
 
 @HiltAndroidTest
 @UninstallModules(AppModule::class)
-class HomeViewTest {
+class PostViewTest {
 
     @get:Rule(order = 0)
     val hiltRule = HiltAndroidRule(this)
@@ -32,7 +33,7 @@ class HomeViewTest {
     @Inject
     lateinit var userInteractions: UserInteractions
 
-    private lateinit var viewModel: HomeViewModel
+    private lateinit var viewModel: PostViewModel
 
     @Before
     fun setup() {
@@ -42,87 +43,20 @@ class HomeViewTest {
             userInteractions.authenticateWithGoogle()
         }
 
-        viewModel = HomeViewModel(navigationManager, userInteractions)
+        val savedStateHandle = SavedStateHandle(
+            mapOf(
+                "userId" to "friendWithStoryId",
+                "postId" to "-MzLEU_55gpq5ZQgAOAp",
+            )
+        )
+
+        viewModel = PostViewModel(navigationManager, userInteractions, savedStateHandle)
 
         composeTestRule.setContent {
             ProximeetyTheme {
-                HomeView(viewModel)
+                PostView(viewModel)
             }
         }
-    }
-
-    @Test
-    fun postsAreDisplayed() {
-        composeTestRule.waitUntil(10000) { viewModel.posts.value.isNotEmpty() }
-        composeTestRule.onAllNodesWithText("Yanis De Busschere").onFirst().assertExists()
-    }
-
-    @Test
-    fun commentsSectionDrawerWorksProperly() {
-        composeTestRule.waitUntil(10000) { viewModel.posts.value.isNotEmpty() }
-        composeTestRule
-            .onAllNodesWithContentDescription("Comments")
-            .onFirst()
-            .assertHasClickAction()
-            .performClick()
-        composeTestRule
-            .onNodeWithText("Comments", substring = true)
-            .assertExists()
-        composeTestRule
-            .onNodeWithContentDescription("Close Comment Section")
-            .assertHasClickAction()
-            .performClick()
-    }
-
-    @Test
-    fun moreDoesNothing() {
-        composeTestRule.waitUntil(10000) { viewModel.posts.value.isNotEmpty() }
-        composeTestRule
-            .onAllNodesWithContentDescription("More")
-            .onFirst()
-            .performClick()
-    }
-
-    @Test
-    fun clickOnProfile() {
-        composeTestRule.onNodeWithContentDescription("Profile")
-            .assertExists()
-            .performClick()
-    }
-
-    @Test
-    fun clickOnUpload() {
-        composeTestRule.onNodeWithContentDescription("Upload")
-            .assertExists()
-            .performClick()
-    }
-
-    @Test
-    fun clickOnFriends() {
-        composeTestRule.onNodeWithContentDescription("Friends")
-            .assertExists()
-            .performClick()
-    }
-
-    @Test
-    fun clickOnNearby() {
-        composeTestRule.onNodeWithContentDescription("Nearby")
-            .assertExists()
-            .performClick()
-    }
-
-    @Test
-    fun clickOnMap() {
-        composeTestRule.onNodeWithContentDescription("Map")
-            .assertExists()
-            .performClick()
-    }
-
-    @Test
-    fun clickOnMessages() {
-        composeTestRule.onNodeWithContentDescription("Messages")
-            .assertExists()
-            .performClick()
     }
 
     @Test

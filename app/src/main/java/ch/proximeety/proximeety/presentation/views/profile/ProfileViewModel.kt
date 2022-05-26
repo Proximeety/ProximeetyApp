@@ -111,6 +111,7 @@ class ProfileViewModel @Inject constructor(
                 viewModelScope.launch(Dispatchers.IO) {
                     userInteractions.deletePost(event.post.id)
                 }
+                _posts.value = _posts.value.filter { it.id != event.post.id }
                 _showDialog.value = false
             }
             is ProfileEvent.OnStoryClick -> {

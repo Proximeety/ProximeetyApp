@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import ch.proximeety.proximeety.core.entities.Comment
@@ -86,7 +87,7 @@ fun CommentComponent(
                     Icon(
                         imageVector = if (comment.isLiked) Icons.Rounded.Favorite
                         else Icons.Rounded.FavoriteBorder,
-                        contentDescription = "Like",
+                        contentDescription = "Comment Like",
                         modifier = Modifier.size(spacing.medium)
                     )
                     Text(text = comment.likes.toString(), style = MaterialTheme.typography.body1)
@@ -163,7 +164,7 @@ fun CommentComponent(
                         BasicTextField(
                             value = reply.value,
                             onValueChange = { reply.value = it },
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().testTag("reply_text_field"),
                             singleLine = true,
                             textStyle = MaterialTheme.typography.body1.copy(
                                 color = MaterialTheme.colors.onBackground
