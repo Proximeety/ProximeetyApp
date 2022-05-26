@@ -60,6 +60,7 @@ class TestAppModule {
             startLiveLocation = StartLiveLocation(repository),
             getNfcTag = GetNfcTag(repository),
             enableNfc = EnableNfc(repository),
+            getPostByIds = GetPostByIds(repository),
             isCommentLiked = IsCommentLiked(repository),
             toggleCommentLike = ToggleCommentLike(repository)
         )

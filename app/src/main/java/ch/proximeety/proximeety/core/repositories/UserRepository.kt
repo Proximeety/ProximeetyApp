@@ -192,4 +192,12 @@ interface UserRepository {
      * Get NFC tag.
      */
     fun getNfcTag(): LiveData<Tag?>
+
+    /**
+     * Get a certain post from a user.
+     *
+     * @param userId the id of the poster
+     * @param postId the id of the post
+     */
+    suspend fun getPostByIds(userId: String, postId: String): Post?
 }

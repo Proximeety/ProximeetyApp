@@ -26,6 +26,8 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.auth.ktx.userProfileChangeRequest
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
@@ -293,9 +295,9 @@ class FirebaseAccessObject(
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     user.value =
-                        User(
-                            id = id,
-                            displayName = snapshot.child(USER_DISPLAY_NAME_KEY).value as String?
+                            User(
+                                id = id,
+                                displayName = snapshot.child(USER_DISPLAY_NAME_KEY).value as String?
                                 ?: id,
                             givenName = snapshot.child(USER_GIVEN_NAME_KEY).value as String?,
                             familyName = snapshot.child(USER_FAMILY_NAME_KEY).value as String?,
@@ -337,6 +339,21 @@ class FirebaseAccessObject(
         }
     }
 
+    fun writeNewUser(userId: String, name: String, email: String) {
+        val user = User(name, email)
+
+        database.child("users").child(userId).setValue(user)
+    }
+
+    fun readAllMessages(userId: String, name: String, email: String) {
+        database.child("messages").child(userId).get().addOnSuccessListener {
+            Log.i("firebase", "Got value ${it.value}")
+        }.addOnFailureListener {
+            Log.i("firebase", "Error getting data", it)
+        }
+    }
+
+
     /**
      * Removes a friend to the authenticated user.
      * @param id the id of the friend.
@@ -366,32 +383,40 @@ class FirebaseAccessObject(
      */
     suspend fun getPostsByUserID(userId: String): List<Post> {
         return database.child(POSTS_PATH).child(userId).get()
-            .await().children.mapNotNull { snapshot ->
-                if (snapshot.exists() && snapshot.key != null) {
-                    val posterId =
-                        snapshot.child(POST_POSTER_ID_KEY).value as String?
-                    val userDisplayName =
-                        snapshot.child(POST_USER_DISPLAY_NAME_KEY).value as String?
-                    val userProfilePicture =
-                        snapshot.child(POST_USER_PROFILE_PICTURE_KEY).value as String?
-                    val timestamp = snapshot.child(POST_TIMESTAMP_KEY).value as Long?
-                    val likes =
-                        snapshot.child(POST_LIKES_KEY).children.mapNotNull { it.value as? Boolean }
-                            .filter { it }.count()
-                    if (posterId != null && userDisplayName != null && timestamp != null) {
-                        return@mapNotNull Post(
-                            snapshot.key!!,
-                            posterId,
-                            userDisplayName,
-                            userProfilePicture,
-                            timestamp,
-                            null,
-                            likes
-                        )
-                    }
-                }
-                return@mapNotNull null
+            .await().children.mapNotNull { snapshotToPost(it) }
+    }
+
+    /**
+     * Convert a snapshot of a post to a [Post].
+     *
+     * @param snapshot the snapshot coming from the database.
+     * @return A [Post] if the snapshot could be converted, null otherwise.
+     */
+    private fun snapshotToPost(snapshot: DataSnapshot): Post? {
+        if (snapshot.exists() && snapshot.key != null) {
+            val posterId =
+                snapshot.child(POST_POSTER_ID_KEY).value as String?
+            val userDisplayName =
+                snapshot.child(POST_USER_DISPLAY_NAME_KEY).value as String?
+            val userProfilePicture =
+                snapshot.child(POST_USER_PROFILE_PICTURE_KEY).value as String?
+            val timestamp = snapshot.child(POST_TIMESTAMP_KEY).value as Long?
+            val likes =
+                snapshot.child(POST_LIKES_KEY).children.mapNotNull { it.value as? Boolean }
+                    .count { it }
+            if (posterId != null && userDisplayName != null && timestamp != null) {
+                return Post(
+                    snapshot.key!!,
+                    posterId,
+                    userDisplayName,
+                    userProfilePicture,
+                    timestamp,
+                    null,
+                    likes
+                )
             }
+        }
+        return null
     }
 
     /**
@@ -669,9 +694,13 @@ class FirebaseAccessObject(
     }
 
     suspend fun getComments(id: String): List<Comment> {
+        Log.d("GETTING", id)
         return database.child(COMMENT_PATH).child(id).get()
             .await().children.mapNotNull { snapshot ->
+                Log.d("aa", snapshot.key.toString())
                 if (snapshot.exists() && snapshot.key != null) {
+                    Log.d("aa", snapshot.key.toString())
+
                     val postId = snapshot.child(COMMENT_POST_ID_KEY).value as String?
                     val posterId = snapshot.child(COMMENT_POSTER_ID_KEY).value as String?
                     val userDisplayName =
@@ -685,9 +714,8 @@ class FirebaseAccessObject(
                     val likes =
                         snapshot.child(COMMENT_LIKES_KEY).children.mapNotNull { it.value as? Boolean }
                             .filter { it }.count()
-                            
+
                     if (postId != null && posterId != null && userDisplayName != null && timestamp != null && comment != null) {
-                        Log.d("aa", snapshot.key.toString())
                         return@mapNotNull Comment(
                             id = snapshot.key!!,
                             postId = postId,
@@ -800,6 +828,16 @@ class FirebaseAccessObject(
                 )
             ).await()
         }
+    }
+
+    /**
+     * Get a certain post from a user.
+     * @param userId the id of the poster.
+     * @param postId the id of the post
+     */
+    suspend fun getPostByIds(userId: String, postId: String): Post? {
+        val snapshot = database.child(POSTS_PATH).child(userId).child(postId).get().await()
+        return snapshotToPost(snapshot)
     }
 
     suspend fun writeTag(tag: Tag) {

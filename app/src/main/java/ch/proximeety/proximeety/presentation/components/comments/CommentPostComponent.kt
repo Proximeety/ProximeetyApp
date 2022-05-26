@@ -1,4 +1,4 @@
-package ch.proximeety.proximeety.presentation.views.home.components.comments
+package ch.proximeety.proximeety.presentation.components.comments
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
