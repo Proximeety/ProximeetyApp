@@ -45,8 +45,9 @@ fun NearbyUsersView(
             {
                 when (nearbyUsers.value.size) {
                     0 -> {
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                             CircularProgressIndicator()
+                            Text(text = "Looking for friends...", style = MaterialTheme.typography.h5)
                         }
                     }
                     else -> {
