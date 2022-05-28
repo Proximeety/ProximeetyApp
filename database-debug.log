@@ -3,11 +3,11 @@ WARNING: Illegal reflective access by io.netty.util.internal.ReflectionUtil (fil
 WARNING: Please consider reporting this to the maintainers of io.netty.util.internal.ReflectionUtil
 WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
 WARNING: All illegal access operations will be denied in a future release
-00:01:19.346 [NamespaceSystem-akka.actor.default-dispatcher-5] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
-00:01:19.687 [main] INFO com.firebase.server.forge.App$ - Listening at localhost:9000
-00:01:38.281 [NamespaceSystem-akka.actor.default-dispatcher-6] INFO com.firebase.core.namespace.NamespaceActor - proximeety-963d6-default-rtdb successfully activated FBKV (SurveyIdle(0)) wait: 292ms, init: 0ms
-00:01:38.428 [NamespaceSystem-blocking-namespace-operation-dispatcher-7:proximeety-963d6-default-rtdb$1661373862:] INFO com.firebase.core.namespace.StateManager - Namespace proximeety-963d6-default-rtdb status Active to Active
-00:03:36.610 [Thread-0] INFO com.firebase.server.forge.App$ - Attempting graceful shutdown.
-00:03:36.615 [NamespaceSystem-akka.actor.default-dispatcher-14] INFO com.firebase.core.namespace.Terminator$Terminator - 1 actors left to terminate: proximeety-963d6-default-rtdb
-00:03:36.620 [NamespaceSystem-akka.actor.default-dispatcher-14] INFO com.firebase.core.namespace.NamespaceActor - stopped namespace actor for proximeety-963d6-default-rtdb
-00:03:36.624 [Thread-0] INFO com.firebase.server.forge.App$ - Graceful shutdown complete.
+17:36:38.364 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
+17:36:38.493 [main] INFO com.firebase.server.forge.App$ - Listening at localhost:9000
+17:36:44.710 [NamespaceSystem-akka.actor.default-dispatcher-5] INFO com.firebase.core.namespace.NamespaceActor - proximeety-963d6-default-rtdb successfully activated FBKV (SurveyIdle(0)) wait: 123ms, init: 0ms
+17:36:44.765 [NamespaceSystem-blocking-namespace-operation-dispatcher-7:proximeety-963d6-default-rtdb$158391183:] INFO com.firebase.core.namespace.StateManager - Namespace proximeety-963d6-default-rtdb status Active to Active
+17:38:29.527 [Thread-0] INFO com.firebase.server.forge.App$ - Attempting graceful shutdown.
+17:38:29.539 [NamespaceSystem-akka.actor.default-dispatcher-16] INFO com.firebase.core.namespace.Terminator$Terminator - 1 actors left to terminate: proximeety-963d6-default-rtdb
+17:38:29.546 [NamespaceSystem-akka.actor.default-dispatcher-14] INFO com.firebase.core.namespace.NamespaceActor - stopped namespace actor for proximeety-963d6-default-rtdb
+17:38:29.550 [Thread-0] INFO com.firebase.server.forge.App$ - Graceful shutdown complete.

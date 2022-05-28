@@ -59,6 +59,7 @@ class PostViewModel @Inject constructor(
                     viewModelScope.launch(Dispatchers.Main) {
                         if (post != null) {
                             _posts.value = listOf(post)
+                            refresh()
                         }
                     }
                 }
@@ -177,7 +178,7 @@ class PostViewModel @Inject constructor(
                             commentId = event.comment.id,
                             posterId = user.value?.id!!,
                             userDisplayName = user.value?.displayName!!,
-                            userProfilePicture = user.value?.profilePicture!!,
+                            userProfilePicture = user.value?.profilePicture,
                             timestamp = Calendar.getInstance().timeInMillis,
                             commentReply = event.reply
                         )

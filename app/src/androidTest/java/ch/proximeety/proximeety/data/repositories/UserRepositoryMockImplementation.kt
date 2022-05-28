@@ -92,6 +92,39 @@ class UserRepositoryMockImplementation : UserRepository {
     private var comments = mutableListOf(
         Comment(
             id = "-MzJUaBgPuPH8EHhw0yQ",
+            postId = "-MzLCslyh0zEGu6dioMT",
+            posterId = "testUserId2",
+            userDisplayName = "Hamza LAAROUS",
+            userProfilePicture = null,
+            timestamp = 1648537528605,
+            comment = "test1",
+            likes = 0,
+            isLiked = true
+        ),
+        Comment(
+            id = "-MzJUaBgPuPH8EHhw0yQ",
+            postId = "-MzLCslyh0zEGu6dioMT",
+            posterId = "testUserId2",
+            userDisplayName = "Hamza LAAROUS",
+            userProfilePicture = null,
+            timestamp = 1648537528605,
+            comment = "test2",
+            likes = 0,
+            isLiked = true
+        ),
+        Comment(
+            id = "-MzJUaBgPuPH8EHhw0yQ",
+            postId = "-MzLCslyh0zEGu6dioMT",
+            posterId = "testUserId2",
+            userDisplayName = "Hamza LAAROUS",
+            userProfilePicture = null,
+            timestamp = 1648537528605,
+            comment = "test3",
+            likes = 0,
+            isLiked = true
+        ),
+        Comment(
+            id = "-MzJUaBgPuPH8EHhw0yQ",
             postId = "-MzLEU_55gpq5ZQgAOAp",
             posterId = "testUserId2",
             userDisplayName = "Hamza LAAROUS",
@@ -149,6 +182,8 @@ class UserRepositoryMockImplementation : UserRepository {
                 posterId = "testUserId"
             )
         )
+
+    val replies = mutableMapOf<String, MutableMap<String, MutableList<CommentReply>>>()
 
     override fun setActivity(activity: SyncActivity) {}
 
@@ -236,11 +271,7 @@ class UserRepositoryMockImplementation : UserRepository {
     }
 
     override suspend fun deletePost(postId: String) {
-        posts.forEach { post ->
-            if (post.id == postId) {
-                posts.remove(post)
-            }
-        }
+        posts.removeIf { it.id == postId }
     }
 
     override suspend fun deleteStory(storyId: String) {
@@ -268,7 +299,7 @@ class UserRepositoryMockImplementation : UserRepository {
     }
 
     override suspend fun downloadPost(post: Post): Post {
-        return post
+        return post.copy(postURL = "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60")
     }
 
     override suspend fun togglePostLike(post: Post) {
@@ -298,7 +329,27 @@ class UserRepositoryMockImplementation : UserRepository {
     }
 
     override suspend fun replyToComment(postId: String, commentId: String, comment: String) {
-        TODO("Not yet implemented")
+        if (!replies.contains(postId)) {
+            replies[postId] = mutableMapOf()
+        }
+        if (!replies[postId]!!.contains(commentId)) {
+            replies[postId]!![commentId] = mutableListOf()
+        }
+        user?.id?.let {
+            CommentReply(
+                id = "",
+                commentId = commentId,
+                userDisplayName = "",
+                userProfilePicture = null,
+                timestamp = 0,
+                posterId = it,
+                commentReply = comment
+            )
+        }?.let {
+            replies[postId]!![commentId]!!.add(
+                it
+            )
+        }
     }
 
     override suspend fun getStoriesByUserId(id: String): List<Story> {
@@ -345,7 +396,7 @@ class UserRepositoryMockImplementation : UserRepository {
     }
 
     override suspend fun getCommentReplies(commentId: String): List<CommentReply> {
-        return listOf()
+        return replies.flatMap { it.value.getOrDefault(commentId, listOf()) }
     }
 
     override fun enableNfc() {

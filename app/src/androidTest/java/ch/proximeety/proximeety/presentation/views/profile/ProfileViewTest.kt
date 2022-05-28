@@ -1,6 +1,8 @@
 package ch.proximeety.proximeety.presentation.views.profile
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithContentDescription
+import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.lifecycle.SavedStateHandle
@@ -108,6 +110,23 @@ class ProfileViewTest {
     fun signOutDisplayedIfAuthenticatedUserProfile() {
         setup("testUserId")
         composeTestRule.onNodeWithText("Add").assertDoesNotExist()
+    }
+
+    @Test
+    fun deleteTest() {
+        setup("testUserId")
+        composeTestRule.onAllNodesWithContentDescription("More")
+            .onFirst()
+            .assertExists()
+            .performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText("Delete post")
+            .assertExists()
+            .performClick()
+        composeTestRule.onNodeWithText("Confirm")
+            .assertExists()
+            .performClick()
+        composeTestRule.waitForIdle()
     }
 
 }

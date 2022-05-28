@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import ch.proximeety.proximeety.BuildConfig
 import ch.proximeety.proximeety.R
 import ch.proximeety.proximeety.util.SafeArea
 import com.google.accompanist.pager.HorizontalPager
@@ -33,9 +34,7 @@ import kotlinx.coroutines.launch
 fun AuthenticationHomeView(
     viewModel: AuthenticationHomeViewModel = hiltViewModel()
 ) {
-    SafeArea {
         AuthenticationHomeScreen(viewModel)
-    }
 }
 
 @Composable
@@ -51,7 +50,6 @@ fun AuthenticationHomeScreen(viewModel: AuthenticationHomeViewModel) {
         modifier = Modifier.fillMaxSize(),
         scaffoldState = scaffoldState
     ) {
-
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -65,132 +63,134 @@ fun AuthenticationHomeScreen(viewModel: AuthenticationHomeViewModel) {
                     contentDescription = "background_image",
                     contentScale = ContentScale.FillBounds
                 )
-                // Page content
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    HorizontalPager(count = screens.size, state = pagerState) { page ->
-                        Column(
-                            modifier = Modifier
-                                .padding(top = 65.dp)
-                                .fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            // First page: Bigger title
-                            if (currentPage.value == 0) {
-                                Text(
-                                    text = screens[page].title,
-                                    modifier = Modifier.padding(
-                                        top = 100.dp,
-                                        start = 30.dp,
-                                        end = 30.dp
-                                    ),
-                                    color = Color.White,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 40.sp,
-                                    textAlign = TextAlign.Center,
-                                    lineHeight = 70.sp
-                                )
-                            }
-                            // Rest of the pages: Smaller description
-                            else {
-                                Text(
-                                    text = screens[page].title,
-                                    modifier = Modifier.padding(
-                                        top = 150.dp,
-                                        start = 30.dp,
-                                        end = 30.dp
-                                    ),
-                                    color = Color.White,
-                                    fontSize = 20.sp,
-                                    textAlign = TextAlign.Center,
-                                    lineHeight = 40.sp
-                                )
+                SafeArea {
+                    // Page content
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        HorizontalPager(count = screens.size, state = pagerState) { page ->
+                            Column(
+                                modifier = Modifier
+                                    .padding(top = 65.dp)
+                                    .fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                // First page: Bigger title
+                                if (currentPage.value == 0) {
+                                    Text(
+                                        text = screens[page].title,
+                                        modifier = Modifier.padding(
+                                            top = 100.dp,
+                                            start = 30.dp,
+                                            end = 30.dp
+                                        ),
+                                        color = Color.White,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 40.sp,
+                                        textAlign = TextAlign.Center,
+                                        lineHeight = 70.sp
+                                    )
+                                }
+                                // Rest of the pages: Smaller description
+                                else {
+                                    Text(
+                                        text = screens[page].title,
+                                        modifier = Modifier.padding(
+                                            top = 150.dp,
+                                            start = 30.dp,
+                                            end = 30.dp
+                                        ),
+                                        color = Color.White,
+                                        fontSize = 20.sp,
+                                        textAlign = TextAlign.Center,
+                                        lineHeight = 40.sp
+                                    )
 
-                                // Last page: Login button
-                                if (currentPage.value == pagerState.pageCount - 1) {
-                                    Button(
-                                        modifier = Modifier.padding(top = 70.dp),
-                                        onClick = { viewModel.onEvent(AuthenticationHomeEvent.AuthenticateWithGoogle) }) {
-                                        Text(text = "Login")
+                                    // Last page: Login button
+                                    if (currentPage.value == pagerState.pageCount - 1) {
+                                        Button(
+                                            modifier = Modifier.padding(top = 70.dp),
+                                            onClick = { viewModel.onEvent(AuthenticationHomeEvent.AuthenticateWithGoogle) }) {
+                                            Text(text = "Login")
+                                        }
                                     }
                                 }
-                            }
 
+                            }
                         }
+                        // Page indicator point row
+                        PagerIndicator(screens.size, pagerState.currentPage)
                     }
-                    // Page indicator point row
-                    PagerIndicator(screens.size, pagerState.currentPage)
-                }
 
-                // Bottom bar with 'back' and 'next' buttons
-                Box(
-                    modifier = Modifier.align(Alignment.BottomCenter)
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .padding(bottom = 20.dp)
-                            .fillMaxWidth(),
-                        horizontalArrangement =
-                        when (pagerState.currentPage) {
-                            0 -> {
-                                Arrangement.End
-                            }
-                            pagerState.pageCount - 1 -> {
-                                Arrangement.Start
-                            }
-                            else -> {
-                                Arrangement.SpaceBetween
-                            }
-                        }
+                    // Bottom bar with 'back' and 'next' buttons
+                    Box(
+                        modifier = Modifier.align(Alignment.BottomCenter)
                     ) {
-                        // 'Back' button: Not in the first page
-                        if (pagerState.currentPage != 0) {
-                            Text(
-                                text = "Back",
-                                color = Color.White,
-                                modifier = Modifier
-                                    .clickable {
-                                        authenticationHomeViewModel.onEvent(
-                                            AuthenticationHomeEvent.SetCurrentPage(
-                                                pagerState.currentPage - 1
+                        Row(
+                            modifier = Modifier
+                                .padding(bottom = 20.dp)
+                                .fillMaxWidth(),
+                            horizontalArrangement =
+                            when (pagerState.currentPage) {
+                                0 -> {
+                                    Arrangement.End
+                                }
+                                pagerState.pageCount - 1 -> {
+                                    Arrangement.Start
+                                }
+                                else -> {
+                                    Arrangement.SpaceBetween
+                                }
+                            }
+                        ) {
+                            // 'Back' button: Not in the first page
+                            if (pagerState.currentPage != 0) {
+                                Text(
+                                    text = "Back",
+                                    color = Color.White,
+                                    modifier = Modifier
+                                        .clickable {
+                                            authenticationHomeViewModel.onEvent(
+                                                AuthenticationHomeEvent.SetCurrentPage(
+                                                    pagerState.currentPage - 1
+                                                )
                                             )
-                                        )
-                                        scope.launch {
-                                            pagerState.animateScrollToPage(
-                                                page = currentPage.value
-                                            )
+                                            scope.launch {
+                                                pagerState.animateScrollToPage(
+                                                    page = currentPage.value
+                                                )
+                                            }
                                         }
-                                    }
-                                    .padding(start = 30.dp),
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        }
-                        // 'Next' button: not in the last page
-                        if (pagerState.currentPage != pagerState.pageCount - 1) {
-                            Text(
-                                text = "Next",
-                                color = Color.White,
-                                modifier = Modifier
-                                    .clickable {
-                                        authenticationHomeViewModel.onEvent(
-                                            AuthenticationHomeEvent.SetCurrentPage(
-                                                pagerState.currentPage + 1
+                                        .padding(start = 30.dp),
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
+                            // 'Next' button: not in the last page
+                            if (pagerState.currentPage != pagerState.pageCount - 1) {
+                                Text(
+                                    text = "Next",
+                                    color = Color.White,
+                                    modifier = Modifier
+                                        .clickable {
+                                            authenticationHomeViewModel.onEvent(
+                                                AuthenticationHomeEvent.SetCurrentPage(
+                                                    pagerState.currentPage + 1
+                                                )
                                             )
-                                        )
-                                        scope.launch {
-                                            pagerState.animateScrollToPage(
-                                                page = currentPage.value
-                                            )
+                                            scope.launch {
+                                                pagerState.animateScrollToPage(
+                                                    page = currentPage.value
+                                                )
+                                            }
                                         }
-                                    }
-                                    .padding(end = 30.dp),
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Medium
-                            )
+                                        .padding(end = 30.dp),
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
                         }
                     }
                 }

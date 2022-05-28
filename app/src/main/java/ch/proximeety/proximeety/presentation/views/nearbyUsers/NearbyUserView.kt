@@ -1,24 +1,19 @@
 package ch.proximeety.proximeety.presentation.views.nearbyUsers
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.presentation.theme.spacing
+import ch.proximeety.proximeety.presentation.views.nearbyUsers.components.NearbyUser
 import ch.proximeety.proximeety.util.SafeArea
 import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
+import kotlin.math.max
 
 /**
  * The Nearby Users View.
@@ -39,34 +34,22 @@ fun NearbyUsersView(
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
-            )
-            {
-                nearbyUsers.value.forEach {
-                    Box(
-                        modifier = Modifier
-                            .clip(MaterialTheme.shapes.medium)
-                            .clickable {
-                                viewModel.onEvent(NearbyUsersEvent.NavigateToUserProfile(it.id))
-                            }
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(spacing.extraSmall)
-                        ) {
-                            Image(
-                                painter = rememberImagePainter(it.profilePicture),
-                                contentDescription = "Profile picture of ${it.displayName}",
-                                modifier = Modifier
-                                    .width(32.dp)
-                                    .aspectRatio(1f)
-                                    .clip(CircleShape)
-                                    .background(
-                                        Color.Gray
-                                    )
-                            )
-                            Spacer(modifier = Modifier.width(spacing.small))
-                            Text(text = it.displayName, style = MaterialTheme.typography.h5)
+            ) {
+                Text(
+                    text = "Searching for nearby users...",
+                    style = MaterialTheme.typography.h2
+                )
+                Spacer(modifier = Modifier.height(spacing.medium))
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    nearbyUsers.value
+                        .forEach {
+                            NearbyUser(viewModel, it)
                         }
+                    for (i in 0 until max(1, 3 - (nearbyUsers.value.size))) {
+                        NearbyUser(viewModel = viewModel, user = null)
                     }
                 }
             }
