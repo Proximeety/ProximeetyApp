@@ -139,6 +139,7 @@ class HomeViewModel @Inject constructor(
                         _comments.value = _comments.value.plus(
                             commentSectionPostId.value!! to comments
                         )
+                        onEvent(HomeEvent.RefreshComments)
                     }
                 }
             }
@@ -194,7 +195,7 @@ class HomeViewModel @Inject constructor(
                             commentId = event.comment.id,
                             posterId = user.value?.id!!,
                             userDisplayName = user.value?.displayName!!,
-                            userProfilePicture = user.value?.profilePicture!!,
+                            userProfilePicture = user.value?.profilePicture,
                             timestamp = Calendar.getInstance().timeInMillis,
                             commentReply = event.reply
                         )

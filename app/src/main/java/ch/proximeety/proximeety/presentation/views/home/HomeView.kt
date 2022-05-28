@@ -90,11 +90,8 @@ fun HomeView(
                         viewModel.onEvent(HomeEvent.ToggleCommentLike(comment))
                     },
                     onPostComment = {
-                        viewModel.viewModelScope.launch(Dispatchers.IO) {
                             viewModel
                                 .onEvent(HomeEvent.PostComment(it))
-                            viewModel.onEvent(HomeEvent.RefreshComments)
-                        }
                     },
                     onPostReply = { comment, reply ->
                         viewModel.onEvent(

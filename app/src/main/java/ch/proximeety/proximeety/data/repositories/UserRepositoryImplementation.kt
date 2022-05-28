@@ -211,7 +211,7 @@ class UserRepositoryImplementation(
 
     override fun startLiveLocation() {
         activity.lifecycleScope.launch {
-            var liveLocation: LiveData<Location?>? = null
+            var liveLocation: LiveData<Pair<Double, Double>?>? = null
 
             while (liveLocation == null) {
                 delay(1000)
@@ -220,7 +220,7 @@ class UserRepositoryImplementation(
 
             liveLocation.observe(activity) {
                 if (it != null) {
-                    firebaseAccessObject.uploadLocation(it.latitude, it.longitude)
+                    firebaseAccessObject.uploadLocation(it.first, it.second)
                 }
             }
         }
@@ -271,8 +271,8 @@ class UserRepositoryImplementation(
             val tag = Tag(
                 id = id,
                 name = "New Tag",
-                latitude = location.latitude,
-                longitude = location.longitude,
+                latitude = location.first,
+                longitude = location.second,
                 owner = owner,
                 visitors = listOf(
                     Pair(Calendar.getInstance().timeInMillis, owner)

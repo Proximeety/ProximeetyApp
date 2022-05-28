@@ -47,12 +47,12 @@ class LocationService(
      * Returns the current location of the user.
      */
     @SuppressLint("MissingPermission")
-    suspend fun getLiveLocation(syncActivity: SyncActivity): LiveData<Location?>? {
+    suspend fun getLiveLocation(syncActivity: SyncActivity): LiveData<Pair<Double, Double>?>? {
         if (!isReady(syncActivity)) return null
 
-        val location = MutableLiveData<Location?>()
+        val location = MutableLiveData<Pair<Double, Double>?>()
         val gpsLocationListener = LocationListener {
-            location.value = it
+            location.value = Pair(it.latitude, it.longitude)
         }
         locationManger.requestLocationUpdates(
             LocationManager.GPS_PROVIDER,
@@ -60,6 +60,7 @@ class LocationService(
             0F,
             gpsLocationListener
         )
+
         return location
     }
 
@@ -67,8 +68,10 @@ class LocationService(
      * Returns the current location of the user.
      */
     @SuppressLint("MissingPermission")
-     fun getLastLocation(syncActivity: SyncActivity): Location? {
-        return locationManger.getLastKnownLocation(LocationManager.FUSED_PROVIDER)
+     fun getLastLocation(syncActivity: SyncActivity): Pair<Double, Double>? {
+        return locationManger.getLastKnownLocation(LocationManager.FUSED_PROVIDER)?.let {
+            Pair(it.latitude, it.longitude)
+        }
     }
 
 
