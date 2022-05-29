@@ -127,12 +127,12 @@ class FirebaseAccessObject(
     private var authenticatedUser: MutableLiveData<User?>? = null
 
     init {
-//        Firebase.database.setPersistenceEnabled(false)
-//        if (BuildConfig.DEBUG) {
-//            Firebase.auth.useEmulator("10.0.2.2", 9099)
-//            Firebase.database.useEmulator("10.0.2.2", 9000)
-//            Firebase.storage.useEmulator("10.0.2.2", 9199)
-//        }
+        Firebase.database.setPersistenceEnabled(false)
+        if (BuildConfig.DEBUG) {
+            Firebase.auth.useEmulator("10.0.2.2", 9099)
+            Firebase.database.useEmulator("10.0.2.2", 9000)
+            Firebase.storage.useEmulator("10.0.2.2", 9199)
+        }
         auth = Firebase.auth
         database = Firebase.database.reference
         storage = Firebase.storage.reference
