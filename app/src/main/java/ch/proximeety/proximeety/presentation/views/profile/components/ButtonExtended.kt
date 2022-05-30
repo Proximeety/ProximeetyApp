@@ -1,6 +1,7 @@
 package ch.proximeety.proximeety.presentation.views.profile.components
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.*
@@ -11,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ch.proximeety.proximeety.presentation.components.SimpleAlertDialog
 import ch.proximeety.proximeety.presentation.views.profile.ProfileEvent
@@ -24,9 +26,9 @@ fun ButtonExtended(viewModel: ProfileViewModel, onDelete: () -> Unit){
     val options = arrayOf("Delete post", "More")
 
     IconButton( onClick = { menuExpanded.value = true }) {
-        Icon(imageVector = Icons.Rounded.MoreHoriz, contentDescription = "More")
+        Icon(imageVector = Icons.Rounded.MoreHoriz, contentDescription = "More", tint = Color.White)
     }
-    Column {
+    Box {
         DropdownMenu(
             expanded = menuExpanded.value,
             onDismissRequest = {

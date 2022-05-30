@@ -1,11 +1,12 @@
 package ch.proximeety.proximeety.presentation.views.nfc
 
-import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.lifecycle.SavedStateHandle
 import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.core.repositories.UserRepository
-import ch.proximeety.proximeety.data.repositories.UserRepositoryMockImplementation
 import ch.proximeety.proximeety.di.AppModule
 import ch.proximeety.proximeety.presentation.MainActivity
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
@@ -52,7 +53,8 @@ class NfcViewTest {
 
         val savedStateHandle = SavedStateHandle(
             mapOf(
-                "tagId" to "00:00:00:00:00:00"
+                "tagId" to "00:00:00:00:00:00",
+                "canSeeVisitors" to "true"
             )
         )
 
@@ -113,7 +115,7 @@ class NfcViewTest {
 
     @Test
     fun nfcCreateGoBack() {
-        composeTestRule.waitUntil (1000) { viewModel.isNewTag.value == true }
+        composeTestRule.waitUntil(1000) { viewModel.isNewTag.value == true }
         composeTestRule.onNodeWithText("No").assertExists().performClick()
     }
 }

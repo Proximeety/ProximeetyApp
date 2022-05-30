@@ -25,7 +25,7 @@ class UserRepositoryMockImplementation : UserRepository {
         )
     )
     private var visitUser: User =
-        User (
+        User(
             id = "-MzJUaBgPuPH8EHhw0yQ",
             displayName = "Proximeety",
             profilePicture = null
@@ -183,7 +183,13 @@ class UserRepositoryMockImplementation : UserRepository {
             "testUserId1" -> MutableLiveData(User("testUserId1", "User1"))
             "testUserId2" -> MutableLiveData(User("testUserId2", "User2"))
             "testUserId3" -> MutableLiveData(User("testUserId3", "User3"))
-            "friendWithStoryId" -> MutableLiveData(User("friendWithStoryId", "friendWithStory", hasStories = true))
+            "friendWithStoryId" -> MutableLiveData(
+                User(
+                    "friendWithStoryId",
+                    "friendWithStory",
+                    hasStories = true
+                )
+            )
             else -> MutableLiveData()
         }
     }
@@ -335,17 +341,11 @@ class UserRepositoryMockImplementation : UserRepository {
     }
 
     override suspend fun getComments(id: String): List<Comment> {
-        when (id) {
-            user?.id -> {
-                return comments.toList()
-            }
-        }
-
-        return listOf()
+        return comments.filter { it.postId == id }
     }
 
     override suspend fun getCommentReplies(commentId: String): List<CommentReply> {
-        TODO("Not yet implemented")
+        return listOf()
     }
 
     override fun enableNfc() {

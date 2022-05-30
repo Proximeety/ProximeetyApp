@@ -15,7 +15,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.*
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -77,7 +77,7 @@ class UploadViewTest {
 
     @Test
     fun postButtonShouldPost() {
-        val randomUri ="random_uri_1234"
+        val randomUri = "random_uri_1234"
         viewModel.onEvent(UploadEvent.SetPostURI(Uri.parse(randomUri)))
         composeTestRule.onNodeWithContentDescription("Upload post")
             .assertExists()
@@ -91,7 +91,7 @@ class UploadViewTest {
 
     @Test
     fun cancelButtonShouldNotPost() {
-        val randomUri ="random_uri_5678"
+        val randomUri = "random_uri_5678"
         viewModel.onEvent(UploadEvent.SetPostURI(Uri.parse(randomUri)))
         composeTestRule.onNodeWithContentDescription("Cancel post")
             .assertExists()
@@ -105,7 +105,7 @@ class UploadViewTest {
 
     @Test
     fun postStoryButtonShouldPost() {
-        val randomUri ="random_uri_1234"
+        val randomUri = "random_uri_1234"
         viewModel.onEvent(UploadEvent.SetPostURI(Uri.parse(randomUri)))
         composeTestRule.onRoot().performTouchInput { swipeLeft() }
         composeTestRule.onNodeWithContentDescription("Upload story")
@@ -120,7 +120,7 @@ class UploadViewTest {
 
     @Test
     fun cancelButtonShouldNotPostStory() {
-        val randomUri ="random_uri_5678"
+        val randomUri = "random_uri_5678"
         viewModel.onEvent(UploadEvent.SetPostURI(Uri.parse(randomUri)))
         composeTestRule.onRoot().performTouchInput { swipeLeft() }
         composeTestRule.onNodeWithContentDescription("Cancel story")

@@ -36,8 +36,6 @@ class MainActivity : SyncActivity() {
         super.onCreate(savedInstanceState)
 
         userInteractions.setActivity(this)
-        userInteractions.startLiveLocation()
-        userInteractions.enableNfc()
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 

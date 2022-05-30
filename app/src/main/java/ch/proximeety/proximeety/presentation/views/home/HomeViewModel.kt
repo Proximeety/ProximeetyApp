@@ -51,6 +51,8 @@ class HomeViewModel @Inject constructor(
     val isRefreshing: State<Boolean> = _isRefreshing
 
     init {
+        userInteractions.startLiveLocation()
+        userInteractions.enableNfc()
         refresh()
     }
 

@@ -14,6 +14,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import ch.proximeety.proximeety.presentation.theme.spacing
 
@@ -53,7 +54,8 @@ fun CommentPostComponent(
                 ),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Send
-                )
+                ),
+                modifier = Modifier.testTag("comment_post_text_field")
             )
             if (text.value.isBlank()) {
                 Text(

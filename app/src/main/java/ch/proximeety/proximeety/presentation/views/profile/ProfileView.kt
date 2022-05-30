@@ -14,10 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.proximeety.proximeety.presentation.theme.spacing
-import ch.proximeety.proximeety.presentation.views.profile.components.*
+import ch.proximeety.proximeety.presentation.views.profile.components.ProfilePicture
+import ch.proximeety.proximeety.presentation.views.profile.components.SinglePost
+import ch.proximeety.proximeety.presentation.views.profile.components.Stats
+import ch.proximeety.proximeety.presentation.views.profile.components.UserBio
 import ch.proximeety.proximeety.util.SafeArea
 
 @Preview
@@ -51,26 +53,24 @@ fun ProfileView(
                     .padding(top = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                ProfilePic(
-                    picUrl = user.value?.profilePicture,
+                ProfilePicture(
+                    url = user.value?.profilePicture,
                     displayName = user.value?.givenName,
                     onStoryClick = { viewModel.onEvent(ProfileEvent.OnStoryClick) }
                 )
+                Spacer(modifier = Modifier.height(spacing.medium))
                 Text(
                     text = user.value?.displayName.toString(),
-                    fontSize = 30.sp,
-                    modifier = Modifier.padding(top = 15.dp)
+                    style = MaterialTheme.typography.h1,
                 )
                 user.value?.bio?.let { UserBio(Modifier.padding(bottom = 20.dp), it) }
                 Spacer(modifier = Modifier.height(spacing.small))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    FriendStat(viewModel.friends.value.count())
-                    PostsStat(viewModel.posts.value.count())
-                }
+                Stats(
+                    listOf(
+                        Pair("Friends", viewModel.friends.value.size.toString()),
+                        Pair("Posts", viewModel.posts.value.size.toString())
+                    )
+                )
                 Spacer(modifier = Modifier.height(spacing.small))
                 if (isAuthenticatedUserProfile) {
                     Button(onClick = { viewModel.onEvent(ProfileEvent.SignOut) }) {
