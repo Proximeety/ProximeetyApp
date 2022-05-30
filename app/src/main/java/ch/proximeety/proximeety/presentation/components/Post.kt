@@ -29,6 +29,10 @@ import coil.compose.rememberImagePainter
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
@@ -66,7 +70,12 @@ fun Post(
                 Spacer(modifier = Modifier.width(spacing.medium))
                 Column {
                     Text(text = post.userDisplayName, style = MaterialTheme.typography.h4)
-                    Text(text = "Lausanne", style = MaterialTheme.typography.h5, color = Color.Gray)
+                    val time =  LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(post.timestamp),
+                        TimeZone.getDefault().toZoneId());
+                    val formatter = DateTimeFormatter.ofPattern("MM/dd HH:mm")
+                    val formatted = time.format(formatter)
+                    Text(text = formatted, style = MaterialTheme.typography.h5, color = Color.Gray)
                 }
             }
             IconButton(onClick = { /*TODO*/ }) {

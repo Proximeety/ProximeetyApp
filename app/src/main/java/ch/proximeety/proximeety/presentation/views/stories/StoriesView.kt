@@ -23,6 +23,10 @@ import ch.proximeety.proximeety.presentation.theme.spacing
 import ch.proximeety.proximeety.presentation.views.stories.components.ButtonExtended
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 
 /**
@@ -116,7 +120,15 @@ fun StoriesView(
                                 text = user.value?.displayName.toString(),
                                 style = MaterialTheme.typography.h4
                             )
-                            Text(text = "Lausanne", style = MaterialTheme.typography.h6)
+                            val time =  LocalDateTime.ofInstant(
+                                Instant.ofEpochMilli(currentStory?.timestamp ?: 0),
+                                TimeZone.getDefault().toZoneId());
+                            val formatter = DateTimeFormatter.ofPattern("MM/dd HH:mm")
+                            var formatted = time.format(formatter)
+                            if (formatted == "01/01 01:00") {
+                                formatted = "No Story available" // when the currentStory == null
+                            }
+                            Text(text = formatted, style = MaterialTheme.typography.h5, color = Color.Gray)
                         }
                     }
                     if (isAuthenticatedUserProfile) {

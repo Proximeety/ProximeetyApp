@@ -44,6 +44,9 @@ class MapViewModel @Inject constructor(
             is MapEvent.OnClickNfcTag -> {
                 navigationManager.navigate(MainNavigationCommands.nfcWithArgs(event.nfcId, false))
             }
+            is MapEvent.OnClickUserProfile -> {
+                navigationManager.navigate(MainNavigationCommands.profileWithArgs(event.id))
+            }
         }
     }
 
