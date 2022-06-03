@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.core.graphics.drawable.toBitmap
+import ch.proximeety.proximeety.core.entities.User
 import ch.proximeety.proximeety.presentation.theme.spacing
 import ch.proximeety.proximeety.presentation.views.map.MapEvent
 import ch.proximeety.proximeety.presentation.views.map.MapViewModel
@@ -93,7 +94,10 @@ fun GoogleMapView(
                                     .target { drawable ->
                                         bitmap.value =
                                             drawable.toBitmap().copy(Bitmap.Config.ARGB_8888, false)
-                                                .getRoundedCroppedBitmap()
+                                                .getRoundedCroppedBitmap()?.let { it1 ->
+                                                    Bitmap.createScaledBitmap(
+                                                        it1, 100, 100, false)
+                                                }
                                     }
                                     .build()
 

@@ -45,8 +45,8 @@ class PostViewTest {
 
         val savedStateHandle = SavedStateHandle(
             mapOf(
-                "userId" to "friendWithStoryId",
-                "postId" to "-MzLEU_55gpq5ZQgAOAp",
+                "userId" to "testUserId",
+                "postId" to "-MzLCslyh0zEGu6dioMT",
             )
         )
 
@@ -62,10 +62,10 @@ class PostViewTest {
     @Test
     fun commentsTest() {
         composeTestRule.waitUntil(10000) { viewModel.posts.value.isNotEmpty() }
-        composeTestRule.onNodeWithTag("comment_button_-MzLEU_55gpq5ZQgAOAp")
+        composeTestRule.onNodeWithTag("comment_button_-MzLCslyh0zEGu6dioMT")
             .assertExists()
             .performClick()
-        composeTestRule.waitUntil(10000) { viewModel.comments.value.contains("-MzLEU_55gpq5ZQgAOAp") }
+        composeTestRule.waitUntil(10000) { viewModel.comments.value.contains("-MzLCslyh0zEGu6dioMT") }
         composeTestRule.onNodeWithText("test1")
             .assertExists()
 
@@ -79,6 +79,10 @@ class PostViewTest {
             .performClick()
             .performTextInput("testNewComment")
 
+        composeTestRule.onNodeWithTag("comment_post_text_field")
+            .assertExists()
+            .performImeAction()
+
         composeTestRule.onAllNodesWithText("testNewComment")
             .onFirst()
             .assertExists()
@@ -91,6 +95,10 @@ class PostViewTest {
         composeTestRule.onNodeWithTag("reply_text_field")
             .assertExists()
             .performTextInput("testNewReply")
+
+        composeTestRule.onNodeWithTag("reply_text_field")
+            .assertExists()
+            .performImeAction()
 
         composeTestRule.onAllNodesWithText("testNewReply")
             .onFirst()

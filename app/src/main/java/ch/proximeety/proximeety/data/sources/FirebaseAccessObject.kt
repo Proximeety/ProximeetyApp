@@ -128,7 +128,7 @@ class FirebaseAccessObject(
 
     init {
         Firebase.database.setPersistenceEnabled(false)
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.FIREBASE_EMULATOR) {
             Firebase.auth.useEmulator("10.0.2.2", 9099)
             Firebase.database.useEmulator("10.0.2.2", 9000)
             Firebase.storage.useEmulator("10.0.2.2", 9199)
@@ -220,6 +220,7 @@ class FirebaseAccessObject(
                             return user
                         }
                     } catch (e: ApiException) {
+                        Log.e(TAG, "Google sign in failed (${e.statusCode}): ${e.message}")
                     }
                 }
             }

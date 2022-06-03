@@ -1,5 +1,7 @@
 package ch.proximeety.proximeety.presentation.views.home
 
+import android.view.KeyEvent.KEYCODE_ENTER
+import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import ch.proximeety.proximeety.core.interactions.UserInteractions
@@ -145,6 +147,10 @@ class HomeViewTest {
             .performClick()
             .performTextInput("testNewComment")
 
+        composeTestRule.onNodeWithTag("comment_post_text_field")
+            .assertExists()
+            .performImeAction()
+
         composeTestRule.onAllNodesWithText("testNewComment")
             .onFirst()
             .assertExists()
@@ -157,6 +163,10 @@ class HomeViewTest {
         composeTestRule.onNodeWithTag("reply_text_field")
             .assertExists()
             .performTextInput("testNewReply")
+
+        composeTestRule.onNodeWithTag("reply_text_field")
+            .assertExists()
+            .performImeAction()
 
         composeTestRule.onAllNodesWithText("testNewReply")
             .onFirst()
