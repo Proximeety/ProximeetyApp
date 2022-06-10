@@ -1,21 +1,21 @@
 package ch.proximeety.proximeety.presentation.views.profile
 
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onAllNodesWithContentDescription
-import androidx.compose.ui.test.onFirst
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import androidx.lifecycle.SavedStateHandle
 import ch.proximeety.proximeety.core.interactions.UserInteractions
 import ch.proximeety.proximeety.di.AppModule
 import ch.proximeety.proximeety.presentation.MainActivity
+import ch.proximeety.proximeety.presentation.navigation.NavigationCommand
 import ch.proximeety.proximeety.presentation.navigation.NavigationManager
+import ch.proximeety.proximeety.presentation.navigation.graphs.MainNavigationCommands
 import ch.proximeety.proximeety.presentation.theme.ProximeetyTheme
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertTrue
+import org.junit.Assert
+import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 import javax.inject.Inject
@@ -127,6 +127,52 @@ class ProfileViewTest {
             .assertExists()
             .performClick()
         composeTestRule.waitForIdle()
+    }
+
+    @Test
+    fun deleteCancelTest() {
+        setup("testUserId")
+        composeTestRule.onAllNodesWithContentDescription("More")
+            .onFirst()
+            .assertExists()
+            .performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText("Delete post")
+            .assertExists()
+            .performClick()
+        composeTestRule.onNodeWithText("Dismiss")
+            .assertExists()
+            .performClick()
+        composeTestRule.waitForIdle()
+    }
+
+    @Test
+    fun signOutTest() {
+        setup("testUserId")
+        composeTestRule.onNodeWithText("Sign out")
+            .assertExists()
+            .performClick()
+        assertNull(userInteractions.getAuthenticatedUser().value)
+    }
+
+    @Test
+    fun settingsButton() {
+        setup("testUserId")
+        composeTestRule.onNodeWithTag("Settings")
+            .assertExists()
+            .performClick()
+        composeTestRule.waitForIdle()
+        assertEquals(MainNavigationCommands.settings, navigationManager.command.value)
+    }
+
+    @Test
+    fun storiesButton() {
+        setup("testUserId")
+        composeTestRule.onNodeWithContentDescription("Profile picture of", substring = true)
+            .assertExists()
+            .performClick()
+        composeTestRule.waitForIdle()
+        assertEquals(MainNavigationCommands.storiesWithArgs("testUserId").route, navigationManager.command.value?.route)
     }
 
 }

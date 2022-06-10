@@ -26,3 +26,12 @@ each merge.
 Without Internet connection, a user can still view recent message history and posts with cache, a
 user can also edit their own files and the changes will be applied once connected to the Internet
 again.
+
+# Building
+
+No special step are required to build our application. All the API key are directly in the
+repository.
+
+For Google authentication, we might need to add your SHA-1 signing certificate fingerprint to the
+Google Cloud Platform so that it works with your build of the application. If this is indeed the
+case, don't hesitate to write use an email.

@@ -214,7 +214,7 @@ class UserRepositoryMockImplementation : UserRepository {
 
     override fun fetchUserById(id: String): LiveData<User?> {
         return when (id) {
-            "testUserId" -> MutableLiveData(User("testUserId1", "Test User"))
+            "testUserId" -> MutableLiveData(User("testUserId", "Test User"))
             "testUserId1" -> MutableLiveData(User("testUserId1", "User1"))
             "testUserId2" -> MutableLiveData(User("testUserId2", "User2"))
             "testUserId3" -> MutableLiveData(User("testUserId3", "User3"))

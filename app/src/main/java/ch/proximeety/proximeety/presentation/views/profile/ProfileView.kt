@@ -12,6 +12,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -42,7 +43,9 @@ fun ProfileView(
                     .height(50.dp), verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(
-                    onClick = { viewModel.onEvent(ProfileEvent.NavigateToSettings) })
+                    onClick = { viewModel.onEvent(ProfileEvent.NavigateToSettings) },
+                    modifier = Modifier.testTag("Settings")
+                )
                 {
                     Icon(imageVector = Icons.Filled.Settings, contentDescription = "Settings")
                 }
