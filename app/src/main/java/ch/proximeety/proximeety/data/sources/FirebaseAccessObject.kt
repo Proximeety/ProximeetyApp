@@ -201,7 +201,7 @@ class FirebaseAccessObject(
                 activity.startActivityForResult(intent, REQUEST_CODE_GOOGLE_SIGN_IN)
             }, REQUEST_CODE_GOOGLE_SIGN_IN)
 
-            result?.also { activityResult ->
+            return result?.let { activityResult ->
                 if (activityResult.resultCode == Activity.RESULT_OK) {
                     try {
                         val account =
@@ -217,19 +217,18 @@ class FirebaseAccessObject(
                                 profilePicture = account.photoUrl?.toString()
                             )
                             uploadUser(user)
-                            return user
+                            return@let user
                         }
                     } catch (e: ApiException) {
                         Log.e(TAG, "Google sign in failed (${e.statusCode}): ${e.message}")
                     }
                 }
+                return@let null
             }
         } catch (e: Exception) {
             Log.e(TAG, "Authenticate with Google failed", e)
            return null
         }
-
-        return null
     }
 
     private fun uploadUser(user : User) {
